@@ -170,7 +170,7 @@ export const AppShell: React.FC<{
               aria-label="Página inicial do Enap e-Vida"
             >
               {!collapsed ? (
-                <EnapVidaLogo className="h-9 shrink-0 rounded bg-white" />
+                <EnapVidaLogo className="max-w-36 shrink-0 rounded bg-white p-1" />
               ) : (
                 <span className="text-base font-extrabold text-[#FFF2DE] mx-auto">eV</span>
               )}
@@ -255,7 +255,7 @@ export const AppShell: React.FC<{
           <header className="sticky top-0 z-30 h-16 bg-white border-b border-[#E2DDD5] px-4 md:px-6 flex items-center justify-between gap-4">
             <div className="flex items-center gap-3 min-w-0 flex-1">
               <Link to="/app/inicio" className="md:hidden flex items-center gap-2 shrink-0">
-                <EnapVidaLogo className="h-8" />
+                <EnapVidaLogo className="max-w-32" />
               </Link>
 
               {/* Busca integrada (§11) */}

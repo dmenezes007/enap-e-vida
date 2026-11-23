@@ -43,6 +43,15 @@ branch `main`. Para conferir o build localmente, execute `npm run build:pages` e
 npm test
 ```
 
+Para verificar o MVP por HTTP, configure `TEST_DATABASE_URL` com uma conexão
+direta a um PostgreSQL de teste com permissão para criar schemas. O teste
+cria um schema temporário e usa somente dados fictícios.
+
+```bash
+npm run build
+npm run test:mvp
+```
+
 ### Build de Produção
 
 ```bash
@@ -108,3 +117,4 @@ Código MFA demonstrativo (quando aplicável): **`202600`**
 - Esquema executado no piloto PostgreSQL: `/server/db.ts`.
 - Esquema institucional de referência PostgreSQL 16+ (8 schemas + RLS): `/docs/database/migrations/001_initial_schema.sql`.
 - Arquitetura, ERD, Matriz RBAC, Inventário LGPD e Checklists: `/docs/ARQUITETURA_E_GOVERNANCA.md`
+- Escopo, testes de aceitação e pendências: `/docs/MVP.md`

@@ -11,6 +11,7 @@
     "build:pages": "vite build --mode pages",
     "preview": "vite preview",
     "test": "tsx --test src/lib/domain.test.ts",
+    "test:mvp": "node --env-file-if-exists=.env --test tests/mvp.test.mjs",
     "clean": "rm -rf dist server.js",
     "lint": "tsc --noEmit"
   },

@@ -1281,44 +1281,145 @@ apiRouter.get('/events/:id', requireAuth, async (req: AuthenticatedRequest, res)
   const row = await db.one(
     `SELECT e.*,
               (SELECT COUNT(*)::integer FROM event_registrations er WHERE er.event_id = e.id AND er.status = 'confirmada') as enrolled_count,
-              (SELECT status FROM event_registrations er WHERE er.event_id = e.id AND er.user_id = $1) as my_status
-       FROM events e WHERE e.id = $2`,
+              (SELECT status FROM event_registrations er WHERE er.event_id = e.id AND er.user_id = $1) as my_status,
+              (SELECT attendance_confirmed FROM event_registrations er WHERE er.event_id = e.id AND er.user_id = $1) as my_attendance_confirmed
+       FROM events e WHERE e.id = $2 AND e.status = 'publicado'`,
     userId, req.params.id,
   );
   if (!row) return res.status(404).json({error: 'Evento não encontrado.'});
   res.json({event: row});
 });
 
-apiRouter.post('/events/:id/register', requireAuth, async (req: AuthenticatedRequest, res) => {
-  const evt = await db.one('SELECT id, title, capacity FROM events WHERE id = $1', req.params.id) as
-    | {id: string; title: string; capacity: number | null}
-    | undefined;
-  if (!evt) return res.status(404).json({error: 'Evento não encontrado.'});
-
-  const now = new Date().toISOString();
-  await db.run(
-    `
-    INSERT INTO event_registrations (id, event_id, user_id, status, attendance_confirmed, created_at)
-    VALUES ($1, $2, $3, 'confirmada', 0, $4)
-    ON CONFLICT(event_id, user_id) DO UPDATE SET status = 'confirmada'
-  `,
-    generateId(), evt.id, req.user!.id, now,
+function lockPublishedEvent(id: string) {
+  return db.one<{id: string; title: string; capacity: number | null; start_iso: string; end_iso: string}>(
+    "SELECT id, title, capacity, start_iso, end_iso FROM events WHERE id = $1 AND status = 'publicado' FOR UPDATE",
+    id,
   );
+}
 
-  res.json({ok: true, status: 'confirmada'});
+apiRouter.post('/events/:id/register', requireAuth, async (req: AuthenticatedRequest, res) => {
+  const user = req.user!;
+  const result = await db.transaction(async () => {
+    const event = await lockPublishedEvent(req.params.id);
+    if (!event) return {code: 404, body: {error: 'Evento não encontrado.'}};
+    const existing = await db.one<{status: string}>(
+      'SELECT status FROM event_registrations WHERE event_id = $1 AND user_id = $2',
+      event.id, user.id,
+    );
+    if (existing) return {code: 200, body: {ok: true, status: existing.status}};
+
+    const now = new Date();
+    if (Date.parse(event.start_iso) <= now.getTime()) {
+      return {code: 409, body: {error: 'As inscrições foram encerradas no início do evento.'}};
+    }
+
+    const count = await db.one<{confirmed: number}>(
+      "SELECT COUNT(*)::integer AS confirmed FROM event_registrations WHERE event_id = $1 AND status = 'confirmada'",
+      event.id,
+    );
+    const status = event.capacity !== null && (count?.confirmed ?? 0) >= event.capacity
+      ? 'lista_espera'
+      : 'confirmada';
+    await db.run(
+      `INSERT INTO event_registrations (id, event_id, user_id, status, attendance_confirmed, created_at)
+       VALUES ($1, $2, $3, $4, 0, $5)`,
+      generateId(), event.id, user.id, status, now.toISOString(),
+    );
+    await logAuditEvent({
+      actorUserId: user.id,
+      actorEmail: user.email,
+      action: 'EVENT_REGISTERED',
+      resourceType: 'event',
+      resourceId: event.id,
+      metadata: {status},
+    });
+    return {code: 200, body: {ok: true, status}};
+  });
+  return res.status(result.code).json(result.body);
 });
 
 apiRouter.post('/events/:id/cancel', requireAuth, async (req: AuthenticatedRequest, res) => {
-  await db.run(
-    'DELETE FROM event_registrations WHERE event_id = $1 AND user_id = $2',
-    req.params.id,
-    req.user!.id,
-  );
-  res.json({ok: true});
+  const user = req.user!;
+  const result = await db.transaction(async () => {
+    const event = await lockPublishedEvent(req.params.id);
+    if (!event) return {code: 404, body: {error: 'Evento não encontrado.'}};
+    const now = new Date();
+    if (Date.parse(event.start_iso) <= now.getTime()) {
+      return {code: 409, body: {error: 'O evento já começou.'}};
+    }
+    const cancelled = await db.one<{status: string}>(
+      'DELETE FROM event_registrations WHERE event_id = $1 AND user_id = $2 RETURNING status',
+      event.id, user.id,
+    );
+    if (!cancelled) return {code: 200, body: {ok: true}};
+
+    if (cancelled.status === 'confirmada') {
+      const promoted = await db.one<{user_id: string}>(
+        `UPDATE event_registrations SET status = 'confirmada' WHERE id = (
+           SELECT id FROM event_registrations WHERE event_id = $1 AND status = 'lista_espera'
+           ORDER BY created_at, id LIMIT 1
+         ) RETURNING user_id`,
+        event.id,
+      );
+      if (promoted) {
+        await db.run(
+          `INSERT INTO notifications
+           (id, user_id, category, title, message, link_path, is_operational, is_read, created_at)
+           VALUES ($1, $2, 'eventos', 'Vaga confirmada no evento', $3, $4, 1, 0, $5)`,
+          generateId(), promoted.user_id, `Uma vaga foi liberada para você em “${event.title}”.`,
+          `/app/eventos/${event.id}`, now.toISOString(),
+        );
+      }
+    }
+    await logAuditEvent({
+      actorUserId: user.id,
+      actorEmail: user.email,
+      action: 'EVENT_REGISTRATION_CANCELLED',
+      resourceType: 'event',
+      resourceId: event.id,
+    });
+    return {code: 200, body: {ok: true}};
+  });
+  return res.status(result.code).json(result.body);
+});
+
+apiRouter.post('/events/:id/attendance', requireAuth, async (req: AuthenticatedRequest, res) => {
+  const user = req.user!;
+  const result = await db.transaction(async () => {
+    const event = await lockPublishedEvent(req.params.id);
+    if (!event) return {code: 404, body: {error: 'Evento não encontrado.'}};
+    const now = Date.now();
+    if (now < Date.parse(event.start_iso) || now > Date.parse(event.end_iso)) {
+      return {code: 409, body: {error: 'A presença pode ser confirmada durante o evento.'}};
+    }
+    const updated = await db.one(
+      `UPDATE event_registrations SET attendance_confirmed = 1
+       WHERE event_id = $1 AND user_id = $2 AND status = 'confirmada' AND attendance_confirmed = 0
+       RETURNING id`,
+      event.id, user.id,
+    );
+    if (!updated) {
+      const existing = await db.one(
+        "SELECT id FROM event_registrations WHERE event_id = $1 AND user_id = $2 AND status = 'confirmada'",
+        event.id, user.id,
+      );
+      if (!existing) return {code: 403, body: {error: 'É preciso ter uma inscrição confirmada.'}};
+      return {code: 200, body: {ok: true}};
+    }
+    await logAuditEvent({
+      actorUserId: user.id,
+      actorEmail: user.email,
+      action: 'EVENT_ATTENDANCE_CONFIRMED',
+      resourceType: 'event',
+      resourceId: event.id,
+    });
+    return {code: 200, body: {ok: true}};
+  });
+  return res.status(result.code).json(result.body);
 });
 
 apiRouter.get('/events/:id/ics', requireAuth, async (req: AuthenticatedRequest, res) => {
-  const evt = await db.one('SELECT * FROM events WHERE id = $1', req.params.id) as
+  const evt = await db.one("SELECT * FROM events WHERE id = $1 AND status = 'publicado'", req.params.id) as
     | Record<string, unknown>
     | undefined;
   if (!evt) return res.status(404).json({error: 'Evento não encontrado.'});
@@ -2130,16 +2231,20 @@ apiRouter.post('/admin/events', requireAuth, requirePermission('events:manage'),
       description: z.string().trim().min(10),
       sourceModule: z.enum(['jornada', 'pqvt', 'comite_dei', 'institucional']),
       category: z.string().trim().min(2),
-      startIso: z.string().trim().min(10),
-      endIso: z.string().trim().min(10),
+      startIso: z.iso.datetime({offset: true}),
+      endIso: z.iso.datetime({offset: true}),
       location: z.string().trim().min(2),
       modality: z.enum(['Presencial', 'Virtual', 'Híbrida']),
       organizer: z.string().trim().min(2),
       capacity: z.number().int().min(1).nullable().optional(),
       accessibilityResources: z.string().trim().min(4),
     })
+    .refine((event) => Date.parse(event.endIso) > Date.parse(event.startIso), {
+      path: ['endIso'],
+      message: 'O término do evento deve ocorrer após o início.',
+    })
     .safeParse(req.body);
-  if (!parsed.success) return res.status(400).json({error: 'Verifique os dados do evento.'});
+  if (!parsed.success) return res.status(400).json({error: parsed.error.issues[0]?.message || 'Verifique os dados do evento.'});
 
   const id = generateId();
   await db.run(
@@ -2155,8 +2260,8 @@ apiRouter.post('/admin/events', requireAuth, requirePermission('events:manage'),
     parsed.data.description,
     parsed.data.sourceModule,
     parsed.data.category,
-    parsed.data.startIso,
-    parsed.data.endIso,
+    new Date(parsed.data.startIso).toISOString(),
+    new Date(parsed.data.endIso).toISOString(),
     parsed.data.location,
     parsed.data.modality,
     parsed.data.organizer,

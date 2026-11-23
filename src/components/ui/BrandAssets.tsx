@@ -2,71 +2,17 @@ import React, {useState} from 'react';
 import {Download, WifiOff, X} from 'lucide-react';
 import {useOnlineStatus, usePWAInstall} from '../../hooks/usePWAInstall';
 
-export function EnapVidaLogo({className = 'h-8'}: {className?: string}) {
+export function EnapVidaLogo({className = 'max-w-40'}: {className?: string}) {
   return (
     <img
       src={`${import.meta.env.BASE_URL}enap-e-vida.png`}
       alt="Enap e-Vida"
-      width={2172}
-      height={724}
-      className={`w-auto object-contain ${className}`}
+      width={1542}
+      height={162}
+      className={`h-auto object-contain ${className}`}
     />
   );
 }
-
-/**
- * Representação vetorial da identidade tipográfica institucional da Enap
- * (referência RGI 2025 — substituir pelo arquivo vetorial oficial autorizado da CGCOM na implantação).
- */
-export const EnapWordmark: React.FC<{
-  variant?: 'dark' | 'light';
-  className?: string;
-}> = ({variant = 'dark', className = 'h-7'}) => {
-  const stroke = variant === 'light' ? '#FFFFFF' : '#173640';
-  return (
-    <svg
-      viewBox="0 0 156 42"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      className={className}
-      role="img"
-      aria-label="Logomarca institucional Enap"
-    >
-      {/* e */}
-      <path
-        d="M8 22.5H33C33 15 27.5 10.5 20.5 10.5C13 10.5 8 15.5 8 22.5C8 29.5 13 33.5 21 33.5H32"
-        stroke={stroke}
-        strokeWidth="4.6"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      {/* n */}
-      <path
-        d="M44 33.5V19C44 13.8 48.2 10.5 54 10.5H62C67.5 10.5 71 14 71 19.5V33.5"
-        stroke={stroke}
-        strokeWidth="4.6"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      {/* a */}
-      <path
-        d="M83 13.5C86 11.2 90 10.5 95 10.5C102 10.5 107 14 107 20.5V33.5H91.5C85 33.5 81 30.2 81 25.5C81 20.8 85 18 92 18H106"
-        stroke={stroke}
-        strokeWidth="4.6"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      {/* p */}
-      <path
-        d="M120 39V19C120 13.8 124.2 10.5 130.5 10.5H137.5C144 10.5 148 14.5 148 20.5C148 26.5 144 30.5 137.5 30.5H121"
-        stroke={stroke}
-        strokeWidth="4.6"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-};
 
 /**
  * Faixa geométrica modular inspirada nas páginas 1, 7, 8 e 10 do RGI 2025.

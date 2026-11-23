@@ -112,7 +112,7 @@ export const LandingLoginPage: React.FC = () => {
       <header className="bg-white border-b border-[#E2DDD5]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3 min-w-0">
-            <EnapVidaLogo className="h-9 shrink-0" />
+            <EnapVidaLogo className="max-w-32 sm:max-w-44 shrink-0" />
             <span className="h-5 w-px bg-[#D7D1C7] hidden sm:inline-block" aria-hidden="true" />
             <div className="min-w-0">
               <p className="text-[11px] text-[#5F666A] hidden sm:block truncate">

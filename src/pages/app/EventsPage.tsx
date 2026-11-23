@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Link, useParams} from 'react-router-dom';
 import {
   Accessibility,
@@ -26,66 +26,96 @@ const SOURCE_LABELS: Record<string, string> = {
   institucional: 'Institucional Enap',
 };
 
+type CalendarEvent = {
+  id: string;
+  title: string;
+  description: string;
+  source_module: string;
+  category: string;
+  modality: string;
+  start_iso: string;
+  end_iso: string;
+  location: string;
+  organizer: string;
+  program_json: string;
+  accessibility_resources: string;
+  capacity: number | null;
+  enrolled_count: number;
+  my_status: 'confirmada' | 'lista_espera' | null;
+  my_attendance_confirmed?: number | null;
+};
+
+const timeZone = 'America/Sao_Paulo';
+
 export const EventsPage: React.FC = () => {
   const {id} = useParams();
   const {pushToast} = useToast();
 
-  const [events, setEvents] = useState<any[]>([]);
-  const [detail, setDetail] = useState<any>(null);
+  const [events, setEvents] = useState<CalendarEvent[]>([]);
+  const [detail, setDetail] = useState<CalendarEvent | null>(null);
   const [loading, setLoading] = useState(true);
-  const [viewMode, setViewMode] = useState<'proximos' | 'mensal' | 'meus'>('proximos');
+  const [viewMode, setViewMode] = useState<'proximos' | 'mensal' | 'semanal' | 'meus'>('proximos');
   const [sourceFilter, setSourceFilter] = useState('todos');
+  const [categoryFilter, setCategoryFilter] = useState('');
   const [busy, setBusy] = useState(false);
-
-  const loadData = useCallback(() => {
-    setLoading(true);
-    if (id) {
-      apiFetch<{event: any}>(`/api/events/${id}`)
-        .then((res) => setDetail(res.event))
-        .finally(() => setLoading(false));
-    } else {
-      apiFetch<{events: any[]}>('/api/events')
-        .then((res) => setEvents(res.events))
-        .finally(() => setLoading(false));
-    }
-  }, [id]);
+  const [error, setError] = useState('');
+  const [revision, setRevision] = useState(0);
 
   useEffect(() => {
-    loadData();
-  }, [loadData]);
+    const controller = new AbortController();
+    setLoading(true);
+    setError('');
+    const request = id
+      ? apiFetch<{event: CalendarEvent}>(`/api/events/${id}`, {signal: controller.signal})
+          .then((result) => { if (!controller.signal.aborted) setDetail(result.event); })
+      : apiFetch<{events: CalendarEvent[]}>('/api/events', {signal: controller.signal})
+          .then((result) => { if (!controller.signal.aborted) setEvents(result.events); });
+    void request
+      .catch((cause: Error) => {
+        if (!controller.signal.aborted) setError(cause.message || 'Falha ao carregar a agenda.');
+      })
+      .finally(() => {
+        if (!controller.signal.aborted) setLoading(false);
+      });
+    return () => controller.abort();
+  }, [id, revision]);
 
-  const handleRegister = async (eventId: string) => {
+  const changeParticipation = async (eventId: string, action: 'register' | 'cancel' | 'attendance') => {
     setBusy(true);
     try {
-      await apiFetch(`/api/events/${eventId}/register`, {method: 'POST'});
-      pushToast('Presença confirmada no evento!', 'success');
-      loadData();
-    } catch (err: any) {
-      pushToast(err?.message || 'Erro ao confirmar inscrição.', 'error');
-    } finally {
-      setBusy(false);
-    }
-  };
-
-  const handleCancel = async (eventId: string) => {
-    setBusy(true);
-    try {
-      await apiFetch(`/api/events/${eventId}/cancel`, {method: 'POST'});
-      pushToast('Inscrição no evento cancelada.', 'info');
-      loadData();
-    } catch (err: any) {
-      pushToast(err?.message || 'Erro ao cancelar.', 'error');
+      const result = await apiFetch<{status?: string}>(`/api/events/${eventId}/${action}`, {method: 'POST'});
+      if (action === 'cancel') pushToast('Inscrição no evento cancelada.', 'info');
+      else if (action === 'attendance') pushToast('Presença registrada no evento.', 'success');
+      else if (result.status === 'lista_espera') pushToast('Você entrou na lista de espera.', 'info');
+      else pushToast('Inscrição confirmada no evento.', 'success');
+      setRevision((value) => value + 1);
+    } catch (err) {
+      pushToast(err instanceof Error ? err.message : 'Falha ao atualizar a participação.', 'error');
     } finally {
       setBusy(false);
     }
   };
 
   if (loading) return <SkeletonBlock rows={4} />;
+  if (error) {
+    return (
+      <div className="space-y-3">
+        <p role="alert">{error}</p>
+        <Button onClick={() => setRevision((value) => value + 1)}>Tentar novamente</Button>
+        {id && <Link to="/app/eventos" className="ml-3 underline">Voltar para a agenda</Link>}
+      </div>
+    );
+  }
+
+  const now = Date.now();
 
   // DETALHE DO EVENTO
   if (id && detail) {
     const program: string[] = detail.program_json ? JSON.parse(detail.program_json) : [];
     const isRegistered = detail.my_status === 'confirmada';
+    const isWaiting = detail.my_status === 'lista_espera';
+    const started = now >= Date.parse(detail.start_iso);
+    const canConfirmAttendance = isRegistered && started && now <= Date.parse(detail.end_iso);
 
     return (
       <div className="space-y-6">
@@ -110,15 +140,17 @@ export const EventsPage: React.FC = () => {
             <div>
               <p className="text-xs text-[#5F666A]">Data e horário</p>
               <p className="font-bold text-[#173640] tabular-nums">
-                {new Date(detail.start_iso).toLocaleDateString('pt-BR')} ·{' '}
+                {new Date(detail.start_iso).toLocaleDateString('pt-BR', {timeZone})} ·{' '}
                 {new Date(detail.start_iso).toLocaleTimeString('pt-BR', {
                   hour: '2-digit',
                   minute: '2-digit',
+                  timeZone,
                 })}{' '}
                 –{' '}
                 {new Date(detail.end_iso).toLocaleTimeString('pt-BR', {
                   hour: '2-digit',
                   minute: '2-digit',
+                  timeZone,
                 })}
               </p>
             </div>
@@ -146,25 +178,34 @@ export const EventsPage: React.FC = () => {
           <div className="rounded-xl bg-[#FAF8F4] border border-[#E2DDD5] p-4 text-xs text-[#4A4F52] flex items-start gap-2.5">
             <Accessibility className="w-4 h-4 text-[#285D32] shrink-0 mt-0.5" aria-hidden="true" />
             <div>
-              <p className="font-bold text-[#173640]">Acessibilidade garantida</p>
+              <p className="font-bold text-[#173640]">Recursos de acessibilidade</p>
               <p>{detail.accessibility_resources}</p>
             </div>
           </div>
 
           <div className="flex flex-wrap items-center gap-3 pt-2">
-            {isRegistered ? (
+            {isRegistered || isWaiting ? (
               <>
                 <span className="inline-flex items-center gap-1.5 text-sm font-bold text-[#285D32]">
                   <CheckCircle2 className="w-4 h-4" aria-hidden="true" />
-                  Presença confirmada
+                  {isWaiting ? 'Na lista de espera' : detail.my_attendance_confirmed ? 'Presença registrada' : 'Inscrição confirmada'}
                 </span>
-                <Button variant="outline" size="sm" disabled={busy} onClick={() => handleCancel(detail.id)}>
-                  Cancelar participação
-                </Button>
+                {!started && (
+                  <Button variant="outline" size="sm" disabled={busy} onClick={() => changeParticipation(detail.id, 'cancel')}>
+                    {isWaiting ? 'Sair da lista de espera' : 'Cancelar inscrição'}
+                  </Button>
+                )}
+                {canConfirmAttendance && !detail.my_attendance_confirmed && (
+                  <Button variant="secondary" disabled={busy} onClick={() => changeParticipation(detail.id, 'attendance')}>
+                    Registrar minha presença
+                  </Button>
+                )}
               </>
+            ) : started ? (
+              <span className="text-sm text-[#5F666A]">Inscrições encerradas</span>
             ) : (
-              <Button variant="secondary" disabled={busy} onClick={() => handleRegister(detail.id)}>
-                Confirmar participação
+              <Button variant="secondary" disabled={busy} onClick={() => changeParticipation(detail.id, 'register')}>
+                {detail.capacity !== null && detail.enrolled_count >= detail.capacity ? 'Entrar na lista de espera' : 'Inscrever-me'}
               </Button>
             )}
 
@@ -184,16 +225,22 @@ export const EventsPage: React.FC = () => {
 
   // LISTA / AGENDA INTEGRADA
   const filtered = events.filter((ev) => {
-    if (viewMode === 'meus' && ev.my_status !== 'confirmada') return false;
+    if (viewMode === 'meus' && !ev.my_status) return false;
+    if (viewMode === 'proximos' && Date.parse(ev.end_iso) < now) return false;
     if (sourceFilter !== 'todos' && ev.source_module !== sourceFilter) return false;
+    if (categoryFilter && ev.category !== categoryFilter) return false;
     return true;
   });
 
-  // Agrupamento por mês para visão mensal limpa
-  const byMonth = filtered.reduce<Record<string, any[]>>((acc, ev) => {
-    const key = new Date(ev.start_iso).toLocaleDateString('pt-BR', {month: 'long', year: 'numeric'});
-    acc[key] = acc[key] || [];
-    acc[key].push(ev);
+  const groups = filtered.reduce<Record<string, CalendarEvent[]>>((acc, ev) => {
+    const date = new Date(new Date(ev.start_iso).toLocaleDateString('sv-SE', {timeZone}) + 'T12:00:00Z');
+    const calendarOptions = {timeZone: 'UTC'} as const;
+    let label = date.toLocaleDateString('pt-BR', {...calendarOptions, month: 'long', year: 'numeric'});
+    if (viewMode === 'semanal') {
+      date.setUTCDate(date.getUTCDate() - (date.getUTCDay() + 6) % 7);
+      label = `Semana de ${date.toLocaleDateString('pt-BR', calendarOptions)}`;
+    }
+    (acc[label] ??= []).push(ev);
     return acc;
   }, {});
 
@@ -207,15 +254,17 @@ export const EventsPage: React.FC = () => {
 
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex flex-wrap gap-2">
-          {[
+          {([
             {id: 'proximos', label: 'Próximos eventos'},
             {id: 'mensal', label: 'Agrupado por mês'},
+            {id: 'semanal', label: 'Agrupado por semana'},
             {id: 'meus', label: 'Meus eventos'},
-          ].map((m) => (
+          ] as const).map((m) => (
             <button
               key={m.id}
               type="button"
-              onClick={() => setViewMode(m.id as any)}
+              aria-pressed={viewMode === m.id}
+              onClick={() => setViewMode(m.id)}
               className={`px-3.5 py-2 rounded-lg text-sm font-semibold cursor-pointer whitespace-nowrap shrink-0 ${
                 viewMode === m.id
                   ? 'bg-[#173640] text-white'
@@ -227,18 +276,31 @@ export const EventsPage: React.FC = () => {
           ))}
         </div>
 
-        <select
-          aria-label="Filtrar por origem"
-          value={sourceFilter}
-          onChange={(e) => setSourceFilter(e.target.value)}
-          className="rounded-lg border border-[#C5BEB2] bg-white px-3 py-2 text-sm text-[#231F20]"
-        >
-          <option value="todos">Todas as origens</option>
-          <option value="jornada">Jornada de Ambientação</option>
-          <option value="pqvt">PQVT</option>
-          <option value="comite_dei">Comitê DEI</option>
-          <option value="institucional">Institucional</option>
-        </select>
+        <div className="flex flex-wrap gap-2">
+          <select
+            aria-label="Filtrar por origem"
+            value={sourceFilter}
+            onChange={(e) => setSourceFilter(e.target.value)}
+            className="rounded-lg border border-[#C5BEB2] bg-white px-3 py-2 text-sm text-[#231F20]"
+          >
+            <option value="todos">Todas as origens</option>
+            <option value="jornada">Jornada de Ambientação</option>
+            <option value="pqvt">PQVT</option>
+            <option value="comite_dei">Comitê DEI</option>
+            <option value="institucional">Institucional</option>
+          </select>
+          <select
+            aria-label="Filtrar por categoria"
+            value={categoryFilter}
+            onChange={(event) => setCategoryFilter(event.target.value)}
+            className="rounded-lg border border-[#C5BEB2] bg-white px-3 py-2 text-sm text-[#231F20]"
+          >
+            <option value="">Todas as categorias</option>
+            {[...new Set(events.map((event) => event.category))]
+              .sort((a, b) => a.localeCompare(b, 'pt-BR'))
+              .map((category) => <option key={category} value={category}>{category}</option>)}
+          </select>
+        </div>
       </div>
 
       {filtered.length === 0 ? (
@@ -246,11 +308,11 @@ export const EventsPage: React.FC = () => {
           title="Nenhum evento neste recorte"
           description="Experimente limpar os filtros ou confirmar sua participação nos próximos encontros."
         />
-      ) : viewMode === 'mensal' ? (
+      ) : viewMode === 'mensal' || viewMode === 'semanal' ? (
         <div className="space-y-6">
-          {Object.entries(byMonth).map(([monthLabel, items]) => (
-            <div key={monthLabel} className="space-y-3">
-              <h2 className="text-base font-extrabold text-[#173640] capitalize">{monthLabel}</h2>
+          {Object.entries(groups).map(([label, items]) => (
+            <div key={label} className="space-y-3">
+              <h2 className="text-base font-extrabold text-[#173640] capitalize">{label}</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {items.map((ev) => (
                   <EventCard key={ev.id} ev={ev} />
@@ -270,7 +332,7 @@ export const EventsPage: React.FC = () => {
   );
 };
 
-const EventCard: React.FC<{ev: any}> = ({ev}) => (
+const EventCard: React.FC<{ev: CalendarEvent}> = ({ev}) => (
   <Card className="p-5 flex flex-col justify-between gap-4">
     <div className="space-y-2">
       <div className="flex items-center justify-between gap-2 text-xs">
@@ -278,7 +340,7 @@ const EventCard: React.FC<{ev: any}> = ({ev}) => (
           {SOURCE_LABELS[ev.source_module] || ev.source_module} · {ev.modality}
         </span>
         <span className="font-bold text-[#173640] tabular-nums">
-          {new Date(ev.start_iso).toLocaleDateString('pt-BR')}
+          {new Date(ev.start_iso).toLocaleDateString('pt-BR', {timeZone})}
         </span>
       </div>
       <h3 className="text-base font-extrabold text-[#173640]">
@@ -291,8 +353,8 @@ const EventCard: React.FC<{ev: any}> = ({ev}) => (
         <p className="flex items-center gap-1.5">
           <Calendar className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
           <span className="tabular-nums">
-            {new Date(ev.start_iso).toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'})} –{' '}
-            {new Date(ev.end_iso).toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'})}
+            {new Date(ev.start_iso).toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit', timeZone})} –{' '}
+            {new Date(ev.end_iso).toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit', timeZone})}
           </span>
         </p>
         <p className="flex items-center gap-1.5">
@@ -321,7 +383,7 @@ const EventCard: React.FC<{ev: any}> = ({ev}) => (
         to={`/app/eventos/${ev.id}`}
         className="text-xs font-extrabold text-[#173640] hover:text-[#186F80] underline"
       >
-        {ev.my_status === 'confirmada' ? 'Confirmado · Detalhes' : 'Ver detalhes e participar'}
+        {ev.my_status === 'confirmada' ? 'Confirmado · Detalhes' : ev.my_status === 'lista_espera' ? 'Na lista de espera · Detalhes' : 'Ver detalhes e participar'}
       </Link>
     </div>
   </Card>

@@ -7,7 +7,7 @@ export function PagesPreview() {
       <RgiGeometricStrip className="h-2.5 w-full" />
       <header className="border-b border-[#E2DDD5] bg-white">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-3">
-          <EnapVidaLogo className="h-12" />
+          <EnapVidaLogo className="max-w-36 sm:max-w-56" />
           <PWAInstallButton />
         </div>
       </header>

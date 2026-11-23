@@ -926,6 +926,13 @@ export async function seedDatabaseIfEmpty(): Promise<void> {
     ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19)
   `, ...values);
 
+  const eventTime = (daysFromToday: number, hour: number, minute = 0) => {
+    const date = new Date(now);
+    date.setUTCDate(date.getUTCDate() + daysFromToday);
+    date.setUTCHours(hour, minute, 0, 0);
+    return date.toISOString();
+  };
+
   await insertEvent(
     'evt-01',
     'Encontro de Acolhimento — Turma Novembro/2026',
@@ -933,8 +940,8 @@ export async function seedDatabaseIfEmpty(): Promise<void> {
     '/src/assets/images/jornada_acolhimento_1795080544095.jpg',
     'jornada',
     'Jornada de Ambientação',
-    '2026-11-24T12:30:00.000Z',
-    '2026-11-24T15:30:00.000Z',
+    eventTime(1, 12, 30),
+    eventTime(1, 15, 30),
     'Auditório Principal — Enap (SAFS Q. 02)',
     'Presencial',
     'Ingressantes, chefias imediatas e mentores',
@@ -960,8 +967,8 @@ export async function seedDatabaseIfEmpty(): Promise<void> {
     '/src/assets/images/hero_enap_evida_1795080544506.jpg',
     'institucional',
     'Integração Institucional',
-    '2026-12-02T17:00:00.000Z',
-    '2026-12-02T19:30:00.000Z',
+    eventTime(9, 17),
+    eventTime(9, 19, 30),
     'Auditório Enap + Transmissão institucional',
     'Híbrida',
     'Toda a comunidade Enap',
@@ -986,8 +993,8 @@ export async function seedDatabaseIfEmpty(): Promise<void> {
     '/src/assets/images/comite_dei_banner_1795080544677.jpg',
     'comite_dei',
     'Comitê DEI',
-    '2026-11-26T18:00:00.000Z',
-    '2026-11-26T19:30:00.000Z',
+    eventTime(3, 18),
+    eventTime(3, 19, 30),
     'Sala 204 (Bloco B) + Transmissão Virtual',
     'Híbrida',
     'Toda a comunidade Enap',
@@ -1012,8 +1019,8 @@ export async function seedDatabaseIfEmpty(): Promise<void> {
     '/src/assets/images/pqvt_bem_estar_1795080544676.jpg',
     'pqvt',
     'Qualidade de Vida (PQVT)',
-    '2026-12-09T12:00:00.000Z',
-    '2026-12-09T16:00:00.000Z',
+    eventTime(16, 12),
+    eventTime(16, 16),
     'Espaço de Convivência — Campus Enap',
     'Presencial',
     'Toda a comunidade Enap',

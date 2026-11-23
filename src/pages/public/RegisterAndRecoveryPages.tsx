@@ -3,7 +3,7 @@ import {Link, useNavigate} from 'react-router-dom';
 import {ArrowLeft, CheckCircle2, KeyRound, ShieldCheck, UserPlus} from 'lucide-react';
 import {apiFetch} from '../../lib/api';
 import {useAuth} from '../../contexts/AuthContext';
-import {DemoBanner, EnapWordmark, RgiGeometricStrip} from '../../components/ui/BrandAssets';
+import {DemoBanner, EnapVidaLogo, RgiGeometricStrip} from '../../components/ui/BrandAssets';
 import {AlertBox, Button, Card, Field, inputBaseClass, useToast} from '../../components/ui/Primitives';
 
 const EMPLOYMENT_OPTIONS = [
@@ -95,9 +95,7 @@ export const RegisterPage: React.FC = () => {
       <header className="bg-white border-b border-[#E2DDD5]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-3">
-            <EnapWordmark className="h-6" />
-            <span className="h-5 w-px bg-[#D7D1C7]" aria-hidden="true" />
-            <span className="text-sm font-extrabold text-[#173640]">Enap e-Vida · Novo Cadastro</span>
+            <EnapVidaLogo />
           </Link>
           <Link to="/" className="text-xs font-semibold text-[#186F80] hover:underline inline-flex items-center gap-1">
             <ArrowLeft className="w-3.5 h-3.5" aria-hidden="true" />
@@ -318,8 +316,7 @@ export const RecoverPasswordPage: React.FC = () => {
       <header className="bg-white border-b border-[#E2DDD5]">
         <div className="max-w-xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2.5">
-            <EnapWordmark className="h-6" />
-            <span className="text-sm font-extrabold text-[#173640]">Enap e-Vida</span>
+            <EnapVidaLogo />
           </Link>
           <Link to="/" className="text-xs font-semibold text-[#186F80] hover:underline">
             Voltar ao login

@@ -16,7 +16,7 @@ import {
 import {apiFetch} from '../../lib/api';
 import {formatCpf, isValidCpf, maskBankAccount, maskCpf} from '../../lib/validators';
 import type {GaegModality, GaegParameter, PreboardingStatus} from '../../lib/types';
-import {DemoBanner, EnapWordmark, RgiGeometricStrip} from '../../components/ui/BrandAssets';
+import {DemoBanner, EnapVidaLogo, RgiGeometricStrip} from '../../components/ui/BrandAssets';
 import {
   AlertBox,
   Button,
@@ -468,9 +468,7 @@ export const PreboardingFlowPage: React.FC = () => {
       <header className="bg-white border-b border-[#E2DDD5]">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
           <Link to="/" className="flex items-center gap-3">
-            <EnapWordmark className="h-6" />
-            <span className="h-5 w-px bg-[#D7D1C7]" aria-hidden="true" />
-            <span className="text-sm font-extrabold text-[#173640]">Enap e-Vida · Pré-ingresso</span>
+            <EnapVidaLogo className="max-w-28 sm:max-w-44" />
           </Link>
           <div className="flex items-center gap-3">
             {isTrackingRoute ? (

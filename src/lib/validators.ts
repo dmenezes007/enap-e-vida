@@ -197,7 +197,7 @@ export const preboardingSubmissionSchema = z
       .refine((v) => isValidCpf(v), 'Informe um CPF formalmente válido (11 dígitos).'),
     naturalidadeUf: z.string().trim().min(2, 'Informe a naturalidade e UF.'),
     racaCor: z.string().trim().min(2, 'Selecione a opção de autodeclaração de raça/cor.'),
-    dataNascimento: z.string().trim().min(8, 'Informe a data de nascimento.'),
+    dataNascimento: z.iso.date({error: 'Informe uma data de nascimento válida.'}),
     rg: z.string().trim().min(3, 'Informe o número do RG.'),
     orgaoExpedidor: z.string().trim().min(2, 'Informe o órgão expedidor do RG.'),
     filiacao: z.string().trim().min(3, 'Informe a filiação.'),
@@ -224,7 +224,7 @@ export const preboardingSubmissionSchema = z
       .string()
       .trim()
       .refine((v) => digitsOnly(v).length >= 5, 'Informe a matrícula SIAPE.'),
-    ingressoServicoPublico: z.string().trim().min(8, 'Informe a data de ingresso no serviço público.'),
+    ingressoServicoPublico: z.iso.date({error: 'Informe uma data de ingresso no serviço público válida.'}),
     estagioProbatorioConcluido: z.enum(['SIM', 'NAO']),
     entradaPorCotas: z.enum(['NAO', 'RACIAL', 'PCD']),
     pessoaComDeficiencia: z.enum(['SIM', 'NAO']),
@@ -273,7 +273,7 @@ export const registerAccountSchema = z
     employmentType: z.string().trim().min(2, 'Selecione o tipo de vínculo com a Enap.'),
     organizationalUnit: z.string().trim().min(2, 'Informe sua unidade organizacional.'),
     positionTitle: z.string().trim().min(2, 'Informe seu cargo ou função.'),
-    entryDate: z.string().trim().min(8, 'Informe a data de ingresso ou início das atividades na Enap.'),
+    entryDate: z.iso.date({error: 'Informe uma data de ingresso ou início das atividades válida.'}),
     password: z
       .string()
       .min(8, 'A senha deve ter no mínimo 8 caracteres.')

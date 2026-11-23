@@ -41,6 +41,7 @@ export default defineConfig(({mode}) => {
         generateBundle(): void {
           for (const fileName of [
             'enap-e-vida.png',
+            'favicon.png',
             'apple-touch-icon.png',
             'pwa-192x192.png',
             'pwa-512x512.png',
@@ -56,7 +57,7 @@ export default defineConfig(({mode}) => {
       },
       VitePWA({
         registerType: 'autoUpdate',
-        includeAssets: ['enap-e-vida.png', 'apple-touch-icon.png'],
+        includeAssets: ['enap-e-vida.png', 'favicon.png', 'apple-touch-icon.png'],
         manifest: {
           id: base,
           name: 'Enap e-Vida',

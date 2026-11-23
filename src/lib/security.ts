@@ -128,7 +128,7 @@ export function buildEventIcs(event: {
     )}${pad(d.getUTCMinutes())}${pad(d.getUTCSeconds())}Z`;
   };
   const escapeIcs = (text: string) =>
-    text.replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\n/g, '\\n');
+    text.replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\r\n|[\r\n]/g, '\\n');
 
   const now = formatIcsUtc(new Date().toISOString());
   return [
@@ -145,7 +145,12 @@ export function buildEventIcs(event: {
     `SUMMARY:${escapeIcs(event.title)}`,
     `DESCRIPTION:${escapeIcs(event.description)}`,
     `LOCATION:${escapeIcs(event.location)}`,
-    `ORGANIZER;CN=${escapeIcs(event.organizer)}:mailto:nao-responder@enap.gov.br`,
+    `CONTACT:${escapeIcs(event.organizer)}`,
+    'BEGIN:VALARM',
+    'TRIGGER:-PT30M',
+    'ACTION:DISPLAY',
+    'DESCRIPTION:Lembrete do evento Enap e-Vida',
+    'END:VALARM',
     'END:VEVENT',
     'END:VCALENDAR',
   ].join('\r\n');
