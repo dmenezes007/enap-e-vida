@@ -30,7 +30,7 @@ Nesse modo, o `index.html` da raiz e seus recursos são gerados por
 de `dist/` para a raiz e inclua os arquivos gerados no commit. O HTML usado
 como entrada pelo Vite fica em `src/index.html`.
 
-Para gerar e publicar automaticamente o build a cada push, selecione
+Para gerar e publicar o build pelo workflow manual, selecione
 **GitHub Actions** como fonte e execute **Publicar no GitHub Pages** na
 branch `main`. Para conferir o build localmente, execute `npm run build:pages` e
 `npm run preview -- --mode pages`, então abra `http://localhost:4173/enap-e-vida/`.
@@ -41,10 +41,37 @@ npm test
 ```
 
 ### Build de Produção
+
 ```bash
 npm run build
 npm start
 ```
+
+`npm start` inicia o **piloto restrito a dados fictícios**, com o frontend e
+a API na mesma origem. Defina `PILOT_ACCESS_PASSWORD` e
+`VAULT_ENCRYPTION_KEY` com dois valores diferentes, gerados separadamente com
+`node -e "console.log(require('node:crypto').randomBytes(32).toString('hex'))"`.
+Use as variáveis de ambiente da hospedagem ou um arquivo `.env` local.
+Ao acessar o piloto, o navegador solicitará o usuário `piloto` e a senha de
+acesso. Depois, use os perfis fictícios descritos abaixo para entrar no app.
+
+### Hospedar o piloto em contêiner
+
+O `Dockerfile` compila o frontend e o servidor a partir de `package-lock.json`.
+Execute uma única instância e monte um volume gravável em `/var/data`
+(o processo roda com o usuário `node`, UID 1000). Guarde a chave do cofre
+junto ao plano de restauração do banco e preserve-a ao atualizar o serviço.
+
+```bash
+docker build -t enap-e-vida .
+docker run --rm --name enap-e-vida --env-file .env -e PORT=3000 \
+  -p 127.0.0.1:3000:3000 -v enap-e-vida-data:/var/data enap-e-vida
+```
+
+Na hospedagem, termine HTTPS no proxy da plataforma, configure a verificação
+de saúde em `/healthz` e mantenha o SQLite em armazenamento persistente local
+à instância. Distribua o endereço e a senha de acesso somente às pessoas
+que vão testar o piloto com dados fictícios.
 
 ## Credenciais de Demonstração (Dados Fictícios)
 

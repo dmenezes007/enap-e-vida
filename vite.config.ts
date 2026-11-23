@@ -6,6 +6,16 @@ import {defineConfig} from 'vite';
 import {VitePWA} from 'vite-plugin-pwa';
 
 export default defineConfig(({mode}) => {
+  if (mode === 'server') {
+    return {
+      define: {'process.env.NODE_ENV': JSON.stringify('production')},
+      build: {
+        copyPublicDir: false,
+        rolldownOptions: {output: {entryFileNames: 'server.mjs'}},
+      },
+    };
+  }
+
   const isPages = mode === 'pages';
   const base = isPages ? '/enap-e-vida/' : '/';
   return {

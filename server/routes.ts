@@ -119,9 +119,9 @@ apiRouter.post('/auth/login', rateLimit(40, 60_000), (req: AuthenticatedRequest,
   }
 
   // MFA demonstrativo obrigatório para perfis administrativos com mfa_enabled (§10)
-  if (userRow.mfa_enabled && parsed.data.mfaCode && parsed.data.mfaCode !== '202600') {
+  if (userRow.mfa_enabled && parsed.data.mfaCode !== '202600') {
     return res.status(401).json({
-      error: 'Código de autenticação multifator inválido. Use o código demonstrativo 202600.',
+      error: 'Informe o código de autenticação multifator demonstrativo 202600.',
       mfaRequired: true,
     });
   }
@@ -385,6 +385,11 @@ apiRouter.post('/preboarding/verify-invite', rateLimit(30, 60_000), (req, res) =
     resourceId: String(invite.id),
   });
 
+  const storedDraft = String(invite.draft_json || '');
+  const draft = storedDraft.startsWith('v1:')
+    ? decryptVaultJson(storedDraft)
+    : storedDraft ? JSON.parse(storedDraft) : null;
+
   return res.json({
     invite: {
       id: invite.id,
@@ -396,7 +401,7 @@ apiRouter.post('/preboarding/verify-invite', rateLimit(30, 60_000), (req, res) =
       proposedPosition: invite.proposed_position,
       status: invite.status,
       protocol: invite.protocol,
-      draft: invite.draft_json ? JSON.parse(String(invite.draft_json)) : null,
+      draft,
     },
   });
 });
@@ -416,23 +421,28 @@ apiRouter.post('/preboarding/save-draft', (req, res) => {
   }
 
   const invite = db
-    .prepare('SELECT id, status FROM invitations WHERE upper(code) = ? AND lower(email) = ?')
+    .prepare('SELECT id, status, expires_at, protocol FROM invitations WHERE upper(code) = ? AND lower(email) = ?')
     .get(parsed.data.code.toUpperCase(), parsed.data.email.toLowerCase()) as
-    | {id: string; status: string}
+    | {id: string; status: string; expires_at: string; protocol: string | null}
     | undefined;
 
   if (!invite) {
     return res.status(403).json({error: 'Convite inválido ou não autorizado.'});
   }
+  if (new Date(invite.expires_at).getTime() < Date.now()) {
+    return res.status(410).json({error: 'Este convite expirou. Solicite um novo convite institucional.'});
+  }
+  if (invite.protocol) {
+    return res.status(409).json({error: 'Este convite já possui formulário enviado.', protocol: invite.protocol});
+  }
 
   const now = new Date().toISOString();
-  // Nunca incluir dados bancários em rascunho não-segregado sem proteção: cifrar rascunho no servidor
   const nextStatus =
     invite.status === 'convite_encaminhado' ? 'preenchimento_iniciado' : invite.status;
 
   db.prepare(
     'UPDATE invitations SET modality = ?, status = ?, draft_json = ?, updated_at = ? WHERE id = ?',
-  ).run(parsed.data.modality, nextStatus, JSON.stringify(parsed.data.draft), now, invite.id);
+  ).run(parsed.data.modality, nextStatus, encryptVaultJson(parsed.data.draft), now, invite.id);
 
   if (invite.status === 'convite_encaminhado') {
     db.prepare(
@@ -463,13 +473,16 @@ apiRouter.post('/preboarding/submit', rateLimit(15, 60_000), (req, res) => {
 
   const {code, email, modality, formData} = wrapper.data;
   const invite = db
-    .prepare('SELECT id, protocol, assigned_to_user_id FROM invitations WHERE upper(code) = ? AND lower(email) = ?')
+    .prepare('SELECT id, protocol, assigned_to_user_id, expires_at FROM invitations WHERE upper(code) = ? AND lower(email) = ?')
     .get(code.toUpperCase(), email.toLowerCase()) as
-    | {id: string; protocol: string | null; assigned_to_user_id: string | null}
+    | {id: string; protocol: string | null; assigned_to_user_id: string | null; expires_at: string}
     | undefined;
 
   if (!invite) {
     return res.status(403).json({error: 'Convite institucional inválido.'});
+  }
+  if (new Date(invite.expires_at).getTime() < Date.now()) {
+    return res.status(410).json({error: 'Este convite expirou. Solicite um novo convite institucional.'});
   }
   if (invite.protocol) {
     return res.status(409).json({

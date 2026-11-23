@@ -1,0 +1,12 @@
+.git
+.github
+.aistudio
+.env*
+node_modules
+data
+dist
+build
+dev-dist
+assets
+public/assets/aistudio
+*.pdf
