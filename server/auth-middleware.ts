@@ -8,7 +8,7 @@ export const SESSION_COOKIE_NAME = 'evida_sid';
 const IDLE_TIMEOUT_MS = 1000 * 60 * 60 * 4; // 4h em demonstração (configurável por política institucional)
 const SESSION_TTL_MS = 1000 * 60 * 60 * 24 * 7;
 
-export interface AuthenticatedRequest extends Request {
+export interface AuthenticatedRequest extends Request<Record<string, string>> {
   user?: UserProfile;
   sessionId?: string;
 }
@@ -35,21 +35,18 @@ export function rateLimit(maxRequests: number, windowMs: number) {
   };
 }
 
-export function hydrateUser(userId: string, mfaVerified = true): UserProfile | null {
-  const row = db
-    .prepare(
-      `SELECT id, email, full_name, preferred_name, social_name, employment_type,
+export async function hydrateUser(userId: string, mfaVerified = true): Promise<UserProfile | null> {
+  const row = await db.one(
+    `SELECT id, email, full_name, preferred_name, social_name, employment_type,
               organizational_unit, position_title, entry_date, journey_stage,
               is_active, mfa_enabled, accessibility_prefs_json, notification_prefs_json
-       FROM users WHERE id = ?`,
-    )
-    .get(userId) as Record<string, unknown> | undefined;
+       FROM users WHERE id = $1`,
+    userId,
+  ) as Record<string, unknown> | undefined;
 
   if (!row || !row.is_active) return null;
 
-  const roleRows = db
-    .prepare('SELECT role_code FROM user_roles WHERE user_id = ?')
-    .all(userId) as Array<{role_code: RoleCode}>;
+  const roleRows = await db.all('SELECT role_code FROM user_roles WHERE user_id = $1', userId) as Array<{role_code: RoleCode}>;
   const roles = roleRows.map((r) => r.role_code);
 
   return {
@@ -72,22 +69,23 @@ export function hydrateUser(userId: string, mfaVerified = true): UserProfile | n
   };
 }
 
-export function createSessionForUser(
+export async function createSessionForUser(
   req: Request,
   res: Response,
   userId: string,
   mfaVerified = true,
-): string {
+): Promise<string> {
   const rawToken = generateSessionToken();
   const tokenHash = hashToken(rawToken);
   const id = generateId();
   const now = new Date();
   const expiresAt = new Date(now.getTime() + SESSION_TTL_MS);
 
-  db.prepare(`
+  await db.run(
+    `
     INSERT INTO sessions (id, user_id, token_hash, user_agent, ip_address, mfa_verified, last_activity_at, expires_at, created_at)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `).run(
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+  `,
     id,
     userId,
     tokenHash,
@@ -110,18 +108,17 @@ export function createSessionForUser(
   return id;
 }
 
-export function attachSession(req: AuthenticatedRequest, _res: Response, next: NextFunction) {
+export async function attachSession(req: AuthenticatedRequest, _res: Response, next: NextFunction) {
   const rawToken = req.cookies?.[SESSION_COOKIE_NAME];
   if (!rawToken || typeof rawToken !== 'string') {
     return next();
   }
   const tokenHash = hashToken(rawToken);
-  const session = db
-    .prepare(
-      `SELECT id, user_id, mfa_verified, last_activity_at, expires_at, revoked_at
-       FROM sessions WHERE token_hash = ?`,
-    )
-    .get(tokenHash) as
+  const session = await db.one(
+    `SELECT id, user_id, mfa_verified, last_activity_at, expires_at, revoked_at
+       FROM sessions WHERE token_hash = $1`,
+    tokenHash,
+  ) as
     | {
         id: string;
         user_id: string;
@@ -138,17 +135,19 @@ export function attachSession(req: AuthenticatedRequest, _res: Response, next: N
   const expired = new Date(session.expires_at).getTime() < now;
   const idleExpired = now - new Date(session.last_activity_at).getTime() > IDLE_TIMEOUT_MS;
   if (expired || idleExpired) {
-    db.prepare('UPDATE sessions SET revoked_at = ? WHERE id = ?').run(
+    await db.run(
+      'UPDATE sessions SET revoked_at = $1 WHERE id = $2',
       new Date().toISOString(),
       session.id,
     );
     return next();
   }
 
-  const user = hydrateUser(session.user_id, Boolean(session.mfa_verified));
+  const user = await hydrateUser(session.user_id, Boolean(session.mfa_verified));
   if (!user) return next();
 
-  db.prepare('UPDATE sessions SET last_activity_at = ? WHERE id = ?').run(
+  await db.run(
+    'UPDATE sessions SET last_activity_at = GREATEST(last_activity_at, $1) WHERE id = $2',
     new Date().toISOString(),
     session.id,
   );
@@ -167,12 +166,12 @@ export function requireAuth(req: AuthenticatedRequest, res: Response, next: Next
 }
 
 export function requirePermission(permission: PermissionCode) {
-  return (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+  return async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
     if (!req.user) {
       return res.status(401).json({error: 'Autenticação necessária.'});
     }
     if (!hasPermission(req.user.roles, permission)) {
-      logAuditEvent({
+      await logAuditEvent({
         actorUserId: req.user.id,
         actorEmail: req.user.email,
         action: 'ACCESS_DENIED',

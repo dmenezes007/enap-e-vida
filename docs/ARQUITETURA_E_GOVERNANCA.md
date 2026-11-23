@@ -9,7 +9,7 @@
 - **Frontend:** React 19 + TypeScript + Tailwind CSS v4 + React Router v7 + Recharts + PWA (`vite-plugin-pwa` com estratégia `NetworkOnly` para `/api/*`). Tipografia institucional **Georama** auto-hospedada via `@fontsource/georama` e paleta extraída do **RGI 2025**.
 - **Backend:** Node.js + Express (`server.ts` + `/server/*`) com middleware de autenticação por sessão HTTP-only assinada (`evida_sid`), RBAC validado no servidor em todas as rotas administrativas e sensíveis, transações atômicas para controle de vagas/lista de espera e trilha de auditoria.
 - **Persistência:**
-  - **Protótipo local:** SQLite persistente (`better-sqlite3` em `data/enap-evida.db`) com cifragem de campo **AES-256-GCM** para tabelas segregadas (`restricted_bank_details` e `restricted_sensitive_attributes`) e hashing de senhas com `scrypt` + salt aleatório.
+  - **Piloto:** PostgreSQL local ou Neon, configurado por `DATABASE_URL`, com cifragem de campo **AES-256-GCM** para tabelas segregadas (`restricted_bank_details` e `restricted_sensitive_attributes`) e hashing de senhas com `scrypt` + salt aleatório.
   - **Referência de produção (PostgreSQL 16+):** DDL completa em `/docs/database/migrations/001_initial_schema.sql` com 8 schemas lógicos e políticas de **Row-Level Security (RLS)** nos compartimentos restritos.
 
 ---

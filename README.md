@@ -3,15 +3,18 @@
 > **Conexões que acolhem. Experiências que transformam.**
 > *Sua jornada. Seu bem-estar. Nossa Enap.*
 
-Protótipo full-stack (React + Express + SQLite persistente + PWA) da plataforma institucional **Enap e-Vida**, fundamentado no **RGI 2025**, na metodologia **A Jornada da Ambientação — Da posse ao pertencimento** e nos formulários oficiais de pré-ingresso **GAEG Nível Superior** e **GAEG Nível Intermediário**.
+Protótipo full-stack (React + Express + PostgreSQL + PWA) da plataforma institucional **Enap e-Vida**, fundamentado no **RGI 2025**, na metodologia **A Jornada da Ambientação — Da posse ao pertencimento** e nos formulários oficiais de pré-ingresso **GAEG Nível Superior** e **GAEG Nível Intermediário**.
 
 ## Aviso de Ambiente Demonstrativo
-Todos os usuários, protocolos, respostas, jornadas e séries históricas presentes na base inicial são **fictícios**. O banco local é inicializado e populado automaticamente em `data/enap-evida.db`.
+Todos os usuários, protocolos, respostas, jornadas e séries históricas presentes na base inicial são **fictícios**. A aplicação cria as tabelas e carrega esses registros na primeira inicialização de um banco PostgreSQL vazio e dedicado ao piloto.
 
 ## Como Executar
 
+Use Node.js 24 e um banco PostgreSQL dedicado. Copie `.env.example` para
+`.env` e configure `DATABASE_URL` com a conexão ao banco.
+
 ```bash
-npm install
+npm ci
 npm run dev
 ```
 
@@ -21,7 +24,7 @@ A aplicação (frontend + API) será servida na porta `3000` (`http://localhost:
 
 A [apresentação pública](https://dmenezes007.github.io/enap-e-vida/) usa o logo
 `public/enap-e-vida.png` e pode ser instalada como PWA. Login, pré-ingresso,
-painéis e persistência dependem da API Express e do SQLite. Use a execução
+painéis e persistência dependem da API Express e do PostgreSQL. Use a execução
 com servidor descrita acima para acessar esses recursos.
 
 O Pages pode publicar a raiz de `main` (**Deploy from a branch → main → / (root)**).
@@ -58,20 +61,31 @@ acesso. Depois, use os perfis fictícios descritos abaixo para entrar no app.
 ### Hospedar o piloto em contêiner
 
 O `Dockerfile` compila o frontend e o servidor a partir de `package-lock.json`.
-Execute uma única instância e monte um volume gravável em `/var/data`
-(o processo roda com o usuário `node`, UID 1000). Guarde a chave do cofre
-junto ao plano de restauração do banco e preserve-a ao atualizar o serviço.
+Passe `DATABASE_URL` e os dois segredos por variáveis de ambiente. Preserve
+a chave do cofre ao atualizar o serviço para manter a leitura dos dados cifrados.
 
 ```bash
 docker build -t enap-e-vida .
 docker run --rm --name enap-e-vida --env-file .env -e PORT=3000 \
-  -p 127.0.0.1:3000:3000 -v enap-e-vida-data:/var/data enap-e-vida
+  -p 127.0.0.1:3000:3000 enap-e-vida
 ```
 
-Na hospedagem, termine HTTPS no proxy da plataforma, configure a verificação
-de saúde em `/healthz` e mantenha o SQLite em armazenamento persistente local
-à instância. Distribua o endereço e a senha de acesso somente às pessoas
-que vão testar o piloto com dados fictícios.
+### Publicar no Render + Neon
+
+1. Crie um projeto no plano gratuito do Neon com um banco exclusivo para o
+   piloto. No painel **Connect**, copie a URL agrupada (pooled) e configure
+   `sslmode=verify-full` para verificar o certificado do servidor.
+2. No Render, crie um **Blueprint** a partir deste repositório. O
+   `render.yaml` define um serviço Docker **Free** e verifica a conexão
+   com o banco por `/healthz`.
+3. Preencha `DATABASE_URL`, `PILOT_ACCESS_PASSWORD` e
+   `VAULT_ENCRYPTION_KEY` como segredos do serviço. Use dois valores
+   aleatórios distintos para a senha e a chave. Distribua a senha somente
+   aos participantes autorizados do piloto com dados fictícios.
+4. Após a implantação, confirme `/healthz` e use os perfis abaixo para
+   validar login, pré-ingresso e painéis no endereço HTTPS do Render. Um
+   serviço gratuito pode adormecer quando está ocioso. O Neon guarda os
+   registros entre reinícios do Render.
 
 ## Credenciais de Demonstração (Dados Fictícios)
 
@@ -91,5 +105,6 @@ Código MFA demonstrativo (quando aplicável): **`202600`**
 - **Acompanhamento de protocolo já enviado:** `ENAP-PRE-2026-A91F3C` · e-mail `clara.ficticio@exemplo.gov.br`
 
 ## Documentação Técnica
-- Migração de referência PostgreSQL 16+ (8 schemas + RLS): `/docs/database/migrations/001_initial_schema.sql`
+- Esquema executado no piloto PostgreSQL: `/server/db.ts`.
+- Esquema institucional de referência PostgreSQL 16+ (8 schemas + RLS): `/docs/database/migrations/001_initial_schema.sql`.
 - Arquitetura, ERD, Matriz RBAC, Inventário LGPD e Checklists: `/docs/ARQUITETURA_E_GOVERNANCA.md`

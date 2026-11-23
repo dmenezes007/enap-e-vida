@@ -1,28 +1,27 @@
-import {db, initSchema, logAuditEvent} from './db';
+import {db, logAuditEvent} from './db';
 import {encryptVaultJson, generateId, hashPassword} from './crypto';
 import {DEFAULT_GAEG_PARAMETERS, maskBankAccount, maskCpf} from '../src/lib/validators';
 import type {RoleCode} from '../src/lib/types';
 
 export const DEMO_PASSWORD = 'EnapDemo@2026';
 
-export function seedDatabaseIfEmpty(): void {
-  initSchema();
-
-  const existing = db.prepare('SELECT COUNT(*) as c FROM users').get() as {c: number};
+export async function seedDatabaseIfEmpty(): Promise<void> {
+  const existing = await db.one('SELECT COUNT(*)::integer as c FROM users') as {c: number};
   if (existing.c > 0) return;
 
   const now = new Date().toISOString();
+  const inviteExpiresAt = new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString();
   const demoPassHash = hashPassword(DEMO_PASSWORD);
 
   // 1. Parâmetros GAEG (preservados integralmente de Formulários.docx)
-  const insertGaeg = db.prepare(`
+  const insertGaeg = (...values: unknown[]) => db.run(`
     INSERT INTO gaeg_parameters (
       id, modality, label, gaeg_value, max_total_remuneration, declaration_text,
       legal_basis, valid_from, valid_until, version, validated_by, is_reference_prototype_value, updated_at
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `);
+    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+  `, ...values);
   for (const param of Object.values(DEFAULT_GAEG_PARAMETERS)) {
-    insertGaeg.run(
+    await insertGaeg(
       generateId(),
       param.modality,
       param.label,
@@ -269,19 +268,19 @@ export function seedDatabaseIfEmpty(): void {
     },
   ];
 
-  const insertUser = db.prepare(`
+  const insertUser = (...values: unknown[]) => db.run(`
     INSERT INTO users (
       id, email, password_hash, full_name, preferred_name, employment_type,
       organizational_unit, position_title, entry_date, journey_stage,
       mfa_enabled, demo_persona_label, created_at, updated_at
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `);
-  const insertRole = db.prepare(`
-    INSERT INTO user_roles (user_id, role_code, scope_unit, granted_at) VALUES (?, ?, ?, ?)
-  `);
+    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
+  `, ...values);
+  const insertRole = (...values: unknown[]) => db.run(`
+    INSERT INTO user_roles (user_id, role_code, scope_unit, granted_at) VALUES ($1, $2, $3, $4)
+  `, ...values);
 
   for (const p of personas) {
-    insertUser.run(
+    await insertUser(
       p.id,
       p.email,
       demoPassHash,
@@ -298,19 +297,19 @@ export function seedDatabaseIfEmpty(): void {
       now,
     );
     for (const r of p.roles) {
-      insertRole.run(p.id, r, p.unit, now);
+      await insertRole(p.id, r, p.unit, now);
     }
   }
 
   // 3. Convites de Pré-ingresso (2 pendentes para teste interativo + 1 já enviado para painel administrativo)
-  const insertInvite = db.prepare(`
+  const insertInvite = (...values: unknown[]) => db.run(`
     INSERT INTO invitations (
       id, code, email, invitee_name, modality, target_unit, proposed_position,
       status, protocol, assigned_to_user_id, expires_at, created_at, updated_at
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `);
+    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+  `, ...values);
 
-  insertInvite.run(
+  await insertInvite(
     'inv-ns-01',
     'ENAP-2026-NS01',
     'pre.ns@demo.enap.gov.br',
@@ -321,12 +320,12 @@ export function seedDatabaseIfEmpty(): void {
     'convite_encaminhado',
     null,
     'usr-pre-resp',
-    '2026-12-31T23:59:59.000Z',
+    inviteExpiresAt,
     now,
     now,
   );
 
-  insertInvite.run(
+  await insertInvite(
     'inv-ni-02',
     'ENAP-2026-NI02',
     'pre.ni@demo.enap.gov.br',
@@ -337,13 +336,13 @@ export function seedDatabaseIfEmpty(): void {
     'convite_encaminhado',
     null,
     'usr-pre-resp',
-    '2026-12-31T23:59:59.000Z',
+    inviteExpiresAt,
     now,
     now,
   );
 
   // Caso já submetido para demonstração do painel administrativo e cofre segregado
-  insertInvite.run(
+  await insertInvite(
     'inv-ns-03',
     'ENAP-2026-NS03',
     'clara.ficticio@exemplo.gov.br',
@@ -354,12 +353,13 @@ export function seedDatabaseIfEmpty(): void {
     'em_analise',
     'ENAP-PRE-2026-A91F3C',
     'usr-pre-resp',
-    '2026-12-31T23:59:59.000Z',
+    inviteExpiresAt,
     '2026-11-10T14:00:00.000Z',
     '2026-11-15T16:30:00.000Z',
   );
 
-  db.prepare(`
+  await db.run(
+    `
     INSERT INTO preboarding_submissions (
       id, invitation_id, protocol, modality, form_version, nome, cpf_masked,
       naturalidade_uf, data_nascimento, rg_masked, orgao_expedidor, escolaridade, formacao,
@@ -369,8 +369,8 @@ export function seedDatabaseIfEmpty(): void {
       negociacao_previa_cedente, mudanca_domicilio, chefia_nome, chefia_email, chefia_cargo,
       chefia_orgao, remuneration_param_version, remuneration_acknowledged_at,
       privacy_notice_version, privacy_acknowledged_at, submitted_at
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `).run(
+    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31, $32, $33, $34, $35, $36, $37)
+  `,
     'sub-ns-03',
     'inv-ns-03',
     'ENAP-PRE-2026-A91F3C',
@@ -413,10 +413,11 @@ export function seedDatabaseIfEmpty(): void {
     '2026-11-12T15:12:00.000Z',
   );
 
-  db.prepare(`
+  await db.run(
+    `
     INSERT INTO restricted_bank_details (id, submission_id, account_type, bank_name, account_masked, encrypted_payload, created_at)
-    VALUES (?, ?, ?, ?, ?, ?, ?)
-  `).run(
+    VALUES ($1, $2, $3, $4, $5, $6, $7)
+  `,
     'bank-ns-03',
     'sub-ns-03',
     'CONTA_CORRENTE',
@@ -431,10 +432,11 @@ export function seedDatabaseIfEmpty(): void {
     '2026-11-12T15:12:00.000Z',
   );
 
-  db.prepare(`
+  await db.run(
+    `
     INSERT INTO restricted_sensitive_attributes (id, submission_id, encrypted_payload, created_at)
-    VALUES (?, ?, ?, ?)
-  `).run(
+    VALUES ($1, $2, $3, $4)
+  `,
     'sens-ns-03',
     'sub-ns-03',
     encryptVaultJson({
@@ -449,15 +451,15 @@ export function seedDatabaseIfEmpty(): void {
     '2026-11-12T15:12:00.000Z',
   );
 
-  const insertPreHist = db.prepare(`
+  const insertPreHist = (...values: unknown[]) => db.run(`
     INSERT INTO preboarding_status_history (id, invitation_id, status, note, actor_name, actor_user_id, created_at)
-    VALUES (?, ?, ?, ?, ?, ?, ?)
-  `);
-  insertPreHist.run(generateId(), 'inv-ns-01', 'convite_encaminhado', 'Convite institucional individualizado encaminhado.', 'Sérgio Teixeira Moraes (Fictício)', 'usr-pre-resp', now);
-  insertPreHist.run(generateId(), 'inv-ni-02', 'convite_encaminhado', 'Convite institucional individualizado encaminhado.', 'Sérgio Teixeira Moraes (Fictício)', 'usr-pre-resp', now);
-  insertPreHist.run(generateId(), 'inv-ns-03', 'convite_encaminhado', 'Convite encaminhado para movimentação GAEG NS.', 'Sérgio Teixeira Moraes (Fictício)', 'usr-pre-resp', '2026-11-10T14:00:00.000Z');
-  insertPreHist.run(generateId(), 'inv-ns-03', 'formulario_recebido', 'Formulário recebido com ciência remuneratória registrada.', 'Sistema Enap e-Vida', null, '2026-11-12T15:12:00.000Z');
-  insertPreHist.run(generateId(), 'inv-ns-03', 'em_analise', 'Conferência documental iniciada pela equipe de movimentação.', 'Sérgio Teixeira Moraes (Fictício)', 'usr-pre-resp', '2026-11-15T16:30:00.000Z');
+    VALUES ($1, $2, $3, $4, $5, $6, $7)
+  `, ...values);
+  await insertPreHist(generateId(), 'inv-ns-01', 'convite_encaminhado', 'Convite institucional individualizado encaminhado.', 'Sérgio Teixeira Moraes (Fictício)', 'usr-pre-resp', now);
+  await insertPreHist(generateId(), 'inv-ni-02', 'convite_encaminhado', 'Convite institucional individualizado encaminhado.', 'Sérgio Teixeira Moraes (Fictício)', 'usr-pre-resp', now);
+  await insertPreHist(generateId(), 'inv-ns-03', 'convite_encaminhado', 'Convite encaminhado para movimentação GAEG NS.', 'Sérgio Teixeira Moraes (Fictício)', 'usr-pre-resp', '2026-11-10T14:00:00.000Z');
+  await insertPreHist(generateId(), 'inv-ns-03', 'formulario_recebido', 'Formulário recebido com ciência remuneratória registrada.', 'Sistema Enap e-Vida', null, '2026-11-12T15:12:00.000Z');
+  await insertPreHist(generateId(), 'inv-ns-03', 'em_analise', 'Conferência documental iniciada pela equipe de movimentação.', 'Sérgio Teixeira Moraes (Fictício)', 'usr-pre-resp', '2026-11-15T16:30:00.000Z');
 
   // 4. Modelo de Jornada de Ambientação (versionado — referência Semana de Inovação)
   const defaultTemplateTasks = [
@@ -573,10 +575,11 @@ export function seedDatabaseIfEmpty(): void {
     },
   ];
 
-  db.prepare(`
+  await db.run(
+    `
     INSERT INTO journey_templates (id, name, version, description, is_active, tasks_json, created_at, updated_at)
-    VALUES (?, ?, ?, ?, 1, ?, ?, ?)
-  `).run(
+    VALUES ($1, $2, $3, $4, 1, $5, $6, $7)
+  `,
     'tpl-padrao-90d',
     'Protocolo Padrão da Jornada de Ambientação (90 dias + Gestão Contínua)',
     '2.1',
@@ -640,26 +643,26 @@ export function seedDatabaseIfEmpty(): void {
     },
   ];
 
-  const insertJourney = db.prepare(`
+  const insertJourney = (...values: unknown[]) => db.run(`
     INSERT INTO journeys (
       id, user_id, template_id, cohort_name, expected_entry_date, effective_entry_date,
       operational_stage, current_moment, supervisor_user_id, mentor_name, status, created_at, updated_at
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `);
-  const insertTask = db.prepare(`
+    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+  `, ...values);
+  const insertTask = (...values: unknown[]) => db.run(`
     INSERT INTO journey_tasks (
       id, journey_id, title, description, operational_stage, moment, responsible_actor,
       responsible_unit, is_essential_day1, due_date, completed_at, completed_on_time,
       depends_on_title, status, sort_order
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `);
-  const insertAssess = db.prepare(`
+    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
+  `, ...values);
+  const insertAssess = (...values: unknown[]) => db.run(`
     INSERT INTO journey_assessments (
       id, journey_id, milestone_days, scheduled_date, status,
       role_clarity_score, team_support_score, supervisor_support_score,
       belonging_score, expectations_met_score, qualitative_comment, submitted_at
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `);
+    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+  `, ...values);
 
   const addDays = (isoDate: string, days: number) => {
     const d = new Date(`${isoDate}T12:00:00Z`);
@@ -668,7 +671,7 @@ export function seedDatabaseIfEmpty(): void {
   };
 
   for (const j of journeySeeds) {
-    insertJourney.run(
+    await insertJourney(
       j.id,
       j.userId,
       'tpl-padrao-90d',
@@ -684,10 +687,10 @@ export function seedDatabaseIfEmpty(): void {
       now,
     );
 
-    defaultTemplateTasks.forEach((t, idx) => {
+    for (const [idx, t] of defaultTemplateTasks.entries()) {
       const done = idx < j.completedCount;
       const due = addDays(j.entry, t.relativeDays);
-      insertTask.run(
+      await insertTask(
         `${j.id}-t${idx + 1}`,
         j.id,
         t.title,
@@ -704,7 +707,7 @@ export function seedDatabaseIfEmpty(): void {
         done ? 'concluida' : 'pendente',
         idx + 1,
       );
-    });
+    }
 
     // Avaliações 30 / 60 / 90 dias
     const milestones = [30, 60, 90];
@@ -725,7 +728,7 @@ export function seedDatabaseIfEmpty(): void {
         status = m === 30 ? 'disponivel' : 'agendada';
       }
 
-      insertAssess.run(
+      await insertAssess(
         `${j.id}-av${m}`,
         j.id,
         m,
@@ -744,7 +747,7 @@ export function seedDatabaseIfEmpty(): void {
 
   // Adicionar avaliações históricas fictícias (coorte 2026) na jornada 'jrn-integrada' para garantir n >= 10 em Clareza e Apoio (demonstrando cálculo real sem suprimir tudo)
   for (let i = 1; i <= 9; i++) {
-    insertAssess.run(
+    await insertAssess(
       `hist-av-30-${i}`,
       'jrn-integrada',
       i % 3 === 0 ? 90 : i % 2 === 0 ? 60 : 30,
@@ -761,12 +764,12 @@ export function seedDatabaseIfEmpty(): void {
   }
 
   // Solicitações "Preciso de apoio" (dificuldades registradas)
-  const insertSupport = db.prepare(`
+  const insertSupport = (...values: unknown[]) => db.run(`
     INSERT INTO journey_support_requests (
       id, journey_id, user_id, category, subject, description, status, assigned_unit, resolution_note, created_at, resolved_at
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `);
-  insertSupport.run(
+    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+  `, ...values);
+  await insertSupport(
     'sup-01',
     'jrn-30d',
     'usr-30d',
@@ -779,7 +782,7 @@ export function seedDatabaseIfEmpty(): void {
     '2026-11-17T11:30:00.000Z',
     null,
   );
-  insertSupport.run(
+  await insertSupport(
     'sup-02',
     'jrn-60d',
     'usr-60d',
@@ -792,7 +795,7 @@ export function seedDatabaseIfEmpty(): void {
     '2026-10-05T13:00:00.000Z',
     '2026-10-06T11:00:00.000Z',
   );
-  insertSupport.run(
+  await insertSupport(
     'sup-03',
     'jrn-90d',
     'usr-90d',
@@ -807,15 +810,15 @@ export function seedDatabaseIfEmpty(): void {
   );
 
   // 6. Módulo PQVT — Atividades Físicas, Esportivas e de Lazer
-  const insertActivity = db.prepare(`
+  const insertActivity = (...values: unknown[]) => db.run(`
     INSERT INTO activities (
       id, title, description, image_url, category, eligible_audience, modality, location,
       schedule_summary, next_session_iso, responsible_name, capacity, registration_deadline,
       participation_criteria, accessibility_resources, additional_guidelines, status, featured, created_at
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `);
+    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19)
+  `, ...values);
 
-  insertActivity.run(
+  await insertActivity(
     'act-01',
     'Alongamento e Mobilidade no Jardim da Enap',
     'Sessão guiada de alongamento, respiração e mobilidade articular ao ar livre, voltada para todas as idades e níveis de condicionamento, sem caráter competitivo.',
@@ -837,7 +840,7 @@ export function seedDatabaseIfEmpty(): void {
     now,
   );
 
-  insertActivity.run(
+  await insertActivity(
     'act-02',
     'Pausa Ativa e Ergonomia no Teletrabalho (PGD)',
     'Encontro virtual rápido de 25 minutos com orientações práticas de postura, descanso visual e pausas saudáveis durante o expediente remoto.',
@@ -859,7 +862,7 @@ export function seedDatabaseIfEmpty(): void {
     now,
   );
 
-  insertActivity.run(
+  await insertActivity(
     'act-03',
     'Clube de Caminhada do Cerrado — Parque da Cidade',
     'Encontro coletivo de convivência e caminhada leve em grupo para integração entre diretorias e fortalecimento de vínculos fora da rotina de telas.',
@@ -881,7 +884,7 @@ export function seedDatabaseIfEmpty(): void {
     now,
   );
 
-  insertActivity.run(
+  await insertActivity(
     'act-04',
     'Oficina Cultural: Roda de Leitura e Poesia Brasileira',
     'Espaço mensal de convivência cultural e leitura compartilhada celebrando autoras e autores negros, indígenas e contemporâneos do Brasil.',
@@ -904,26 +907,26 @@ export function seedDatabaseIfEmpty(): void {
   );
 
   // Inscrições iniciais (preenchendo act-03 para testar lista de espera!)
-  const insertActReg = db.prepare(`
+  const insertActReg = (...values: unknown[]) => db.run(`
     INSERT INTO activity_registrations (id, activity_id, user_id, status, attendance_confirmed, checkin_code, created_at, updated_at)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-  `);
-  insertActReg.run('areg-1', 'act-01', 'usr-integrada', 'confirmada', 1, 'QR-PQVT-9012', now, now);
-  insertActReg.run('areg-2', 'act-01', 'usr-60d', 'confirmada', 0, 'QR-PQVT-9013', now, now);
-  insertActReg.run('areg-3', 'act-02', 'usr-30d', 'confirmada', 0, 'QR-PQVT-9014', now, now);
-  insertActReg.run('areg-4', 'act-03', 'usr-integrada', 'confirmada', 0, 'QR-PQVT-9015', now, now);
-  insertActReg.run('areg-5', 'act-03', 'usr-chefia', 'confirmada', 0, 'QR-PQVT-9016', now, now);
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+  `, ...values);
+  await insertActReg('areg-1', 'act-01', 'usr-integrada', 'confirmada', 1, 'QR-PQVT-9012', now, now);
+  await insertActReg('areg-2', 'act-01', 'usr-60d', 'confirmada', 0, 'QR-PQVT-9013', now, now);
+  await insertActReg('areg-3', 'act-02', 'usr-30d', 'confirmada', 0, 'QR-PQVT-9014', now, now);
+  await insertActReg('areg-4', 'act-03', 'usr-integrada', 'confirmada', 0, 'QR-PQVT-9015', now, now);
+  await insertActReg('areg-5', 'act-03', 'usr-chefia', 'confirmada', 0, 'QR-PQVT-9016', now, now);
 
   // 7. Módulo Eventos (Agenda Integrada: Jornada + PQVT + Comitê DEI + Institucional)
-  const insertEvent = db.prepare(`
+  const insertEvent = (...values: unknown[]) => db.run(`
     INSERT INTO events (
       id, title, description, image_url, source_module, category, start_iso, end_iso,
       location, modality, eligible_audience, organizer, program_json, capacity,
       accessibility_resources, materials_json, meeting_url, status, created_at
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `);
+    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19)
+  `, ...values);
 
-  insertEvent.run(
+  await insertEvent(
     'evt-01',
     'Encontro de Acolhimento — Turma Novembro/2026',
     'Recepção oficial de novas pessoas servidoras e movimentadas, apresentação dos macroprocessos da Enap, roda de conversa com lideranças e visita guiada ao campus.',
@@ -950,7 +953,7 @@ export function seedDatabaseIfEmpty(): void {
     now,
   );
 
-  insertEvent.run(
+  await insertEvent(
     'evt-02',
     '#SouEnap — Encontro de Integração e Alinhamento Institucional',
     'Encontro periódico que mobiliza toda a comunidade Enap para fortalecer a comunicação interna, celebrar entregas coletivas e ampliar o senso de pertencimento.',
@@ -976,7 +979,7 @@ export function seedDatabaseIfEmpty(): void {
     now,
   );
 
-  insertEvent.run(
+  await insertEvent(
     'evt-03',
     'Diálogos de Equidade: Acessibilidade e Neurodivergência no Trabalho',
     'Roda de diálogo promovida pelo Comitê de Diversidade, Equidade e Inclusão sobre práticas inclusivas no cotidiano das equipes, sala de regulação e comunicação acessível.',
@@ -1002,7 +1005,7 @@ export function seedDatabaseIfEmpty(): void {
     now,
   );
 
-  insertEvent.run(
+  await insertEvent(
     'evt-04',
     'Feira de Bem-Estar e Qualidade de Vida (PQVT)',
     'Manhã dedicada à convivência, oficinas de alongamento, orientações ergonômicas, troca de livros e espaço de escuta para a programação 2027 do PQVT.',
@@ -1028,24 +1031,30 @@ export function seedDatabaseIfEmpty(): void {
     now,
   );
 
-  db.prepare(`
+  await db.run(
+    `
     INSERT INTO event_registrations (id, event_id, user_id, status, attendance_confirmed, created_at)
-    VALUES (?, ?, ?, 'confirmada', 0, ?)
-  `).run('ereg-01', 'evt-01', 'usr-dia1', now);
-  db.prepare(`
+    VALUES ($1, $2, $3, 'confirmada', 0, $4)
+  `,
+    'ereg-01', 'evt-01', 'usr-dia1', now,
+  );
+  await db.run(
+    `
     INSERT INTO event_registrations (id, event_id, user_id, status, attendance_confirmed, created_at)
-    VALUES (?, ?, ?, 'confirmada', 0, ?)
-  `).run('ereg-02', 'evt-02', 'usr-30d', now);
+    VALUES ($1, $2, $3, 'confirmada', 0, $4)
+  `,
+    'ereg-02', 'evt-02', 'usr-30d', now,
+  );
 
   // 8. Fala, Enap! (Escuta colaborativa e "Veja o que mudou")
-  const insertFeedback = db.prepare(`
+  const insertFeedback = (...values: unknown[]) => db.run(`
     INSERT INTO feedback_submissions (
       id, user_id, category, title, description, status, institutional_reply,
       implemented_highlight, change_summary, created_at, updated_at
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `);
+    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+  `, ...values);
 
-  insertFeedback.run(
+  await insertFeedback(
     'fb-01',
     'usr-integrada',
     'Sugestão de atividade PQVT',
@@ -1059,7 +1068,7 @@ export function seedDatabaseIfEmpty(): void {
     '2026-11-05T16:00:00.000Z',
   );
 
-  insertFeedback.run(
+  await insertFeedback(
     'fb-02',
     'usr-60d',
     'Proposta de melhoria',
@@ -1073,7 +1082,7 @@ export function seedDatabaseIfEmpty(): void {
     '2026-11-10T10:30:00.000Z',
   );
 
-  insertFeedback.run(
+  await insertFeedback(
     'fb-03',
     'usr-30d',
     'Registro de experiência positiva',
@@ -1087,7 +1096,7 @@ export function seedDatabaseIfEmpty(): void {
     '2026-11-04T09:10:00.000Z',
   );
 
-  insertFeedback.run(
+  await insertFeedback(
     'fb-04',
     'usr-dia1',
     'Pergunta sobre o PQVT',
@@ -1102,15 +1111,15 @@ export function seedDatabaseIfEmpty(): void {
   );
 
   // 9. Enquetes (1 Anônima com n >= 10 respostas para gráficos + 1 Confidencial com n < 10 para demonstrar supressão + 1 Identificada)
-  const insertSurvey = db.prepare(`
+  const insertSurvey = (...values: unknown[]) => db.run(`
     INSERT INTO surveys (
       id, title, purpose, eligible_audience, opens_at, closes_at, anonymity_mode,
       allow_edit, show_results_to_users, min_aggregation_threshold, privacy_notice,
       version, questions_json, status, what_changed_summary, created_at
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `);
+    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)
+  `, ...values);
 
-  insertSurvey.run(
+  await insertSurvey(
     'srv-01',
     'Consulta PQVT 2026/2027 — Preferências de Atividades e Horários',
     'Coletar preferências da comunidade Enap para planejar a grade de atividades físicas, esportivas, culturais e de convivência do próximo semestre.',
@@ -1162,7 +1171,7 @@ export function seedDatabaseIfEmpty(): void {
     now,
   );
 
-  insertSurvey.run(
+  await insertSurvey(
     'srv-02',
     'Pulso de Experiência da Jornada de Ambientação (Coorte Piloto)',
     'Avaliar clareza dos materiais de pré-embarque e acolhimento inicial para aprimorar o protocolo institucional.',
@@ -1205,10 +1214,10 @@ export function seedDatabaseIfEmpty(): void {
   );
 
   // Popular 12 respostas anônimas fictícias em srv-01 (sem user_id!) para exibir gráficos agregados
-  const insertSurveyResp = db.prepare(`
+  const insertSurveyResp = (...values: unknown[]) => db.run(`
     INSERT INTO survey_responses (id, survey_id, user_id, answers_json, submitted_at)
-    VALUES (?, ?, ?, ?, ?)
-  `);
+    VALUES ($1, $2, $3, $4, $5)
+  `, ...values);
   const catChoices = [
     'Alongamento e mobilidade',
     'Bem-estar e pausas no teletrabalho',
@@ -1238,7 +1247,7 @@ export function seedDatabaseIfEmpty(): void {
     'Concordo parcialmente',
   ];
   for (let i = 0; i < 12; i++) {
-    insertSurveyResp.run(
+    await insertSurveyResp(
       generateId(),
       'srv-01',
       null, // Anonimato efetivo: zero user_id armazenado!
@@ -1254,7 +1263,7 @@ export function seedDatabaseIfEmpty(): void {
 
   // Popular apenas 4 respostas em srv-02 para demonstrar o bloqueio automático de supressão (n < 10)!
   for (let i = 0; i < 4; i++) {
-    insertSurveyResp.run(
+    await insertSurveyResp(
       generateId(),
       'srv-02',
       null,
@@ -1264,15 +1273,15 @@ export function seedDatabaseIfEmpty(): void {
   }
 
   // 10. Repositório de Conhecimentos e Documentos
-  const insertDoc = db.prepare(`
+  const insertDoc = (...values: unknown[]) => db.run(`
     INSERT INTO documents (
       id, title, description, author_unit, category, subject, keywords, published_at,
       version, updated_at, authorized_audience, format, source_label, content_preview,
       versions_history_json, is_restricted, editorial_status
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `);
+    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)
+  `, ...values);
 
-  insertDoc.run(
+  await insertDoc(
     'doc-01',
     'Relatório de Gestão Integrado 2025 — Enap (RGI 2025)',
     'Documento institucional que apresenta o propósito, visão, valores, marcos de atuação, estrutura organizacional, diversidade, governança e resultados da Enap em 2025.',
@@ -1292,7 +1301,7 @@ export function seedDatabaseIfEmpty(): void {
     'publicado',
   );
 
-  insertDoc.run(
+  await insertDoc(
     'doc-02',
     'A Jornada da Ambientação — Da posse ao pertencimento',
     'Referência conceitual e metodológica da Semana de Inovação sobre as dimensões Pessoas, Processos e Evidências, os cinco momentos orientadores e os indicadores propostos.',
@@ -1315,7 +1324,7 @@ export function seedDatabaseIfEmpty(): void {
     'publicado',
   );
 
-  insertDoc.run(
+  await insertDoc(
     'doc-03',
     'Guia Prático de Boas-Vindas e Primeiros Passos na Enap',
     'Orientações essenciais sobre acesso ao campus (SAFS Quadra 02, Lote 04, Brasília/DF), sistemas corporativos, PGD, saúde e canais de apoio.',
@@ -1338,7 +1347,7 @@ export function seedDatabaseIfEmpty(): void {
     'publicado',
   );
 
-  insertDoc.run(
+  await insertDoc(
     'doc-04',
     'Resolução Enap nº 76/2025 — Diretrizes de Ações Afirmativas e Acessibilidade',
     'Referência citada no RGI 2025 sobre diretrizes para promoção da equidade racial, de gênero e acessibilidade nos processos formativos e espaços institucionais.',
@@ -1358,7 +1367,7 @@ export function seedDatabaseIfEmpty(): void {
     'publicado',
   );
 
-  insertDoc.run(
+  await insertDoc(
     'doc-05',
     'Protocolo Interno de Tratamento de Dados do Pré-Ingresso (Acesso Restrito)',
     'Orientações operacionais para análise de formulários GAEG NS/NI, segregação de dados bancários e retenção conforme LGPD.',
@@ -1379,25 +1388,25 @@ export function seedDatabaseIfEmpty(): void {
   );
 
   // 11. Comunicados Institucionais
-  const insertAnn = db.prepare(`
+  const insertAnn = (...values: unknown[]) => db.run(`
     INSERT INTO announcements (id, title, summary, category, published_at, editorial_status)
-    VALUES (?, ?, ?, ?, ?, 'publicado')
-  `);
-  insertAnn.run(
+    VALUES ($1, $2, $3, $4, $5, 'publicado')
+  `, ...values);
+  await insertAnn(
     'ann-01',
     'Inscrições abertas para o ciclo de atividades de novembro do PQVT',
     'Confira as turmas presenciais, híbridas e virtuais de alongamento, pausa ativa no PGD e roda de leitura.',
     'PQVT',
     '2026-11-18',
   );
-  insertAnn.run(
+  await insertAnn(
     'ann-02',
     'Semana de Inovação e legado de acessibilidade: conheça a sala de regulação',
     'Espaço de acolhimento sensorial consolidado nas atividades formativas e eventos da Enap.',
     'Comitê DEI',
     '2026-11-15',
   );
-  insertAnn.run(
+  await insertAnn(
     'ann-03',
     'Você participou. Veja o que mudou com as contribuições do Fala, Enap!',
     'Duas propostas da comunidade interna já foram incorporadas ao PQVT e ao fluxo de pré-embarque.',
@@ -1406,12 +1415,12 @@ export function seedDatabaseIfEmpty(): void {
   );
 
   // 12. Comitê de Diversidades, Equidade e Inclusão — Iniciativas e Planos
-  const insertDei = db.prepare(`
+  const insertDei = (...values: unknown[]) => db.run(`
     INSERT INTO committee_projects (id, title, type, summary, responsible_unit, status, due_date, deliverables_json, created_at)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `);
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+  `, ...values);
 
-  insertDei.run(
+  await insertDei(
     'dei-01',
     'Expansão da Sala de Regulação e Protocolo de Acessibilidade em Eventos',
     'projeto',
@@ -1422,7 +1431,7 @@ export function seedDatabaseIfEmpty(): void {
     JSON.stringify(['Checklist obrigatório de acessibilidade em eventos', 'Manual de uso da sala de regulação', 'Capacitação da equipe de recepção']),
     now,
   );
-  insertDei.run(
+  await insertDei(
     'dei-02',
     'Campanha Permanente de Prevenção ao Assédio e Discriminação (Guia Lilás)',
     'campanha',
@@ -1433,7 +1442,7 @@ export function seedDatabaseIfEmpty(): void {
     JSON.stringify(['Minicursos Guia Lilás na ambientação', 'Cartilha de fluxos de acolhimento e denúncia no Fala.BR']),
     now,
   );
-  insertDei.run(
+  await insertDei(
     'dei-03',
     'GT Equidade Racial e Ações Afirmativas na Gestão Interna',
     'grupo_trabalho',
@@ -1446,15 +1455,15 @@ export function seedDatabaseIfEmpty(): void {
   );
 
   // 13. Laboratório de Melhoria Contínua (Canvas de Cocriação — Semana de Inovação Slide 13)
-  const insertImp = db.prepare(`
+  const insertImp = (...values: unknown[]) => db.run(`
     INSERT INTO improvement_plans (
       id, title, journey_phase, canvas_experience, canvas_need, canvas_action,
       canvas_owner, canvas_evidence, hypothesis, priority, status,
       linked_indicator_code, pilot_criteria, learnings, due_date, created_at, updated_at
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `);
+    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)
+  `, ...values);
 
-  insertImp.run(
+  await insertImp(
     'imp-01',
     'Provisionamento antecipado de acessos digitais (Marco D-5)',
     'Preparação',
@@ -1474,7 +1483,7 @@ export function seedDatabaseIfEmpty(): void {
     now,
   );
 
-  insertImp.run(
+  await insertImp(
     'imp-02',
     'Guia Rápido para Chefias: Roteiro do 1º Dia e Check-in de 30 Dias',
     'Acolhimento',
@@ -1494,7 +1503,7 @@ export function seedDatabaseIfEmpty(): void {
     now,
   );
 
-  insertImp.run(
+  await insertImp(
     'imp-03',
     'Rede de Pares de Acolhimento para Ingressantes em Teletrabalho (PGD)',
     'Integração',
@@ -1515,20 +1524,20 @@ export function seedDatabaseIfEmpty(): void {
   );
 
   // 14. Notificações iniciais
-  const insertNotif = db.prepare(`
+  const insertNotif = (...values: unknown[]) => db.run(`
     INSERT INTO notifications (id, user_id, category, title, message, link_path, is_operational, is_read, created_at)
-    VALUES (?, ?, ?, ?, ?, ?, ?, 0, ?)
-  `);
-  insertNotif.run(generateId(), 'usr-dia1', 'jornada', 'Boas-vindas à Enap!', 'Seu roteiro do primeiro dia está disponível na Jornada de Ambientação.', '/app/jornada', 1, now);
-  insertNotif.run(generateId(), 'usr-30d', 'jornada', 'Avaliação de 30 dias disponível', 'Conte como está sendo sua adaptação e clareza de papel no primeiro mês.', '/app/jornada/avaliacoes', 1, now);
-  insertNotif.run(generateId(), 'usr-30d', 'enquetes', 'Nova consulta do PQVT aberta', 'Participe da consulta anônima sobre preferências de atividades e horários.', '/app/enquetes/srv-01', 0, now);
-  insertNotif.run(generateId(), 'usr-60d', 'jornada', 'Avaliação de 60 dias disponível', 'Sua escuta de 60 dias está aberta para registro na Jornada.', '/app/jornada/avaliacoes', 1, now);
-  insertNotif.run(generateId(), 'usr-90d', 'jornada', 'Fechamento do ciclo inicial (90 dias)', 'Registre sua avaliação de 90 dias e explore as ações contínuas do Enap e-Vida.', '/app/jornada/avaliacoes', 1, now);
-  insertNotif.run(generateId(), 'usr-chefia', 'jornada', 'Tarefas de chefia pendentes na ambientação', 'Há entregas de acolhimento sob sua responsabilidade para ingressantes da unidade.', '/app/jornada', 1, now);
-  insertNotif.run(generateId(), 'usr-pre-resp', 'pre_ingresso', 'Formulário de pré-ingresso recebido', 'Novo protocolo ENAP-PRE-2026-A91F3C disponível para conferência administrativa.', '/admin/pre-ingresso', 1, now);
+    VALUES ($1, $2, $3, $4, $5, $6, $7, 0, $8)
+  `, ...values);
+  await insertNotif(generateId(), 'usr-dia1', 'jornada', 'Boas-vindas à Enap!', 'Seu roteiro do primeiro dia está disponível na Jornada de Ambientação.', '/app/jornada', 1, now);
+  await insertNotif(generateId(), 'usr-30d', 'jornada', 'Avaliação de 30 dias disponível', 'Conte como está sendo sua adaptação e clareza de papel no primeiro mês.', '/app/jornada/avaliacoes', 1, now);
+  await insertNotif(generateId(), 'usr-30d', 'enquetes', 'Nova consulta do PQVT aberta', 'Participe da consulta anônima sobre preferências de atividades e horários.', '/app/enquetes/srv-01', 0, now);
+  await insertNotif(generateId(), 'usr-60d', 'jornada', 'Avaliação de 60 dias disponível', 'Sua escuta de 60 dias está aberta para registro na Jornada.', '/app/jornada/avaliacoes', 1, now);
+  await insertNotif(generateId(), 'usr-90d', 'jornada', 'Fechamento do ciclo inicial (90 dias)', 'Registre sua avaliação de 90 dias e explore as ações contínuas do Enap e-Vida.', '/app/jornada/avaliacoes', 1, now);
+  await insertNotif(generateId(), 'usr-chefia', 'jornada', 'Tarefas de chefia pendentes na ambientação', 'Há entregas de acolhimento sob sua responsabilidade para ingressantes da unidade.', '/app/jornada', 1, now);
+  await insertNotif(generateId(), 'usr-pre-resp', 'pre_ingresso', 'Formulário de pré-ingresso recebido', 'Novo protocolo ENAP-PRE-2026-A91F3C disponível para conferência administrativa.', '/admin/pre-ingresso', 1, now);
 
   // 15. Eventos iniciais de auditoria
-  logAuditEvent({
+  await logAuditEvent({
     actorUserId: 'usr-admin',
     actorEmail: 'admin@demo.enap.gov.br',
     action: 'SYSTEM_DEMO_SEED',
@@ -1536,7 +1545,7 @@ export function seedDatabaseIfEmpty(): void {
     outcome: 'sucesso',
     metadata: {note: 'Base demonstrativa inicializada exclusivamente com dados fictícios.'},
   });
-  logAuditEvent({
+  await logAuditEvent({
     actorUserId: 'usr-pre-resp',
     actorEmail: 'preingresso.gestao@demo.enap.gov.br',
     action: 'PREBOARDING_INVITE_CREATED',

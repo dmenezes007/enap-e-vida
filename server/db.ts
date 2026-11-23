@@ -1,17 +1,65 @@
-import Database from 'better-sqlite3';
-import fs from 'node:fs';
-import path from 'node:path';
+import {AsyncLocalStorage} from 'node:async_hooks';
+import pg, {type PoolClient, type QueryResultRow} from 'pg';
 import {generateId} from './crypto';
 
-const dbPath = process.env.DEV_DB_PATH || path.resolve(process.cwd(), 'data/enap-evida.db');
-fs.mkdirSync(path.dirname(dbPath), {recursive: true});
+const transactionClient = new AsyncLocalStorage<PoolClient>();
+let pool: pg.Pool | undefined;
 
-export const db = new Database(dbPath);
-db.pragma('journal_mode = WAL');
-db.pragma('foreign_keys = ON');
+function getPool() {
+  if (!pool) {
+    const connectionString = process.env.DATABASE_URL;
+    if (!connectionString) throw new Error('Configure DATABASE_URL para o PostgreSQL do piloto.');
+    pool = new pg.Pool({
+      connectionString,
+      max: 5,
+      connectionTimeoutMillis: 10_000,
+    });
+    pool.on('error', (error: NodeJS.ErrnoException) => {
+      console.error('Conexão ociosa do PostgreSQL interrompida.', error.code ?? '');
+    });
+  }
+  return pool;
+}
 
-export function initSchema(): void {
-  db.exec(`
+function query<Row extends QueryResultRow>(sql: string, values: unknown[] = []) {
+  return (transactionClient.getStore() ?? getPool()).query<Row>(sql, values);
+}
+
+export const db = {
+  async one<Row extends QueryResultRow = QueryResultRow>(sql: string, ...values: unknown[]): Promise<Row | undefined> {
+    return (await query<Row>(sql, values)).rows[0];
+  },
+  async all<Row extends QueryResultRow = QueryResultRow>(sql: string, ...values: unknown[]): Promise<Row[]> {
+    return (await query<Row>(sql, values)).rows;
+  },
+  async run(sql: string, ...values: unknown[]): Promise<void> {
+    await query(sql, values);
+  },
+  async transaction<T>(work: () => Promise<T>): Promise<T> {
+    const client = await getPool().connect();
+    let discard = false;
+    try {
+      await client.query('BEGIN');
+      try {
+        const result = await transactionClient.run(client, work);
+        await client.query('COMMIT');
+        return result;
+      } catch (error) {
+        try {
+          await client.query('ROLLBACK');
+        } catch {
+          discard = true;
+        }
+        throw error;
+      }
+    } finally {
+      client.release(discard);
+    }
+  },
+};
+
+export async function initSchema(): Promise<void> {
+  await db.run(`
     -- 1. Identidade e Governança
     CREATE TABLE IF NOT EXISTS users (
       id TEXT PRIMARY KEY,
@@ -62,8 +110,8 @@ export function initSchema(): void {
       id TEXT PRIMARY KEY,
       modality TEXT NOT NULL UNIQUE,
       label TEXT NOT NULL,
-      gaeg_value REAL NOT NULL,
-      max_total_remuneration REAL NOT NULL,
+      gaeg_value DOUBLE PRECISION NOT NULL,
+      max_total_remuneration DOUBLE PRECISION NOT NULL,
       declaration_text TEXT NOT NULL,
       legal_basis TEXT NOT NULL,
       valid_from TEXT NOT NULL,
@@ -463,7 +511,7 @@ export function initSchema(): void {
   `);
 }
 
-export function logAuditEvent(params: {
+export async function logAuditEvent(params: {
   actorUserId?: string | null;
   actorEmail: string;
   action: string;
@@ -471,7 +519,7 @@ export function logAuditEvent(params: {
   resourceId?: string | null;
   outcome?: 'sucesso' | 'negado' | 'erro';
   metadata?: Record<string, unknown>;
-}): void {
+}): Promise<void> {
   const safeMetadata = {...(params.metadata ?? {})};
   // Regra §28: nunca gravar dados bancários, senhas ou CPF em texto claro em logs de auditoria
   delete safeMetadata.password;
@@ -479,10 +527,11 @@ export function logAuditEvent(params: {
   delete safeMetadata.agenciaComDv;
   delete safeMetadata.cpf;
 
-  db.prepare(`
+  await db.run(
+    `
     INSERT INTO audit_events (id, actor_user_id, actor_email, action, resource_type, resource_id, outcome, metadata_json, created_at)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `).run(
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+  `,
     generateId(),
     params.actorUserId ?? null,
     params.actorEmail,

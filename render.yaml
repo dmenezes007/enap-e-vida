@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: enap-e-vida
+    runtime: docker
+    plan: free
+    branch: main
+    healthCheckPath: /healthz
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: PILOT_ACCESS_PASSWORD
+        sync: false
+      - key: VAULT_ENCRYPTION_KEY
+        sync: false
