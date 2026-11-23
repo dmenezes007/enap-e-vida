@@ -12,6 +12,17 @@ export default defineConfig(({mode}) => {
     base,
     build: {copyPublicDir: !isPages},
     plugins: [
+      {
+        name: 'enap-app-html',
+        transformIndexHtml: {
+          order: 'pre',
+          handler(_html, {filename}) {
+            if (path.resolve(filename) === path.join(import.meta.dirname, 'index.html')) {
+              return fs.readFileSync(path.join(import.meta.dirname, 'src', 'index.html'), 'utf8');
+            }
+          },
+        },
+      },
       react(),
       tailwindcss(),
       isPages && {

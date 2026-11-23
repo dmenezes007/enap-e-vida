@@ -1,0 +1,1 @@
+if('serviceWorker' in navigator) {window.addEventListener('load', () => {navigator.serviceWorker.register('/enap-e-vida/sw.js', { scope: '/enap-e-vida/' })})}

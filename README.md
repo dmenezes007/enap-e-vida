@@ -24,10 +24,15 @@ A [apresentação pública](https://dmenezes007.github.io/enap-e-vida/) usa o lo
 painéis e persistência dependem da API Express e do SQLite. Use a execução
 com servidor descrita acima para acessar esses recursos.
 
-Em **Settings → Pages → Build and deployment**, selecione **GitHub Actions**.
-Em **Actions → Publicar no GitHub Pages**, execute o workflow na branch `main`.
-Os pushes seguintes à `main` também disparam a publicação. Para conferir o
-mesmo build localmente, execute `npm run build:pages` e
+O Pages pode publicar a raiz de `main` (**Deploy from a branch → main → / (root)**).
+Nesse modo, o `index.html` da raiz e seus recursos são gerados por
+`npm run build:pages`. Para atualizar a publicação por branch, copie o conteúdo
+de `dist/` para a raiz e inclua os arquivos gerados no commit. O HTML usado
+como entrada pelo Vite fica em `src/index.html`.
+
+Para gerar e publicar automaticamente o build a cada push, selecione
+**GitHub Actions** como fonte e execute **Publicar no GitHub Pages** na
+branch `main`. Para conferir o build localmente, execute `npm run build:pages` e
 `npm run preview -- --mode pages`, então abra `http://localhost:4173/enap-e-vida/`.
 
 ### Testes Automatizados (Regras de Domínio, Segurança e Indicadores)
