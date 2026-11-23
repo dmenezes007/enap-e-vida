@@ -1,11 +1,63 @@
-<div align="center">
+# Enap e-Vida — Protótipo Navegável e Funcional
 
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
+> **Conexões que acolhem. Experiências que transformam.**
+> *Sua jornada. Seu bem-estar. Nossa Enap.*
 
-  <h1>Built with AI Studio</h2>
+Protótipo full-stack (React + Express + SQLite persistente + PWA) da plataforma institucional **Enap e-Vida**, fundamentado no **RGI 2025**, na metodologia **A Jornada da Ambientação — Da posse ao pertencimento** e nos formulários oficiais de pré-ingresso **GAEG Nível Superior** e **GAEG Nível Intermediário**.
 
-  <p>The fastest path from prompt to production with Gemini.</p>
+## Aviso de Ambiente Demonstrativo
+Todos os usuários, protocolos, respostas, jornadas e séries históricas presentes na base inicial são **fictícios**. O banco local é inicializado e populado automaticamente em `data/enap-evida.db`.
 
-  <a href="https://aistudio.google.com/apps">Start building</a>
+## Como Executar
 
-</div>
+```bash
+npm install
+npm run dev
+```
+
+A aplicação (frontend + API) será servida na porta `3000` (`http://localhost:3000`).
+
+## GitHub Pages
+
+A [apresentação pública](https://dmenezes007.github.io/enap-e-vida/) usa o logo
+`public/enap-e-vida.png` e pode ser instalada como PWA. Login, pré-ingresso,
+painéis e persistência dependem da API Express e do SQLite. Use a execução
+com servidor descrita acima para acessar esses recursos.
+
+Em **Settings → Pages → Build and deployment**, selecione **GitHub Actions**.
+Em **Actions → Publicar no GitHub Pages**, execute o workflow na branch `main`.
+Os pushes seguintes à `main` também disparam a publicação. Para conferir o
+mesmo build localmente, execute `npm run build:pages` e
+`npm run preview -- --mode pages`, então abra `http://localhost:4173/enap-e-vida/`.
+
+### Testes Automatizados (Regras de Domínio, Segurança e Indicadores)
+```bash
+npm test
+```
+
+### Build de Produção
+```bash
+npm run build
+npm start
+```
+
+## Credenciais de Demonstração (Dados Fictícios)
+
+Senha padrão de todos os 15 perfis demonstrativos: **`EnapDemo@2026`**
+Código MFA demonstrativo (quando aplicável): **`202600`**
+
+- **Ingressante 30 dias:** `acompanhamento30@demo.enap.gov.br`
+- **Chefia Imediata:** `chefia@demo.enap.gov.br`
+- **Responsável Pré-ingresso (acesso exclusivo ao cofre bancário/sensível):** `preingresso.gestao@demo.enap.gov.br`
+- **Gestor(a) da Ambientação:** `ambientacao@demo.enap.gov.br`
+- **Analista de Indicadores:** `estrategia@demo.enap.gov.br`
+- **Administrador(a) Técnico(a) (sem acesso ao cofre bancário):** `admin@demo.enap.gov.br`
+
+### Convites e Protocolo de Pré-ingresso para Teste
+- **GAEG Nível Superior:** código `ENAP-2026-NS01` · e-mail `pre.ns@demo.enap.gov.br`
+- **GAEG Nível Intermediário:** código `ENAP-2026-NI02` · e-mail `pre.ni@demo.enap.gov.br`
+- **Acompanhamento de protocolo já enviado:** `ENAP-PRE-2026-A91F3C` · e-mail `clara.ficticio@exemplo.gov.br`
+
+## Documentação Técnica
+- Migração de referência PostgreSQL 16+ (8 schemas + RLS): `/docs/database/migrations/001_initial_schema.sql`
+- Arquitetura, ERD, Matriz RBAC, Inventário LGPD e Checklists: `/docs/ARQUITETURA_E_GOVERNANCA.md`

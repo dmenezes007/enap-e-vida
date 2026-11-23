@@ -1,0 +1,148 @@
+@import "tailwindcss";
+@import "@fontsource/georama/400.css";
+@import "@fontsource/georama/400-italic.css";
+@import "@fontsource/georama/500.css";
+@import "@fontsource/georama/600.css";
+@import "@fontsource/georama/700.css";
+@import "@fontsource/georama/800.css";
+@import "@fontsource/georama/900.css";
+
+@theme {
+  --font-sans: "Georama", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --color-petroleo: #173640;
+  --color-floresta: #285D32;
+  --color-oliva: #939C22;
+  --color-creme: #FFF2DE;
+  --color-turquesa: #218FA3;
+  --color-verde-profundo: #0B3D1E;
+  --color-laranja: #FF8500;
+  --color-amarelo: #FFC400;
+  --color-vermelho: #ED2124;
+  --color-vinho: #710F10;
+  --color-grafite: #231F20;
+}
+
+:root {
+  /* Paleta institucional RGI 2025 */
+  --enap-petroleo: #173640;
+  --enap-floresta: #285D32;
+  --enap-oliva: #939C22;
+  --enap-creme: #FFF2DE;
+  --enap-turquesa: #218FA3;
+  --enap-verde-profundo: #0B3D1E;
+  --enap-laranja: #FF8500;
+  --enap-amarelo: #FFC400;
+  --enap-vermelho: #ED2124;
+  --enap-vinho: #710F10;
+  --enap-grafite: #231F20;
+  --enap-branco: #FFFFFF;
+
+  /* Tokens semânticos (WCAG AA >= 4.5:1) */
+  --bg-canvas: #F8F7F4;
+  --bg-surface: #FFFFFF;
+  --bg-surface-warm: #FFF2DE;
+  --bg-surface-subtle: #F2EFE9;
+  --border-subtle: #E2DDD5;
+  --border-strong: #C5BEB2;
+  --text-primary: #231F20;
+  --text-secondary: #4A4F52;
+  --text-muted: #5F666A;
+  --action-primary: #173640;
+  --action-primary-hover: #0F272F;
+  --action-secondary: #285D32;
+  --action-accent: #186F80;
+  --focus-ring: #218FA3;
+  --status-success-bg: #EAF4EC;
+  --status-success-text: #164A21;
+  --status-info-bg: #E7F4F7;
+  --status-info-text: #105563;
+  --status-warning-bg: #FEF5E6;
+  --status-warning-text: #854400;
+  --status-error-bg: #FCECEC;
+  --status-error-text: #8E1113;
+}
+
+html {
+  font-family: "Georama", ui-sans-serif, system-ui, sans-serif;
+  background-color: var(--bg-canvas);
+  color: var(--text-primary);
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+html.a11y-large-text {
+  font-size: 18px;
+}
+
+html.a11y-high-contrast {
+  --bg-canvas: #FFFFFF;
+  --bg-surface: #FFFFFF;
+  --bg-surface-subtle: #F3F3F3;
+  --border-subtle: #231F20;
+  --border-strong: #000000;
+  --text-primary: #000000;
+  --text-secondary: #1A1A1A;
+  --text-muted: #2B2B2B;
+  --action-primary: #0D232A;
+  --focus-ring: #FF8500;
+}
+
+html.a11y-reduced-motion *,
+html.a11y-reduced-motion *::before,
+html.a11y-reduced-motion *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background-color: var(--bg-canvas);
+  color: var(--text-primary);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Foco visível acessível WCAG 2.2 AA */
+:focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Skip link para navegação por teclado */
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: 16px;
+  z-index: 100;
+  background: var(--enap-petroleo);
+  color: #ffffff;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.skip-link:focus {
+  top: 12px;
+}
+
+/* Utilitário para evitar órfãs em títulos */
+.text-balance {
+  text-wrap: balance;
+}

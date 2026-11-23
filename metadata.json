@@ -1,0 +1,6 @@
+{
+  "name": "Enap e-Vida",
+  "description": "Plataforma institucional integrada da Enap de acolhimento, Jornada de Ambientação, qualidade de vida no trabalho (PQVT), participação, diversidade, equidade, inclusão e inteligência de gestão.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Ícone Enap e-Vida">
+  <rect width="512" height="512" rx="112" fill="#173640"/>
+  <path d="M0 256 A256 256 0 0 1 256 0 L256 128 A128 128 0 0 0 128 256 Z" fill="#285D32" opacity="0.85"/>
+  <path d="M512 256 A256 256 0 0 1 256 512 L256 384 A128 128 0 0 0 384 256 Z" fill="#939C22" opacity="0.9"/>
+  <circle cx="256" cy="256" r="142" fill="#FFF2DE"/>
+  <circle cx="256" cy="256" r="92" fill="none" stroke="#218FA3" stroke-width="26"/>
+  <path d="M214 256 C214 232 232 214 256 214 C280 214 298 232 298 256 C298 272 288 286 272 292 L214 256 Z" fill="#173640"/>
+  <circle cx="348" cy="164" r="24" fill="#FF8500"/>
+</svg>
