@@ -499,7 +499,7 @@ export const PreboardingFlowPage: React.FC = () => {
                 A caminho da Enap?
               </p>
               <h1 className="text-2xl sm:text-3xl font-extrabold text-[#173640]">
-                Acompanhamento de Pré-ingresso
+                Acompanhamento de Pré-Embarque
               </h1>
               <p className="text-sm text-[#4A4F52] max-w-2xl">
                 Consulte o andamento do seu processo preliminar com o número de protocolo e o e-mail
@@ -614,7 +614,7 @@ export const PreboardingFlowPage: React.FC = () => {
                     A caminho da Enap?
                   </p>
                   <h1 className="text-2xl sm:text-3xl font-extrabold text-[#173640]">
-                    Boas-vindas ao pré-ingresso na Enap
+                    Boas-vindas ao Pré-Embarque na Enap
                   </h1>
                   <p className="text-sm sm:text-base text-[#4A4F52] max-w-3xl leading-relaxed">
                     Que alegria acompanhar sua chegada! Para proteger seus dados pessoais e bancários, o
@@ -626,7 +626,7 @@ export const PreboardingFlowPage: React.FC = () => {
 
                 <AlertBox tone="info" title="Segurança e privacidade desde o primeiro passo">
                   Suas informações bancárias e autodeclarações serão armazenadas em compartimento segregado e
-                  cifrado, acessado apenas pela equipe autorizada de pré-ingresso. Nenhum dado bancário
+                  cifrado, acessado apenas pela equipe autorizada de Pré-Embarque. Nenhum dado bancário
                   aparecerá em comprovantes ou notificações.
                 </AlertBox>
 
@@ -1564,7 +1564,7 @@ export const PreboardingFlowPage: React.FC = () => {
                         />
                         <span className="text-sm text-[#231F20] font-medium leading-relaxed">
                           Confirmo a veracidade das informações prestadas e declaro ciência do aviso
-                          específico de tratamento de dados pessoais para fins de pré-ingresso na Enap.
+                          específico de tratamento de dados pessoais para fins de Pré-Embarque na Enap.
                         </span>
                       </label>
                     </div>

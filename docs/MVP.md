@@ -10,8 +10,8 @@ Docker do Render e um banco exclusivo no Neon.
 |---|---|
 | Entrar e acompanhar a jornada | Acesse com o perfil de acompanhamento de 30 dias. Consulte as tarefas, avaliações e pedidos de apoio. |
 | Criar conta | Em **Novo por aqui?**, preencha os campos com dados fictícios. A conta recebe uma jornada e as avaliações de 30, 60 e 90 dias. |
-| Pré-ingresso | Use os convites fictícios GAEG NS e NI listados no README. Valide campos obrigatórios, salve o rascunho, envie e consulte o protocolo. |
-| Operação e governança | Compare os perfis de administração técnica, pré-ingresso e indicadores. O cofre é acessível ao perfil autorizado de pré-ingresso, com auditoria. |
+| Pré-Embarque | Use os convites fictícios GAEG NS e NI listados no README. Valide campos obrigatórios, salve o rascunho, envie e consulte o protocolo. |
+| Operação e governança | Compare os perfis de administração técnica, Pré-Embarque e indicadores. O cofre é acessível ao perfil autorizado de Pré-Embarque, com auditoria. |
 | Agenda e PQVT | Inscreva dois perfis em uma atividade ou evento com uma vaga. Cancele a inscrição confirmada e confira a promoção da lista de espera. Durante o evento, a pessoa inscrita pode registrar presença. O arquivo ICS inclui um lembrete de 30 minutos. |
 | Participação e conteúdo | Registre uma contribuição no Fala, Enap!, responda uma enquete, use a busca do repositório, explore o Comitê DEI e confira notificações e perfil. |
 | Gestão e melhoria | Consulte os indicadores, exporte o CSV e teste o registro de um plano de melhoria. |

@@ -115,7 +115,7 @@ export default function App() {
             <Route path="/cadastro" element={<RegisterPage />} />
             <Route path="/recuperar-senha" element={<RecoverPasswordPage />} />
 
-            {/* Fluxo "A caminho da Enap?" — Pré-ingresso GAEG NS/NI */}
+            {/* Fluxo "A caminho da Enap?" — Pré-Embarque GAEG NS/NI */}
             <Route path="/pre-ingresso" element={<PreboardingFlowPage />} />
             <Route path="/pre-ingresso/modalidade" element={<PreboardingFlowPage />} />
             <Route path="/pre-ingresso/formulario" element={<PreboardingFlowPage />} />

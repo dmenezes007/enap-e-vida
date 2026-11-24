@@ -42,7 +42,7 @@ erDiagram
 
 | Papel (`role_code`) | Escopo Principal | Acesso ao Cofre Bancário/Sensível (`preboarding:view_restricted_vault`) |
 |---|---|---|
-| `pre_ingressante` | Acompanhamento pré-ingresso | Não |
+| `pre_ingressante` | Acompanhamento Pré-Embarque | Não |
 | `usuario_regular` | Comunidade Enap (`/app/*`) | Não |
 | `chefia` | Comunidade + tarefas de acolhimento como chefia imediata | Não |
 | `resp_pre_ingresso` | Gestão do fluxo "A caminho da Enap?" e conferência | **Sim (exclusivo e auditado)** |
@@ -61,7 +61,7 @@ erDiagram
 | Fluxo | Dados Tratados | Minimização e Proteção Aplicada | Pendência de Validação Institucional |
 |---|---|---|---|
 | Cadastro regular ("Novo por aqui?") | Nome, nome social, e-mail, vínculo, unidade, cargo, data de entrada | Sem CPF, RG ou dados bancários; sem autodeclaração de perfil admin | Enquadramento formal da base legal junto à DPO/PF-Enap |
-| Pré-ingresso GAEG NS/NI | Identificação civil, histórico 10 anos, vínculo, chefia imediata, dados bancários, autodeclaração | Convite institucional obrigatório; cifragem AES-256-GCM em compartimentos segregados; comprovante e notificações mascarados | Revisão jurídica do termo de ciência, tabela de temporalidade e RIPD |
+| Pré-Embarque GAEG NS/NI | Identificação civil, histórico 10 anos, vínculo, chefia imediata, dados bancários, autodeclaração | Convite institucional obrigatório; cifragem AES-256-GCM em compartimentos segregados; comprovante e notificações mascarados | Revisão jurídica do termo de ciência, tabela de temporalidade e RIPD |
 | PQVT | Inscrições, lista de espera, avaliações qualitativas | Proibição de dados clínicos, diagnósticos, biométricos e rankings | Política de retenção de listas de presença |
 | Enquetes Anônimas | Elegibilidade (`survey_eligibility`) vs. Respostas (`survey_responses` com `user_id = NULL`) | Separação física de tabelas + supressão automática quando `n < 10` | Definição institucional de exceções de limiar para unidades muito pequenas |
 
@@ -82,7 +82,7 @@ erDiagram
 - [x] Sessões via cookie `HttpOnly`, `SameSite=Lax`, sem tokens ou PII em `localStorage`/`sessionStorage`.
 - [x] Proteção contra enumeração de contas no login e na recuperação de senha.
 - [x] Autorização RBAC e verificação de propriedade (anti-IDOR/BOLA) aplicadas no servidor.
-- [x] Rate limiting em rotas de autenticação e pré-ingresso + cabeçalhos HTTP defensivos (`X-Content-Type-Options`, `Referrer-Policy`).
+- [x] Rate limiting em rotas de autenticação e Pré-Embarque + cabeçalhos HTTP defensivos (`X-Content-Type-Options`, `Referrer-Policy`).
 - [x] Service Worker PWA configurado como `NetworkOnly` para `/api/*`.
 - [ ] Gestão de chaves criptográficas em KMS/HSM corporativo (Key Vault / Cloud KMS) na implantação oficial.
 - [ ] Integração SSO com Microsoft Entra ID + MFA corporativo obrigatório + testes de intrusão (pentest) pré-produção.

@@ -46,7 +46,7 @@ export function verifyPassword(password: string, storedHash: string): boolean {
 
 /**
  * Cifragem autenticada AES-256-GCM para compartimento segregado
- * (dados bancários e atributos sensíveis de pré-ingresso — §8.3 e §28).
+ * (dados bancários e atributos sensíveis de Pré-Embarque — §8.3 e §28).
  */
 export function encryptVaultJson(payload: Record<string, unknown>): string {
   const iv = crypto.randomBytes(12);

@@ -37,7 +37,7 @@ export const AdminOverviewPage: React.FC = () => {
 
   const c = data?.counts || {};
   const kpis = [
-    {label: 'Pré-ingressos em andamento', value: c.preboardingActive ?? 0, to: '/admin/pre-ingresso'},
+    {label: 'Pré-Embarques em andamento', value: c.preboardingActive ?? 0, to: '/admin/pre-ingresso'},
     {label: 'Jornadas de Ambientação ativas', value: c.journeysActive ?? 0, to: '/admin/jornadas'},
     {label: 'Pedidos de apoio abertos', value: c.openSupport ?? 0, to: '/admin/jornadas'},
     {label: 'Atividades PQVT abertas', value: c.activitiesOpen ?? 0, to: '/admin/atividades'},
@@ -206,7 +206,7 @@ export const AdminUsersPage: React.FC = () => {
       >
         <div className="space-y-4">
           <AlertBox tone="warning" title="Segregação de funções">
-            Atribua <strong>Responsável pelo Pré-ingresso</strong> apenas a agentes formalmente
+            Atribua <strong>Responsável pelo Pré-Embarque</strong> apenas a agentes formalmente
             designados para acessar o cofre segregado de dados bancários e sensíveis.
           </AlertBox>
           <div className="space-y-2">
@@ -264,7 +264,7 @@ export const AdminRolesPage: React.FC = () => {
       <PageHeader
         kicker="Governança de Acesso · Menor Privilégio"
         title="Matriz de Perfis e Permissões (11 Papéis)"
-        description="Controle de acesso validado no servidor a cada requisição. Observe que o Administrador Técnico não possui acesso ao cofre segregado de pré-ingresso."
+        description="Controle de acesso validado no servidor a cada requisição. Observe que o Administrador Técnico não possui acesso ao cofre segregado de Pré-Embarque."
       />
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -309,7 +309,7 @@ export const AdminAuditPage: React.FC = () => {
       <PageHeader
         kicker="Rastreabilidade · Segurança"
         title="Trilha de Auditoria"
-        description="Registro imutável de acessos, alterações de papéis, consultas ao cofre segregado de pré-ingresso, publicações e exportações (sem gravar senhas ou contas bancárias em texto simples)."
+        description="Registro imutável de acessos, alterações de papéis, consultas ao cofre segregado de Pré-Embarque, publicações e exportações (sem gravar senhas ou contas bancárias em texto simples)."
       />
 
       <Card className="p-4 flex flex-wrap items-center gap-3">

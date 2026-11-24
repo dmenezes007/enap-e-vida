@@ -207,7 +207,7 @@ apiRouter.post('/auth/register', rateLimit(20, 60_000), async (req: Authenticate
       userId, 'usuario_regular', data.organizationalUnit, now,
     );
 
-    // Vinculação opcional a protocolo anterior de pré-ingresso (§9)
+    // Vinculação opcional a protocolo anterior de Pré-Embarque (§9)
     let linkedPreboarding = false;
     if (data.preboardingProtocol) {
       const inv = await db.one(
@@ -326,7 +326,7 @@ apiRouter.post('/auth/recover-password', rateLimit(15, 60_000), async (req, res)
 });
 
 // ============================================================================
-// 2. FLUXO "A CAMINHO DA ENAP?" — PRÉ-INGRESSO GAEG NS/NI (§8)
+// 2. FLUXO "A CAMINHO DA ENAP?" — PRÉ-EMBARQUE GAEG NS/NI (§8)
 // ============================================================================
 
 apiRouter.get('/preboarding/gaeg-parameters', async (_req, res) => {
@@ -603,7 +603,7 @@ apiRouter.post('/preboarding/submit', rateLimit(15, 60_000), async (req, res) =>
     await db.run(
       `
       INSERT INTO notifications (id, user_id, category, title, message, link_path, is_operational, is_read, created_at)
-      VALUES ($1, $2, 'pre_ingresso', 'Novo formulário de pré-ingresso recebido', $3, '/admin/pre-ingresso', 1, 0, $4)
+      VALUES ($1, $2, 'pre_ingresso', 'Novo formulário de Pré-Embarque recebido', $3, '/admin/pre-ingresso', 1, 0, $4)
     `,
       generateId(),
       targetAdmin,
@@ -1920,7 +1920,7 @@ apiRouter.get('/admin/roles-matrix', requireAuth, requirePermission('roles:view'
   });
 });
 
-// Gestão de Pré-ingresso e Cofre Segregado
+// Gestão de Pré-Embarque e Cofre Segregado
 apiRouter.get('/admin/preboarding', requireAuth, requirePermission('preboarding:manage'), async (_req, res) => {
   const cases = await db.all(`SELECT i.*, s.id as submission_id, s.cpf_masked, s.orgao_origem, s.submitted_at,
               rb.account_type, rb.bank_name, rb.account_masked
@@ -1971,7 +1971,7 @@ apiRouter.post('/admin/preboarding/invites', requireAuth, requirePermission('pre
 
   await db.run(
     `INSERT INTO preboarding_status_history (id, invitation_id, status, note, actor_name, actor_user_id, created_at)
-     VALUES ($1, $2, 'convite_encaminhado', 'Convite institucional emitido pela equipe de pré-ingresso.', $3, $4, $5)`,
+     VALUES ($1, $2, 'convite_encaminhado', 'Convite institucional emitido pela equipe de Pré-Embarque.', $3, $4, $5)`,
     generateId(), id, req.user!.fullName, req.user!.id, now,
   );
 

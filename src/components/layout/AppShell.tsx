@@ -98,7 +98,7 @@ export const AppShell: React.FC<{
   const adminNav: NavItem[] = [
     {to: '/admin', label: 'Painel geral', icon: LayoutDashboard, end: true},
     ...(hasPerm('preboarding:manage')
-      ? [{to: '/admin/pre-ingresso', label: 'Pré-ingresso', icon: ClipboardCheck}]
+      ? [{to: '/admin/pre-ingresso', label: 'Pré-Embarque', icon: ClipboardCheck}]
       : []),
     ...(hasPerm('journey:manage')
       ? [{to: '/admin/jornadas', label: 'Jornadas', icon: Compass}]

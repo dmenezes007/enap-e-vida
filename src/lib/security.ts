@@ -1,11 +1,11 @@
 import type {PermissionCode, RoleCode} from './types';
 
 export const ROLE_LABELS: Record<RoleCode, string> = {
-  pre_ingresso: 'Pessoa em pré-ingresso',
+  pre_ingresso: 'Pessoa em Pré-Embarque',
   usuario_regular: 'Usuário regular',
   chefia: 'Gestor ou chefia',
   resp_ambientacao: 'Responsável pela ambientação',
-  resp_pre_ingresso: 'Responsável pelo pré-ingresso',
+  resp_pre_ingresso: 'Responsável pelo Pré-Embarque',
   gestor_pqvt: 'Gestor de atividades e eventos (PQVT)',
   gestor_conteudo: 'Gestor de conteúdo',
   resp_dei: 'Responsável pelo Comitê DEI',

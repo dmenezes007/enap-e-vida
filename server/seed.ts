@@ -68,7 +68,7 @@ export async function seedDatabaseIfEmpty(): Promise<void> {
       journeyStage: 'pre_embarque',
       roles: ['pre_ingresso'],
       mfaEnabled: false,
-      demoLabel: '1. Pré-ingresso (GAEG Nível Superior)',
+      demoLabel: '1. Pré-Embarque (GAEG Nível Superior)',
     } as SeedPersona,
     {
       id: 'usr-pre-ni',
@@ -82,7 +82,7 @@ export async function seedDatabaseIfEmpty(): Promise<void> {
       journeyStage: 'pre_embarque',
       roles: ['pre_ingresso'],
       mfaEnabled: false,
-      demoLabel: '2. Pré-ingresso (GAEG Nível Intermediário)',
+      demoLabel: '2. Pré-Embarque (GAEG Nível Intermediário)',
     },
     {
       id: 'usr-dia1',
@@ -189,12 +189,12 @@ export async function seedDatabaseIfEmpty(): Promise<void> {
       preferredName: 'Sérgio',
       employmentType: 'servidora_efetiva',
       unit: 'Coordenação de Movimentação e Cessão (CGP)',
-      position: 'Responsável pelo Pré-ingresso',
+      position: 'Responsável pelo Pré-Embarque',
       entryDate: '2020-08-10',
       journeyStage: 'gestao_continua',
       roles: ['usuario_regular', 'resp_pre_ingresso'],
       mfaEnabled: true,
-      demoLabel: '10. Responsável pelo Pré-ingresso (Cofre)',
+      demoLabel: '10. Responsável pelo Pré-Embarque (Cofre)',
     },
     {
       id: 'usr-pqvt',
@@ -301,7 +301,7 @@ export async function seedDatabaseIfEmpty(): Promise<void> {
     }
   }
 
-  // 3. Convites de Pré-ingresso (2 pendentes para teste interativo + 1 já enviado para painel administrativo)
+  // 3. Convites de Pré-Embarque (2 pendentes para teste interativo + 1 já enviado para painel administrativo)
   const insertInvite = (...values: unknown[]) => db.run(`
     INSERT INTO invitations (
       id, code, email, invitee_name, modality, target_unit, proposed_position,
@@ -1376,11 +1376,11 @@ export async function seedDatabaseIfEmpty(): Promise<void> {
 
   await insertDoc(
     'doc-05',
-    'Protocolo Interno de Tratamento de Dados do Pré-Ingresso (Acesso Restrito)',
+    'Protocolo Interno de Tratamento de Dados do Pré-Embarque (Acesso Restrito)',
     'Orientações operacionais para análise de formulários GAEG NS/NI, segregação de dados bancários e retenção conforme LGPD.',
     'Governança de Dados e CGP',
     'Manuais',
-    'Proteção de Dados e Pré-ingresso',
+    'Proteção de Dados e Pré-Embarque',
     'LGPD, GAEG, cessão, cofre bancário, auditoria, acesso restrito',
     '2026-10-01',
     '1.1',
@@ -1479,7 +1479,7 @@ export async function seedDatabaseIfEmpty(): Promise<void> {
     'Acionar automaticamente lista de verificação integrada entre CGP e CGTI 5 dias úteis antes da data prevista de ingresso.',
     'CGP (disparo), CGTI (execução) e Chefia imediata (validação de perfis).',
     'Aumento da proporção de itens essenciais disponíveis no Dia 1 (Indicador de Preparação) e redução de chamados de acesso na 1ª semana.',
-    'A ausência de gatilho padronizado após confirmação do pré-ingresso causa atrasos no provisionamento.',
+    'A ausência de gatilho padronizado após confirmação do Pré-Embarque causa atrasos no provisionamento.',
     'alta',
     'implementado',
     'IND_PREPARACAO',
@@ -1541,7 +1541,7 @@ export async function seedDatabaseIfEmpty(): Promise<void> {
   await insertNotif(generateId(), 'usr-60d', 'jornada', 'Avaliação de 60 dias disponível', 'Sua escuta de 60 dias está aberta para registro na Jornada.', '/app/jornada/avaliacoes', 1, now);
   await insertNotif(generateId(), 'usr-90d', 'jornada', 'Fechamento do ciclo inicial (90 dias)', 'Registre sua avaliação de 90 dias e explore as ações contínuas do Enap e-Vida.', '/app/jornada/avaliacoes', 1, now);
   await insertNotif(generateId(), 'usr-chefia', 'jornada', 'Tarefas de chefia pendentes na ambientação', 'Há entregas de acolhimento sob sua responsabilidade para ingressantes da unidade.', '/app/jornada', 1, now);
-  await insertNotif(generateId(), 'usr-pre-resp', 'pre_ingresso', 'Formulário de pré-ingresso recebido', 'Novo protocolo ENAP-PRE-2026-A91F3C disponível para conferência administrativa.', '/admin/pre-ingresso', 1, now);
+  await insertNotif(generateId(), 'usr-pre-resp', 'pre_ingresso', 'Formulário de Pré-Embarque recebido', 'Novo protocolo ENAP-PRE-2026-A91F3C disponível para conferência administrativa.', '/admin/pre-ingresso', 1, now);
 
   // 15. Eventos iniciais de auditoria
   await logAuditEvent({

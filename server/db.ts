@@ -105,7 +105,7 @@ export async function initSchema(): Promise<void> {
       created_at TEXT NOT NULL
     );
 
-    -- 2. Pré-ingresso (com segregação física de dados bancários e sensíveis)
+    -- 2. Pré-Embarque (com segregação física de dados bancários e sensíveis)
     CREATE TABLE IF NOT EXISTS gaeg_parameters (
       id TEXT PRIMARY KEY,
       modality TEXT NOT NULL UNIQUE,

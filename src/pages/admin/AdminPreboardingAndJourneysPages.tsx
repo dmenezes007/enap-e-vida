@@ -110,7 +110,7 @@ export const AdminPreboardingPage: React.FC = () => {
         method: 'PATCH',
         body: JSON.stringify({status: nextStatus, note: statusNote}),
       });
-      pushToast('Situação do pré-ingresso atualizada e auditada.', 'success');
+      pushToast('Situação do Pré-Embarque atualizada e auditada.', 'success');
       setStatusModal(null);
       setStatusNote('');
       loadCases();
@@ -143,7 +143,7 @@ export const AdminPreboardingPage: React.FC = () => {
     <div className="space-y-6">
       <PageHeader
         kicker="A Caminho da Enap · Segregação de Funções"
-        title="Gestão de Pré-ingresso e Formulários GAEG"
+        title="Gestão de Pré-Embarque e Formulários GAEG"
         description="Emita convites institucionais, acompanhe o fluxo de 10 estados e consulte com trilha de auditoria o compartimento cifrado de dados bancários e sensíveis."
         actions={
           <Button variant="secondary" onClick={() => setNewInviteOpen(true)}>
@@ -157,7 +157,7 @@ export const AdminPreboardingPage: React.FC = () => {
         <AlertBox tone="warning" title="Segregação de funções ativa (cofre bancário bloqueado)">
           Seu perfil pode acompanhar a tramitação geral dos processos, mas <strong>não</strong> possui
           permissão <code>preboarding:view_restricted_vault</code> para descriptografar dados bancários e
-          atributos sensíveis (acesso exclusivo ao perfil Responsável pelo Pré-ingresso).
+          atributos sensíveis (acesso exclusivo ao perfil Responsável pelo Pré-Embarque).
         </AlertBox>
       )}
 
@@ -242,7 +242,7 @@ export const AdminPreboardingPage: React.FC = () => {
       <Modal
         open={newInviteOpen}
         onClose={() => setNewInviteOpen(false)}
-        title="Emitir convite institucional de pré-ingresso"
+        title="Emitir convite institucional de Pré-Embarque"
       >
         <form onSubmit={handleCreateInvite} className="space-y-4">
           <Field id="inv-name" label="Nome da pessoa convidada" required>

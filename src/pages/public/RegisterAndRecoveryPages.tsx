@@ -75,7 +75,7 @@ export const RegisterPage: React.FC = () => {
       await refreshUser();
       pushToast(
         res.linkedPreboarding
-          ? 'Conta criada e vinculada ao seu protocolo de pré-ingresso!'
+          ? 'Conta criada e vinculada ao seu protocolo de Pré-Embarque!'
           : 'Conta criada com sucesso! Sua Jornada de Ambientação já está disponível.',
         'success',
       );
@@ -240,7 +240,7 @@ export const RegisterPage: React.FC = () => {
             <div className="md:col-span-2">
               <Field
                 id="reg-proto"
-                label="Protocolo anterior de pré-ingresso (opcional)"
+                label="Protocolo anterior de Pré-Embarque (opcional)"
                 hint="Se você preencheu o formulário 'A caminho da Enap?' com o mesmo e-mail, informe o protocolo para vincular seu histórico."
               >
                 <input

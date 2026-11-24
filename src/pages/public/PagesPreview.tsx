@@ -22,7 +22,7 @@ export function PagesPreview() {
             participação, diversidade, equidade e inclusão.
           </p>
           <p className="rounded-xl border border-[#E2DDD5] bg-white p-4 text-sm">
-            Esta é a apresentação pública do app. Acesso à conta, pré-ingresso e demais recursos
+            Esta é a apresentação pública do app. Acesso à conta, Pré-Embarque e demais recursos
             interativos estão disponíveis na versão executada com o servidor Enap e-Vida.
           </p>
           <a className="font-semibold underline" href="https://github.com/dmenezes007/enap-e-vida#como-executar">

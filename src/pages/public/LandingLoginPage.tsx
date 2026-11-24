@@ -176,7 +176,7 @@ export const LandingLoginPage: React.FC = () => {
                 </div>
               </div>
 
-              {/* Cartões de entrada rápida (Pré-ingresso e Novo cadastro) */}
+              {/* Cartões de entrada rápida (Pré-Embarque e Novo cadastro) */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <Card warm className="p-5 flex flex-col justify-between gap-4 border-[#FF8500]/35">
                   <div className="space-y-2">
@@ -185,7 +185,7 @@ export const LandingLoginPage: React.FC = () => {
                       <h2 className="text-base font-extrabold">A caminho da Enap?</h2>
                     </div>
                     <p className="text-sm text-[#4A4F52] leading-relaxed">
-                      Recebeu convite institucional de pré-ingresso (GAEG Nível Superior ou Intermediário)?
+                      Recebeu convite institucional de Pré-Embarque (GAEG Nível Superior ou Intermediário)?
                       Inicie aqui o envio seguro dos seus dados preliminares ou acompanhe seu protocolo.
                     </p>
                   </div>
@@ -194,7 +194,7 @@ export const LandingLoginPage: React.FC = () => {
                       to="/pre-ingresso"
                       className="inline-flex items-center gap-2 rounded-lg bg-[#FF8500] px-4 py-2.5 text-sm font-bold text-[#173640] hover:bg-[#E67700] transition-colors whitespace-nowrap shrink-0"
                     >
-                      <span>Iniciar pré-ingresso</span>
+                      <span>Iniciar Pré-Embarque</span>
                       <ArrowRight className="w-4 h-4" aria-hidden="true" />
                     </Link>
                     <Link
@@ -469,7 +469,7 @@ export const LandingLoginPage: React.FC = () => {
             </p>
             <ul className="list-disc list-inside space-y-1.5">
               <li>
-                Dados bancários e atributos sensíveis coletados no pré-ingresso ficam em tabelas segregadas e
+                Dados bancários e atributos sensíveis coletados no Pré-Embarque ficam em tabelas segregadas e
                 cifradas (AES-256-GCM), com acesso restrito e auditado exclusivamente ao responsável autorizado.
               </li>
               <li>
@@ -510,7 +510,7 @@ export const LandingLoginPage: React.FC = () => {
         {infoModal === 'suporte' && (
           <div className="space-y-3 text-sm text-[#4A4F52] leading-relaxed">
             <p>
-              Para dúvidas sobre seu convite de pré-ingresso, acesso ao Enap e-Vida ou Jornada de Ambientação:
+              Para dúvidas sobre seu convite de Pré-Embarque, acesso ao Enap e-Vida ou Jornada de Ambientação:
             </p>
             <ul className="list-disc list-inside space-y-1.5">
               <li>
