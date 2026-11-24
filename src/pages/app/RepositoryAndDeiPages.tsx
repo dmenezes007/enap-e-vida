@@ -262,7 +262,7 @@ export const ComiteDeiPage: React.FC = () => {
     <div className="space-y-7">
       <PageHeader
         kicker="Diversidade · Equidade · Inclusão"
-        title="Comitê de Diversidade, Equidade e Inclusão (Comitê DEI)"
+        title="Comitê de Diversidades, Equidade e Inclusão (Comitê DEI)"
         description="Espaço institucional dedicado à equidade racial, de gênero, acessibilidade, inclusão e respeito à pluralidade na Enap."
       />
 
