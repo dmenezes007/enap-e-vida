@@ -170,7 +170,7 @@ export const AppShell: React.FC<{
               aria-label="Página inicial do Enap e-Vida"
             >
               {!collapsed ? (
-                <EnapVidaLogo className="max-w-36 shrink-0 rounded bg-white p-1" />
+                <EnapVidaLogo className="max-w-36 shrink-0 brightness-0 invert" />
               ) : (
                 <span className="text-base font-extrabold text-[#FFF2DE] mx-auto">eV</span>
               )}
