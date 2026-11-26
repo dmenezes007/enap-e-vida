@@ -29,16 +29,13 @@ test('piloto PostgreSQL: ingresso, perfis e agenda', {timeout: 90_000}, async (t
   await control.query(`CREATE SCHEMA ${schema}`);
   target.searchParams.set('options', `-c search_path=${schema}`);
   const port = await availablePort();
-  const password = randomBytes(32).toString('hex');
   const env = {
     ...process.env,
     PORT: String(port),
     DATABASE_URL: target.href,
-    PILOT_ACCESS_PASSWORD: password,
     VAULT_ENCRYPTION_KEY: randomBytes(32).toString('hex'),
   };
   const base = `http://127.0.0.1:${port}`;
-  const authorization = 'Basic ' + Buffer.from(`piloto:${password}`).toString('base64');
   let app;
   async function stopApp() {
     if (!app || app.exitCode !== null || app.signalCode !== null) return;
@@ -67,9 +64,8 @@ test('piloto PostgreSQL: ingresso, perfis e agenda', {timeout: 90_000}, async (t
     assert.fail(stderr || 'O servidor não atingiu o estado saudável.');
   }
 
-  async function request(path, expected, {cookie, body, method = body ? 'POST' : 'GET', access = authorization} = {}) {
+  async function request(path, expected, {cookie, body, method = body ? 'POST' : 'GET'} = {}) {
     const headers = {};
-    if (access) headers.Authorization = access;
     if (cookie) headers.Cookie = cookie;
     if (body) headers['Content-Type'] = 'application/json';
     const result = await fetch(base + path, {
@@ -89,7 +85,6 @@ test('piloto PostgreSQL: ingresso, perfis e agenda', {timeout: 90_000}, async (t
 
   try {
     await startApp();
-    await request('/', 401, {access: ''});
     await request('/api/dashboard', 401);
     assert.match(await (await request('/', 200)).text(), /<script[^>]+assets\/index-/);
     assert.deepEqual(

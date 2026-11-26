@@ -1,7 +1,6 @@
 import express from 'express';
 import type {ErrorRequestHandler} from 'express';
 import cookieParser from 'cookie-parser';
-import {createHash, timingSafeEqual} from 'node:crypto';
 import path from 'node:path';
 import {seedDatabaseIfEmpty} from './server/seed';
 import {apiRouter} from './server/routes';
@@ -10,16 +9,8 @@ import {db, initSchema} from './server/db';
 const PORT = Number(process.env.PORT || 3000);
 const isProduction = process.env.NODE_ENV === 'production';
 
-function digest(value: string) {
-  return createHash('sha256').update(value).digest();
-}
-
 async function bootstrap() {
-  const pilotPassword = process.env.PILOT_ACCESS_PASSWORD;
   if (isProduction) {
-    if (!pilotPassword || !/^[a-f0-9]{64}$/i.test(pilotPassword)) {
-      throw new Error('PILOT_ACCESS_PASSWORD deve conter 64 caracteres hexadecimais.');
-    }
     if (!/^[a-f0-9]{64}$/i.test(process.env.VAULT_ENCRYPTION_KEY || '')) {
       throw new Error('VAULT_ENCRYPTION_KEY deve conter 64 caracteres hexadecimais.');
     }
@@ -50,20 +41,6 @@ async function bootstrap() {
       res.status(503).send('Banco de dados indisponível.');
     }
   });
-
-  if (isProduction && pilotPassword) {
-    const expected = digest(Buffer.from(`piloto:${pilotPassword}`).toString('base64'));
-    app.use((req, res, next) => {
-      const match = req.get('Authorization')?.match(/^Basic ([A-Za-z0-9+/]+=*)$/i);
-      if (match && timingSafeEqual(digest(match[1]), expected)) {
-        res.set('Cache-Control', 'private, no-store');
-        return next();
-      }
-      res.set('Cache-Control', 'no-store');
-      res.set('WWW-Authenticate', 'Basic realm="Enap e-Vida - Piloto"');
-      return res.status(401).send('Acesso restrito ao piloto.');
-    });
-  }
 
   app.use(express.json({limit: '1mb'}));
   app.use(cookieParser());

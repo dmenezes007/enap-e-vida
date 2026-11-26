@@ -59,18 +59,15 @@ npm run build
 npm start
 ```
 
-`npm start` inicia o **piloto restrito a dados fictícios**, com o frontend e
-a API na mesma origem. Defina `PILOT_ACCESS_PASSWORD` e
-`VAULT_ENCRYPTION_KEY` com dois valores diferentes, gerados separadamente com
+`npm start` inicia o piloto com dados fictícios, com frontend e API na mesma origem.
+Configure `DATABASE_URL` e gere `VAULT_ENCRYPTION_KEY` com
 `node -e "console.log(require('node:crypto').randomBytes(32).toString('hex'))"`.
-Use as variáveis de ambiente da hospedagem ou um arquivo `.env` local.
-Ao acessar o piloto, o navegador solicitará o usuário `piloto` e a senha de
-acesso. Depois, use os perfis fictícios descritos abaixo para entrar no app.
+A página inicial abre diretamente e permite entrar com os perfis demonstrativos abaixo.
 
 ### Hospedar o piloto em contêiner
 
 O `Dockerfile` compila o frontend e o servidor a partir de `package-lock.json`.
-Passe `DATABASE_URL` e os dois segredos por variáveis de ambiente. Preserve
+Passe `DATABASE_URL` e `VAULT_ENCRYPTION_KEY` por variáveis de ambiente. Preserve
 a chave do cofre ao atualizar o serviço para manter a leitura dos dados cifrados.
 
 ```bash
@@ -87,10 +84,7 @@ docker run --rm --name enap-e-vida --env-file .env -e PORT=3000 \
 2. No Render, crie um **Blueprint** a partir deste repositório. O
    `render.yaml` define um serviço Docker **Free** e verifica a conexão
    com o banco por `/healthz`.
-3. Preencha `DATABASE_URL`, `PILOT_ACCESS_PASSWORD` e
-   `VAULT_ENCRYPTION_KEY` como segredos do serviço. Use dois valores
-   aleatórios distintos para a senha e a chave. Distribua a senha somente
-   aos participantes autorizados do piloto com dados fictícios.
+3. Configure `DATABASE_URL` e `VAULT_ENCRYPTION_KEY` no ambiente do serviço.
 4. Após a implantação, confirme `/healthz` e use os perfis abaixo para
    validar login, Pré-Embarque e painéis no endereço HTTPS do Render. Um
    serviço gratuito pode adormecer quando está ocioso. O Neon guarda os

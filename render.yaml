@@ -8,7 +8,5 @@ services:
     envVars:
       - key: DATABASE_URL
         sync: false
-      - key: PILOT_ACCESS_PASSWORD
-        sync: false
       - key: VAULT_ENCRYPTION_KEY
         sync: false
