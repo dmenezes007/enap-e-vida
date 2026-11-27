@@ -10,6 +10,7 @@ import {
   Users,
 } from 'lucide-react';
 import {apiFetch} from '../../lib/api';
+import {MonthCalendar} from './MonthCalendar';
 import {
   Button,
   Card,
@@ -21,7 +22,7 @@ import {
 
 const SOURCE_LABELS: Record<string, string> = {
   jornada: 'Jornada de Ambientação',
-  pqvt: 'PQVT · Qualidade de Vida',
+  pqvt: 'Atividades',
   comite_dei: 'Comitê DEI',
   institucional: 'Institucional Enap',
 };
@@ -54,9 +55,10 @@ export const EventsPage: React.FC = () => {
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [detail, setDetail] = useState<CalendarEvent | null>(null);
   const [loading, setLoading] = useState(true);
-  const [viewMode, setViewMode] = useState<'proximos' | 'mensal' | 'semanal' | 'meus'>('proximos');
+  const [viewMode, setViewMode] = useState<'proximos' | 'mensal' | 'semanal' | 'meus'>('mensal');
   const [sourceFilter, setSourceFilter] = useState('todos');
   const [categoryFilter, setCategoryFilter] = useState('');
+  const [search, setSearch] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [revision, setRevision] = useState(0);
@@ -124,7 +126,7 @@ export const EventsPage: React.FC = () => {
           className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#186F80] hover:underline"
         >
           <ArrowLeft className="w-4 h-4" aria-hidden="true" />
-          <span>Voltar para a Agenda Integrada</span>
+          <span>Voltar para o Calendário</span>
         </Link>
 
         <Card className="p-6 sm:p-8 space-y-5">
@@ -224,7 +226,10 @@ export const EventsPage: React.FC = () => {
   }
 
   // LISTA / AGENDA INTEGRADA
+  const normalize = (value: string) => value.normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase();
+  const query = normalize(search.trim());
   const filtered = events.filter((ev) => {
+    if (!normalize(ev.title + ' ' + ev.location + ' ' + ev.category).includes(query)) return false;
     if (viewMode === 'meus' && !ev.my_status) return false;
     if (viewMode === 'proximos' && Date.parse(ev.end_iso) < now) return false;
     if (sourceFilter !== 'todos' && ev.source_module !== sourceFilter) return false;
@@ -232,31 +237,28 @@ export const EventsPage: React.FC = () => {
     return true;
   });
 
-  const groups = filtered.reduce<Record<string, CalendarEvent[]>>((acc, ev) => {
+  const groups = viewMode === 'semanal' ? filtered.reduce<Record<string, CalendarEvent[]>>((acc, ev) => {
     const date = new Date(new Date(ev.start_iso).toLocaleDateString('sv-SE', {timeZone}) + 'T12:00:00Z');
     const calendarOptions = {timeZone: 'UTC'} as const;
-    let label = date.toLocaleDateString('pt-BR', {...calendarOptions, month: 'long', year: 'numeric'});
-    if (viewMode === 'semanal') {
-      date.setUTCDate(date.getUTCDate() - (date.getUTCDay() + 6) % 7);
-      label = `Semana de ${date.toLocaleDateString('pt-BR', calendarOptions)}`;
-    }
+    date.setUTCDate(date.getUTCDate() - (date.getUTCDay() + 6) % 7);
+    const label = `Semana de ${date.toLocaleDateString('pt-BR', calendarOptions)}`;
     (acc[label] ??= []).push(ev);
     return acc;
-  }, {});
+  }, {}) : {};
 
   return (
     <div className="space-y-6">
       <PageHeader
-        kicker="Agenda Institucional Integrada · Sem Duplicidade"
-        title="Eventos"
+        kicker="Agenda Institucional Integrada"
+        title="Calendário"
         description="Acompanhe encontros da Jornada de Ambientação, ações do PQVT, rodas do Comitê DEI e eventos institucionais em um único calendário com exportação .ics."
       />
 
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex flex-wrap gap-2">
           {([
+            {id: 'mensal', label: 'Mês'},
             {id: 'proximos', label: 'Próximos eventos'},
-            {id: 'mensal', label: 'Agrupado por mês'},
             {id: 'semanal', label: 'Agrupado por semana'},
             {id: 'meus', label: 'Meus eventos'},
           ] as const).map((m) => (
@@ -277,6 +279,9 @@ export const EventsPage: React.FC = () => {
         </div>
 
         <div className="flex flex-wrap gap-2">
+          <input type="search" value={search} onChange={(e) => setSearch(e.target.value)}
+            placeholder="Buscar eventos" aria-label="Buscar eventos"
+            className="rounded-lg border border-[#C5BEB2] bg-white px-3 py-2 text-sm text-[#231F20]" />
           <select
             aria-label="Filtrar por origem"
             value={sourceFilter}
@@ -285,7 +290,7 @@ export const EventsPage: React.FC = () => {
           >
             <option value="todos">Todas as origens</option>
             <option value="jornada">Jornada de Ambientação</option>
-            <option value="pqvt">PQVT</option>
+            <option value="pqvt">Atividades</option>
             <option value="comite_dei">Comitê DEI</option>
             <option value="institucional">Institucional</option>
           </select>
@@ -303,12 +308,14 @@ export const EventsPage: React.FC = () => {
         </div>
       </div>
 
-      {filtered.length === 0 ? (
+      {viewMode === 'mensal' ? (
+        <MonthCalendar events={filtered} renderEvent={(ev) => <EventCard key={ev.id} ev={ev} />} />
+      ) : filtered.length === 0 ? (
         <EmptyState
           title="Nenhum evento neste recorte"
           description="Experimente limpar os filtros ou confirmar sua participação nos próximos encontros."
         />
-      ) : viewMode === 'mensal' || viewMode === 'semanal' ? (
+      ) : viewMode === 'semanal' ? (
         <div className="space-y-6">
           {Object.entries(groups).map(([label, items]) => (
             <div key={label} className="space-y-3">

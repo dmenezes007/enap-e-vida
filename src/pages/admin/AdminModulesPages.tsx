@@ -65,7 +65,7 @@ export const AdminActivitiesPage: React.FC = () => {
     <div className="space-y-6">
       <PageHeader
         kicker="Gestão PQVT"
-        title="Atividades Físicas, Esportivas e de Lazer"
+        title="Atividades"
         description="Gerencie catálogo, vagas, lista de espera e acessibilidade das ações de qualidade de vida."
         actions={
           <Button variant="secondary" onClick={() => setOpen(true)}>
@@ -191,7 +191,7 @@ export const AdminEventsPage: React.FC = () => {
         method: 'POST',
         body: JSON.stringify({...form, capacity: Number(form.capacity)}),
       });
-      pushToast('Evento publicado na Agenda Integrada!', 'success');
+      pushToast('Evento publicado na Calendário!', 'success');
       setOpen(false);
       load();
     } catch (err: any) {
@@ -205,7 +205,7 @@ export const AdminEventsPage: React.FC = () => {
     <div className="space-y-6">
       <PageHeader
         kicker="Gestão de Agenda"
-        title="Eventos Institucionais"
+        title="Calendário Institucional"
         description="Publique eventos unificados para Jornada, PQVT, Comitê DEI ou toda a comunidade Enap."
         actions={
           <Button variant="secondary" onClick={() => setOpen(true)}>
@@ -244,7 +244,7 @@ export const AdminEventsPage: React.FC = () => {
         </div>
       </Card>
 
-      <Modal open={open} onClose={() => setOpen(false)} title="Publicar evento na Agenda Integrada">
+      <Modal open={open} onClose={() => setOpen(false)} title="Publicar evento na Calendário">
         <form onSubmit={handleCreate} className="space-y-4">
           <Field id="ev-t" label="Título" required>
             <input id="ev-t" required value={form.title} onChange={(e) => setForm({...form, title: e.target.value})} className={inputBaseClass} />

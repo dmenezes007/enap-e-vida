@@ -1,0 +1,131 @@
+[
+  {
+    "title": "Alongamento e Funcional",
+    "sessions": [
+      {
+        "days": "Segunda e Quarta",
+        "hours": "12:10h - 12:50h",
+        "capacity": "Vagas de acordo com ordem de chegada. Capacidade Máxima: 12 participantes",
+        "available": null,
+        "waitlist": null
+      }
+    ]
+  },
+  {
+    "title": "Tênis de Quadra",
+    "sessions": [
+      {
+        "days": "Terça e Quinta",
+        "hours": "12h às 13h",
+        "capacity": "Vagas de acordo com ordem de chegada. Capacidade Máxima: 12 participantes",
+        "available": null,
+        "waitlist": null
+      }
+    ]
+  },
+  {
+    "title": "Beach Tennis",
+    "sessions": [
+      {
+        "days": "Segunda e Quarta",
+        "hours": "12h às 12:50h",
+        "capacity": "Vagas de acordo com ordem de chegada. Capacidade Máxima: 12 participantes",
+        "available": null,
+        "waitlist": null
+      }
+    ]
+  },
+  {
+    "title": "Musculação",
+    "sessions": [
+      {
+        "days": "Segunda a Sexta",
+        "hours": "8h às 19h (12h às 14h - com acompanhamento do profissional)",
+        "capacity": "Não tem número máximo de vagas",
+        "available": null,
+        "waitlist": null
+      }
+    ]
+  },
+  {
+    "title": "Montagem de Série Treino de Musculação",
+    "sessions": [
+      {
+        "days": "A combinar",
+        "hours": "Por Agendamento",
+        "capacity": "Não tem número máximo de vagas",
+        "available": null,
+        "waitlist": null
+      }
+    ]
+  },
+  {
+    "title": "Natação",
+    "sessions": [
+      {
+        "days": "Segunda e Quarta",
+        "hours": "8h às 8:50h",
+        "capacity": "Vagas de acordo com ordem de chegada. Capacidade Máxima: 18 participantes por turma.",
+        "available": null,
+        "waitlist": null
+      },
+      {
+        "days": "Segunda e Quarta",
+        "hours": "13h às 13:50h",
+        "capacity": "Vagas de acordo com ordem de chegada. Capacidade Máxima: 18 participantes por turma.",
+        "available": null,
+        "waitlist": null
+      },
+      {
+        "days": "Terça e Quinta",
+        "hours": "17h às 17:45",
+        "capacity": "Vagas de acordo com ordem de chegada. Capacidade Máxima: 18 participantes por turma.",
+        "available": null,
+        "waitlist": null
+      }
+    ]
+  },
+  {
+    "title": "Hidroginástica",
+    "sessions": [
+      {
+        "days": "Terça e Quinta",
+        "hours": "12h às 12:50h",
+        "capacity": "Vagas de acordo com ordem de chegada. Capacidade Máxima: 15 participantes",
+        "available": null,
+        "waitlist": null
+      }
+    ]
+  },
+  {
+    "title": "Dança",
+    "sessions": [
+      {
+        "days": "Terça e Quinta",
+        "hours": "17h às 17:50h",
+        "capacity": "Vagas de acordo com ordem de chegada. Capacidade Máxima: 15 participantes",
+        "available": null,
+        "waitlist": null
+      }
+    ]
+  },
+  {
+    "title": "Orientação Psicológica",
+    "sessions": [
+      {
+        "days": "A combinar",
+        "hours": "Por Agendamento",
+        "capacity": "Não tem número máximo de vagas",
+        "available": null,
+        "waitlist": null
+      },
+      {
+        "days": "A combinar",
+        "hours": "12h",
+        "capacity": "4",
+        "available": "0",
+        "waitlist": "5"
+      }
+    ]
+  }
+]

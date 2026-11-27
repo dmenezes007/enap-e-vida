@@ -317,7 +317,7 @@ export const ProfilePage: React.FC = () => {
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
                 {[
-                  {key: 'atividades', label: 'Atividades PQVT'},
+                  {key: 'atividades', label: 'Atividades'},
                   {key: 'eventos', label: 'Eventos da agenda'},
                   {key: 'enquetes', label: 'Novas enquetes'},
                   {key: 'comunicados', label: 'Comunicados institucionais'},

@@ -27,6 +27,7 @@ import {
 } from 'lucide-react';
 import {useAuth} from '../../contexts/AuthContext';
 import {apiFetch} from '../../lib/api';
+import {ModuleExport} from './ModuleExport';
 import {NewsTicker, EnapVidaLogo, OfflineIndicator, PWAInstallButton} from '../ui/BrandAssets';
 
 interface NavItem {
@@ -39,9 +40,9 @@ interface NavItem {
 const COMMUNITY_NAV: NavItem[] = [
   {to: '/app/inicio', label: 'Início', icon: Home, end: true},
   {to: '/app/jornada', label: 'Ambientação', icon: Compass},
-  {to: '/app/atividades', label: 'Qualidade de Vida', icon: Activity},
+  {to: '/app/atividades', label: 'Atividades', icon: Activity},
   {to: '/app/comite-dei', label: 'Diversidades', icon: HeartHandshake},
-  {to: '/app/eventos', label: 'Eventos', icon: Calendar},
+  {to: '/app/eventos', label: 'Calendário', icon: Calendar},
   {to: '/app/enquetes', label: 'Enquetes', icon: ClipboardCheck},
   {to: '/app/repositorio', label: 'Biblioteca', icon: BookOpen},
   {to: '/app/fala-enap', label: 'Fala, Enap!', icon: MessageSquareHeart},
@@ -110,10 +111,10 @@ export const AppShell: React.FC<{
       ? [{to: '/admin/melhoria-continua', label: 'Melhoria Contínua', icon: Sparkles}]
       : []),
     ...(hasPerm('activities:manage')
-      ? [{to: '/admin/atividades', label: 'Atividades PQVT', icon: Activity}]
+      ? [{to: '/admin/atividades', label: 'Atividades', icon: Activity}]
       : []),
     ...(hasPerm('events:manage')
-      ? [{to: '/admin/eventos', label: 'Eventos', icon: Calendar}]
+      ? [{to: '/admin/eventos', label: 'Calendário', icon: Calendar}]
       : []),
     ...(hasPerm('surveys:manage')
       ? [{to: '/admin/enquetes', label: 'Enquetes', icon: ClipboardCheck}]
@@ -242,7 +243,9 @@ export const AppShell: React.FC<{
             {!collapsed && user && (
               <div className="mb-2 px-2">
                 <p className="text-xs font-semibold text-[#FFF2DE] truncate">{user.preferredName}</p>
-                <p className="text-[11px] text-white/70 truncate">{user.organizationalUnit}</p>
+                {location.pathname !== '/app/inicio' && (
+                  <p className="text-[11px] text-white/70 truncate">{user.organizationalUnit}</p>
+                )}
               </div>
             )}
             <button
@@ -308,6 +311,9 @@ export const AppShell: React.FC<{
 
             <div className="flex items-center gap-2.5 shrink-0">
               <PWAInstallButton compact />
+              {mode === 'community' && (
+                <ModuleExport key={location.pathname} module={location.pathname.split('/')[2]} />
+              )}
 
               {canAdmin && (
                 <Link
@@ -389,7 +395,7 @@ export const AppShell: React.FC<{
           }
         >
           <Activity className="w-4 h-4" aria-hidden="true" />
-          <span className="text-center leading-tight">Qualidade de Vida</span>
+          <span>Atividades</span>
         </NavLink>
         <NavLink
           to="/app/eventos"
@@ -400,7 +406,7 @@ export const AppShell: React.FC<{
           }
         >
           <Calendar className="w-4 h-4" aria-hidden="true" />
-          <span>Eventos</span>
+          <span>Calendário</span>
         </NavLink>
         <button
           type="button"

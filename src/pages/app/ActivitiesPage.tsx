@@ -14,6 +14,7 @@ import {
   Users,
 } from 'lucide-react';
 import {apiFetch} from '../../lib/api';
+import {PqvtCatalog} from './PqvtCatalog';
 import {
   AlertBox,
   Button,
@@ -315,126 +316,130 @@ export const ActivitiesPage: React.FC = () => {
     <div className="space-y-6">
       <PageHeader
         kicker="Programa de Qualidade de Vida no Trabalho · PQVT"
-        title="Qualidade de Vida"
+        title="Atividades"
         description="Iniciativas voluntárias de bem-estar, pausa ativa, esportes coletivos, caminhadas e encontros culturais abertos à comunidade Enap."
       />
 
-      <AlertBox tone="info" title="Ambiente de cuidado sem rankings ou coleta clínica">
-        O PQVT no Enap e-Vida incentiva a convivência saudável e acessível — sem rankings competitivos,
-        sem pressão por performance e sem coleta de dados biométricos ou prontuários médicos.
+      <AlertBox tone="info" title="Convivência saudável e acessível">
+        O PQVT incentiva a convivência saudável e acessível — sem rankings competitivos e sem pressão por performance.
       </AlertBox>
 
-      {/* Filtros */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div className="flex flex-wrap gap-2">
-          {[
-            {id: 'todas', label: 'Catálogo completo'},
-            {id: 'minhas', label: 'Minhas inscrições'},
-            {id: 'favoritas', label: 'Favoritas'},
-          ].map((v) => (
-            <button
-              key={v.id}
-              type="button"
-              onClick={() => setViewFilter(v.id as any)}
-              className={`px-3.5 py-2 rounded-lg text-sm font-semibold cursor-pointer whitespace-nowrap shrink-0 ${
-                viewFilter === v.id
-                  ? 'bg-[#173640] text-white'
-                  : 'bg-white border border-[#E2DDD5] text-[#4A4F52] hover:bg-[#F2EFE9]'
-              }`}
-            >
-              {v.label}
-            </button>
-          ))}
+      <PqvtCatalog />
+
+      <details className="space-y-4 rounded-xl border border-[#E2DDD5] bg-white p-4">
+        <summary className="cursor-pointer text-sm font-bold text-[#173640]">Inscrições e favoritos do piloto</summary>
+        {/* Filtros */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex flex-wrap gap-2">
+            {[
+              {id: 'todas', label: 'Todas as atividades'},
+              {id: 'minhas', label: 'Minhas inscrições'},
+              {id: 'favoritas', label: 'Favoritas'},
+            ].map((v) => (
+              <button
+                key={v.id}
+                type="button"
+                onClick={() => setViewFilter(v.id as any)}
+                className={`px-3.5 py-2 rounded-lg text-sm font-semibold cursor-pointer whitespace-nowrap shrink-0 ${
+                  viewFilter === v.id
+                    ? 'bg-[#173640] text-white'
+                    : 'bg-white border border-[#E2DDD5] text-[#4A4F52] hover:bg-[#F2EFE9]'
+                }`}
+              >
+                {v.label}
+              </button>
+            ))}
+          </div>
+
+          <select
+            aria-label="Filtrar por categoria"
+            value={categoryFilter}
+            onChange={(e) => setCategoryFilter(e.target.value)}
+            className="rounded-lg border border-[#C5BEB2] bg-white px-3 py-2 text-sm text-[#231F20]"
+          >
+            {categories.map((c) => (
+              <option key={c}>{c}</option>
+            ))}
+          </select>
         </div>
 
-        <select
-          aria-label="Filtrar por categoria"
-          value={categoryFilter}
-          onChange={(e) => setCategoryFilter(e.target.value)}
-          className="rounded-lg border border-[#C5BEB2] bg-white px-3 py-2 text-sm text-[#231F20]"
-        >
-          {categories.map((c) => (
-            <option key={c}>{c}</option>
-          ))}
-        </select>
-      </div>
-
-      {filtered.length === 0 ? (
-        <EmptyState
-          title="Nenhuma atividade encontrada"
-          description="Ajuste os filtros selecionados para visualizar todas as atividades disponíveis no PQVT."
-        />
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {filtered.map((a) => {
-            const isFull = a.enrolled_count >= a.capacity;
-            return (
-              <Card key={a.id} className="overflow-hidden flex flex-col justify-between">
-                <div>
-                  <div className="relative h-40 bg-[#FFF2DE]">
-                    <img
-                      src={a.image_url || '/src/assets/images/pqvt_bem_estar_1795080544676.jpg'}
-                      alt={a.title}
-                      className="w-full h-full object-cover"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => handleToggleFavorite(a.id)}
-                      aria-label="Favoritar atividade"
-                      className="absolute top-3 right-3 h-8 w-8 rounded-full bg-white/95 flex items-center justify-center text-[#173640] shadow cursor-pointer"
-                    >
-                      <Heart
-                        className={`w-4 h-4 ${a.is_favorite ? 'fill-[#FF8500] text-[#FF8500]' : ''}`}
+        {filtered.length === 0 ? (
+          <EmptyState
+            title="Nenhuma atividade encontrada"
+            description="Ajuste os filtros selecionados para visualizar todas as atividades disponíveis no PQVT."
+          />
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {filtered.map((a) => {
+              const isFull = a.enrolled_count >= a.capacity;
+              return (
+                <Card key={a.id} className="overflow-hidden flex flex-col justify-between">
+                  <div>
+                    <div className="relative h-40 bg-[#FFF2DE]">
+                      <img
+                        src={a.image_url || '/src/assets/images/pqvt_bem_estar_1795080544676.jpg'}
+                        alt={a.title}
+                        className="w-full h-full object-cover"
                       />
-                    </button>
-                  </div>
+                      <button
+                        type="button"
+                        onClick={() => handleToggleFavorite(a.id)}
+                        aria-label="Favoritar atividade"
+                        className="absolute top-3 right-3 h-8 w-8 rounded-full bg-white/95 flex items-center justify-center text-[#173640] shadow cursor-pointer"
+                      >
+                        <Heart
+                          className={`w-4 h-4 ${a.is_favorite ? 'fill-[#FF8500] text-[#FF8500]' : ''}`}
+                        />
+                      </button>
+                    </div>
 
-                  <div className="p-5 space-y-2">
-                    <p className="text-xs font-bold text-[#285D32]">
-                      {a.category} · {a.modality}
-                    </p>
-                    <h2 className="text-base font-extrabold text-[#173640]">
-                      <Link to={`/app/atividades/${a.id}`} className="hover:underline">
-                        {a.title}
-                      </Link>
-                    </h2>
-                    <p className="text-xs text-[#4A4F52] line-clamp-2">{a.description}</p>
-                    <div className="pt-2 space-y-1 text-xs text-[#5F666A]">
-                      <p className="flex items-center gap-1.5">
-                        <Calendar className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
-                        <span>{a.schedule_summary}</span>
+                    <div className="p-5 space-y-2">
+                      <p className="text-xs font-bold text-[#285D32]">
+                        {a.category} · {a.modality}
                       </p>
-                      <p className="flex items-center gap-1.5">
-                        <MapPin className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
-                        <span className="truncate">{a.location}</span>
-                      </p>
+                      <h2 className="text-base font-extrabold text-[#173640]">
+                        <Link to={`/app/atividades/${a.id}`} className="hover:underline">
+                          {a.title}
+                        </Link>
+                      </h2>
+                      <p className="text-xs text-[#4A4F52] line-clamp-2">{a.description}</p>
+                      <div className="pt-2 space-y-1 text-xs text-[#5F666A]">
+                        <p className="flex items-center gap-1.5">
+                          <Calendar className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
+                          <span>{a.schedule_summary}</span>
+                        </p>
+                        <p className="flex items-center gap-1.5">
+                          <MapPin className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
+                          <span className="truncate">{a.location}</span>
+                        </p>
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                <div className="px-5 py-3.5 border-t border-[#ECE7DF] bg-[#FAF8F4] flex items-center justify-between gap-2">
-                  <div className="text-xs tabular-nums">
-                    <span className={`font-bold ${isFull ? 'text-[#9E4F00]' : 'text-[#285D32]'}`}>
-                      {a.enrolled_count}/{a.capacity} vagas
-                    </span>
-                    {a.my_status && (
-                      <span className="block text-[11px] font-semibold text-[#186F80]">
-                        {a.my_status === 'confirmada' ? 'Você está inscrito(a)' : 'Na lista de espera'}
+                  <div className="px-5 py-3.5 border-t border-[#ECE7DF] bg-[#FAF8F4] flex items-center justify-between gap-2">
+                    <div className="text-xs tabular-nums">
+                      <span className={`font-bold ${isFull ? 'text-[#9E4F00]' : 'text-[#285D32]'}`}>
+                        {a.enrolled_count}/{a.capacity} vagas
                       </span>
-                    )}
+                      {a.my_status && (
+                        <span className="block text-[11px] font-semibold text-[#186F80]">
+                          {a.my_status === 'confirmada' ? 'Você está inscrito(a)' : 'Na lista de espera'}
+                        </span>
+                      )}
+                    </div>
+                    <Link
+                      to={`/app/atividades/${a.id}`}
+                      className="text-xs font-extrabold text-[#173640] hover:text-[#186F80] underline whitespace-nowrap shrink-0"
+                    >
+                      Ver detalhes
+                    </Link>
                   </div>
-                  <Link
-                    to={`/app/atividades/${a.id}`}
-                    className="text-xs font-extrabold text-[#173640] hover:text-[#186F80] underline whitespace-nowrap shrink-0"
-                  >
-                    Ver detalhes
-                  </Link>
-                </div>
-              </Card>
-            );
-          })}
-        </div>
-      )}
+                </Card>
+              );
+            })}
+          </div>
+        )}
+      </details>
     </div>
   );
 };

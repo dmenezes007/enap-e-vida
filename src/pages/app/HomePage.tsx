@@ -68,7 +68,7 @@ export const HomePage: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 items-center">
           <div className="lg:col-span-8 p-6 sm:p-8 space-y-3">
             <p className="text-xs font-bold uppercase tracking-wider text-[#FFC400]">
-              Enap e-Vida · {user?.organizationalUnit}
+              Enap e-Vida
             </p>
             <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-balance">
               Olá, {user?.preferredName}! Que bom ter você por aqui.
@@ -235,14 +235,14 @@ export const HomePage: React.FC = () => {
         </section>
       )}
 
-      {/* Grid principal: PQVT + Agenda Integrada */}
+      {/* Grid principal: PQVT + Calendário */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Próximas atividades do PQVT */}
         <Card className="p-6 space-y-4">
           <div className="flex items-center justify-between gap-3">
             <div>
               <p className="text-xs font-bold uppercase tracking-wider text-[#285D32]">
-                Qualidade de Vida · PQVT
+                Atividades
               </p>
               <h2 className="text-lg font-extrabold text-[#173640]">Atividades com vagas abertas</h2>
             </div>
@@ -286,7 +286,7 @@ export const HomePage: React.FC = () => {
           <div className="flex items-center justify-between gap-3">
             <div>
               <p className="text-xs font-bold uppercase tracking-wider text-[#186F80]">
-                Agenda Integrada
+                Calendário
               </p>
               <h2 className="text-lg font-extrabold text-[#173640]">Próximos eventos da Enap</h2>
             </div>
@@ -294,7 +294,7 @@ export const HomePage: React.FC = () => {
               to="/app/eventos"
               className="text-xs font-bold text-[#186F80] hover:underline whitespace-nowrap shrink-0"
             >
-              Ver agenda
+              Ver calendário
             </Link>
           </div>
           <div className="divide-y divide-[#ECE7DF]">
