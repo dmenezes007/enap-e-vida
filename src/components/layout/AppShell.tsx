@@ -160,11 +160,11 @@ export const AppShell: React.FC<{
         {/* Barra lateral desktop recolhível (§12) */}
         <aside
           aria-label={mode === 'admin' ? 'Navegação administrativa' : 'Navegação principal'}
-          className={`hidden md:flex flex-col bg-[#173640] text-white shrink-0 transition-all duration-200 ${
+          className={`sticky top-0 hidden h-dvh shrink-0 self-start flex-col bg-[#173640] text-white transition-[width] duration-200 md:flex ${
             collapsed ? 'w-[76px]' : 'w-[264px]'
           }`}
         >
-          <div className={`h-16 flex items-center justify-between gap-1 border-b border-white/10 ${collapsed ? 'px-2' : 'px-4'}`}>
+          <div className={`h-16 shrink-0 flex items-center justify-between gap-1 border-b border-white/10 ${collapsed ? 'px-2' : 'px-4'}`}>
             <Link
               to={mode === 'admin' ? '/admin' : '/app/inicio'}
               className="flex items-center gap-2.5 overflow-hidden"
@@ -215,7 +215,7 @@ export const AppShell: React.FC<{
             </div>
           )}
 
-          <nav className="flex-1 overflow-y-auto px-2.5 py-4 space-y-1">
+          <nav className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-2.5 py-4 space-y-1">
             {activeNav.map((item) => {
               const Icon = item.icon;
               return (
@@ -239,7 +239,7 @@ export const AppShell: React.FC<{
             })}
           </nav>
 
-          <div className="p-3 border-t border-white/10">
+          <div className="shrink-0 p-3 border-t border-white/10">
             {!collapsed && user && (
               <div className="mb-2 px-2">
                 <p className="text-xs font-semibold text-[#FFF2DE] truncate">{user.preferredName}</p>
