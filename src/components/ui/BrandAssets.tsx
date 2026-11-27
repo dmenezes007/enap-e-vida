@@ -49,7 +49,7 @@ export function NewsTicker() {
       className="flex items-center gap-2 border-b border-[#218FA3]/30 bg-[#173640] px-4 text-xs font-medium text-[#FFF2DE]"
     >
       <div className="min-w-0 flex-1 overflow-hidden py-2">
-        <div className="news-ticker-track" data-paused={paused}>
+        <div className="news-ticker-track font-bold" data-paused={paused}>
           <span>{launchAnnouncement}</span>
           <span aria-hidden="true">{launchAnnouncement}</span>
         </div>

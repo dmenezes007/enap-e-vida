@@ -1,5 +1,5 @@
 import {ArrowLeft} from 'lucide-react';
-import {Fragment} from 'react';
+import {Fragment, useLayoutEffect} from 'react';
 import {Link} from 'react-router-dom';
 import rawTerms from '../../../termos-de-uso.md?raw';
 import rawPrivacy from '../../../politica-de-privacidade.md?raw';
@@ -32,6 +32,10 @@ function renderParagraph(text: string) {
 }
 
 export function LegalDocumentPage({kind}: {kind: keyof typeof documents}) {
+  useLayoutEffect(() => {
+    window.scrollTo({top: 0, left: 0, behavior: 'instant'});
+  }, [kind]);
+
   const [title, subtitle, ...lines] = documents[kind].trim().split(/\r?\n/);
 
   return (

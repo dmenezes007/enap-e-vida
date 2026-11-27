@@ -455,7 +455,7 @@ export const LandingLoginPage: React.FC = () => {
               <Link to="/termos-de-uso" className="font-semibold underline">Termos de Uso</Link>
               {' '}e pela{' '}
               <Link to="/politica-de-privacidade" className="font-semibold underline">Política de Privacidade</Link>
-              {' '}do enap e-Vida.
+              {' '}do Enap e-Vida.
             </AlertBox>
           </div>
         )}
