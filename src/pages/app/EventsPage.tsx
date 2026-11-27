@@ -248,7 +248,7 @@ export const EventsPage: React.FC = () => {
     <div className="space-y-6">
       <PageHeader
         kicker="Agenda Institucional Integrada · Sem Duplicidade"
-        title="Eventos da Enap"
+        title="Eventos"
         description="Acompanhe encontros da Jornada de Ambientação, ações do PQVT, rodas do Comitê DEI e eventos institucionais em um único calendário com exportação .ics."
       />
 

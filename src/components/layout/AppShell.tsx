@@ -38,14 +38,14 @@ interface NavItem {
 
 const COMMUNITY_NAV: NavItem[] = [
   {to: '/app/inicio', label: 'Início', icon: Home, end: true},
-  {to: '/app/jornada', label: 'Jornada de Ambientação', icon: Compass},
-  {to: '/app/atividades', label: 'Atividades PQVT', icon: Activity},
+  {to: '/app/jornada', label: 'Ambientação', icon: Compass},
+  {to: '/app/atividades', label: 'Qualidade de Vida', icon: Activity},
+  {to: '/app/comite-dei', label: 'Diversidades', icon: HeartHandshake},
   {to: '/app/eventos', label: 'Eventos', icon: Calendar},
-  {to: '/app/fala-enap', label: 'Fala, Enap!', icon: MessageSquareHeart},
   {to: '/app/enquetes', label: 'Enquetes', icon: ClipboardCheck},
-  {to: '/app/repositorio', label: 'Repositório', icon: BookOpen},
-  {to: '/app/comite-dei', label: 'Comitê DEI', icon: HeartHandshake},
-  {to: '/app/perfil', label: 'Meu perfil', icon: UserCircle2},
+  {to: '/app/repositorio', label: 'Biblioteca', icon: BookOpen},
+  {to: '/app/fala-enap', label: 'Fala, Enap!', icon: MessageSquareHeart},
+  {to: '/app/perfil', label: 'Meu Perfil', icon: UserCircle2},
 ];
 
 export const AppShell: React.FC<{
@@ -163,7 +163,7 @@ export const AppShell: React.FC<{
             collapsed ? 'w-[76px]' : 'w-[264px]'
           }`}
         >
-          <div className="h-16 px-4 flex items-center justify-between border-b border-white/10">
+          <div className={`h-16 flex items-center justify-between gap-1 border-b border-white/10 ${collapsed ? 'px-2' : 'px-4'}`}>
             <Link
               to={mode === 'admin' ? '/admin' : '/app/inicio'}
               className="flex items-center gap-2.5 overflow-hidden"
@@ -172,7 +172,13 @@ export const AppShell: React.FC<{
               {!collapsed ? (
                 <EnapVidaLogo className="max-w-36 shrink-0 brightness-0 invert" />
               ) : (
-                <span className="text-base font-extrabold text-[#FFF2DE] mx-auto">eV</span>
+                <img
+                  src={`${import.meta.env.BASE_URL}logo-icon-enap-e-vida.png`}
+                  alt=""
+                  width={416}
+                  height={416}
+                  className="size-7 shrink-0 object-contain brightness-0 invert"
+                />
               )}
             </Link>
             <button
@@ -372,7 +378,7 @@ export const AppShell: React.FC<{
           }
         >
           <Compass className="w-4 h-4" aria-hidden="true" />
-          <span>Jornada</span>
+          <span>Ambientação</span>
         </NavLink>
         <NavLink
           to="/app/atividades"
@@ -383,7 +389,7 @@ export const AppShell: React.FC<{
           }
         >
           <Activity className="w-4 h-4" aria-hidden="true" />
-          <span>Atividades</span>
+          <span className="text-center leading-tight">Qualidade de Vida</span>
         </NavLink>
         <NavLink
           to="/app/eventos"
@@ -394,7 +400,7 @@ export const AppShell: React.FC<{
           }
         >
           <Calendar className="w-4 h-4" aria-hidden="true" />
-          <span>Agenda</span>
+          <span>Eventos</span>
         </NavLink>
         <button
           type="button"

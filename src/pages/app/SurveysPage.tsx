@@ -340,7 +340,7 @@ export const SurveysPage: React.FC = () => {
     <div className="space-y-6">
       <PageHeader
         kicker="Escuta Estruturada · Privacidade Garantida"
-        title="Enquetes e Consultas Internas"
+        title="Enquetes"
         description="Participe de consultas rápidas sobre bem-estar, ambientação, eventos e políticas internas. Pesquisas anônimas separam tecnicamente sua conta das respostas e suprimem recortes abaixo de 10 participantes."
       />
 

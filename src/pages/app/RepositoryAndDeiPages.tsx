@@ -92,7 +92,7 @@ export const RepositoryPage: React.FC = () => {
     <div className="space-y-6">
       <PageHeader
         kicker="Conhecimento Institucional · Normas · Manuais"
-        title="Repositório de Materiais"
+        title="Biblioteca"
         description="Acesse guias de ambientação, resoluções vigentes (como o PGD Resolução Enap nº 76/2025), cartilhas de diversidade, manuais de ética e documentos de apoio com histórico de versões."
       />
 
@@ -261,8 +261,8 @@ export const ComiteDeiPage: React.FC = () => {
   return (
     <div className="space-y-7">
       <PageHeader
-        kicker="Diversidade · Equidade · Inclusão"
-        title="Comitê de Diversidades, Equidade e Inclusão (Comitê DEI)"
+        kicker="Comitê de Diversidades, Equidade e Inclusão"
+        title="Diversidades"
         description="Espaço institucional dedicado à equidade racial, de gênero, acessibilidade, inclusão e respeito à pluralidade na Enap."
       />
 

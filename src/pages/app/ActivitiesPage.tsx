@@ -315,7 +315,7 @@ export const ActivitiesPage: React.FC = () => {
     <div className="space-y-6">
       <PageHeader
         kicker="Programa de Qualidade de Vida no Trabalho · PQVT"
-        title="Atividades Físicas, Esportivas e de Lazer"
+        title="Qualidade de Vida"
         description="Iniciativas voluntárias de bem-estar, pausa ativa, esportes coletivos, caminhadas e encontros culturais abertos à comunidade Enap."
       />
 

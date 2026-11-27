@@ -194,7 +194,7 @@ export const JourneyPage: React.FC = () => {
     <div className="space-y-6">
       <PageHeader
         kicker="Da posse ao pertencimento · Pessoas · Processos · Evidências"
-        title="Jornada de Ambientação"
+        title="Ambientação"
         description="Um percurso contínuo e acolhedor que integra preparação técnica, vínculos humanos e aprendizado organizacional."
         actions={
           <Button variant="accent" onClick={() => setTab('apoio')}>
