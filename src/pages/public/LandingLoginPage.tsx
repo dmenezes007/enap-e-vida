@@ -159,7 +159,7 @@ export const LandingLoginPage: React.FC = () => {
               </div>
 
               {/* Arte editorial inspirada no RGI 2025 */}
-              <div className="relative overflow-hidden rounded-2xl border border-[#E2DDD5] bg-[#FFF2DE]">
+              <div className="relative overflow-hidden rounded-2xl border border-[#E2DDD5] bg-[#AFF0ED]">
                 <img
                   src="/src/assets/images/hero_enap_evida_1795080544506.jpg"
                   alt="Ilustração editorial em traço orgânico e paleta institucional do RGI 2025 representando pessoas diversas em acolhimento e diálogo cercadas por elementos da biodiversidade do Cerrado"
@@ -333,7 +333,7 @@ export const LandingLoginPage: React.FC = () => {
                   type="button"
                   onClick={() => setDemoOpen((v) => !v)}
                   aria-expanded={demoOpen}
-                  className="w-full px-5 py-4 bg-[#FFF2DE]/70 hover:bg-[#FFF2DE] flex items-center justify-between gap-3 text-left transition-colors cursor-pointer"
+                  className="w-full px-5 py-4 bg-[#AFF0ED]/70 hover:bg-[#AFF0ED] flex items-center justify-between gap-3 text-left transition-colors cursor-pointer"
                 >
                   <div className="flex items-center gap-2.5">
                     <Users className="w-5 h-5 text-[#173640] shrink-0" aria-hidden="true" />

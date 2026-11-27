@@ -12,7 +12,7 @@
   --color-petroleo: #173640;
   --color-floresta: #285D32;
   --color-oliva: #939C22;
-  --color-creme: #FFF2DE;
+  --color-creme: #AFF0ED;
   --color-turquesa: #218FA3;
   --color-verde-profundo: #0B3D1E;
   --color-laranja: #FF8500;
@@ -27,7 +27,7 @@
   --enap-petroleo: #173640;
   --enap-floresta: #285D32;
   --enap-oliva: #939C22;
-  --enap-creme: #FFF2DE;
+  --enap-creme: #AFF0ED;
   --enap-turquesa: #218FA3;
   --enap-verde-profundo: #0B3D1E;
   --enap-laranja: #FF8500;
@@ -40,7 +40,7 @@
   /* Tokens semânticos (WCAG AA >= 4.5:1) */
   --bg-canvas: #F8F7F4;
   --bg-surface: #FFFFFF;
-  --bg-surface-warm: #FFF2DE;
+  --bg-surface-warm: #AFF0ED;
   --bg-surface-subtle: #F2EFE9;
   --border-subtle: #E2DDD5;
   --border-strong: #C5BEB2;

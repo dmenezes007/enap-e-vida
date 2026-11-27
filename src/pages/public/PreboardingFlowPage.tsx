@@ -690,7 +690,7 @@ export const PreboardingFlowPage: React.FC = () => {
                           setInviteCode('ENAP-2026-NS01');
                           setInviteEmail('pre.ns@demo.enap.gov.br');
                         }}
-                        className="text-xs font-semibold text-[#173640] bg-[#FFF2DE] hover:bg-[#f6e3c2] border border-[#FF8500]/30 rounded-lg px-3 py-1.5 cursor-pointer"
+                        className="text-xs font-semibold text-[#173640] bg-[#AFF0ED] hover:bg-[#f6e3c2] border border-[#FF8500]/30 rounded-lg px-3 py-1.5 cursor-pointer"
                       >
                         Preencher GAEG Nível Superior (ENAP-2026-NS01)
                       </button>
@@ -741,7 +741,7 @@ export const PreboardingFlowPage: React.FC = () => {
                         onClick={() => setModality(mod)}
                         className={`text-left rounded-xl border-2 p-5 transition-colors cursor-pointer ${
                           selected
-                            ? 'border-[#173640] bg-[#FFF2DE]/60'
+                            ? 'border-[#173640] bg-[#AFF0ED]/60'
                             : 'border-[#E2DDD5] bg-white hover:bg-[#FAF8F4]'
                         }`}
                       >
@@ -1346,7 +1346,7 @@ export const PreboardingFlowPage: React.FC = () => {
                   {/* ETAPA 6: Declaração remuneratória GAEG */}
                   {stepIdx === 5 && (
                     <div className="space-y-4">
-                      <div className="rounded-xl border border-[#173640]/25 bg-[#FFF2DE]/70 p-5 space-y-3">
+                      <div className="rounded-xl border border-[#173640]/25 bg-[#AFF0ED]/70 p-5 space-y-3">
                         <p className="text-xs font-extrabold uppercase tracking-wider text-[#173640]">
                           Declaração Remuneratória —{' '}
                           {modality === 'GAEG_NS' ? 'GAEG Nível Superior' : 'GAEG Nível Intermediário'}

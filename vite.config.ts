@@ -65,7 +65,7 @@ export default defineConfig(({mode}) => {
           description:
             'Experiência institucional integrada da Enap: acolhimento, Jornada de Ambientação, PQVT, participação e diversidade.',
           theme_color: '#173640',
-          background_color: '#FFF2DE',
+          background_color: '#AFF0ED',
           display: 'standalone',
           start_url: base,
           scope: base,

@@ -160,7 +160,7 @@ export const ActivitiesPage: React.FC = () => {
 
         <Card className="overflow-hidden">
           <div className="grid grid-cols-1 lg:grid-cols-12">
-            <div className="lg:col-span-5 bg-[#FFF2DE]">
+            <div className="lg:col-span-5 bg-[#AFF0ED]">
               <img
                 src={a.image_url || '/src/assets/images/pqvt_bem_estar_1795080544676.jpg'}
                 alt={`Ilustração da atividade ${a.title}`}
@@ -181,7 +181,7 @@ export const ActivitiesPage: React.FC = () => {
                   aria-label={a.is_favorite ? 'Remover dos favoritos' : 'Favoritar atividade'}
                   className={`p-2 rounded-lg border cursor-pointer ${
                     a.is_favorite
-                      ? 'border-[#FF8500] bg-[#FFF2DE] text-[#FF8500]'
+                      ? 'border-[#FF8500] bg-[#AFF0ED] text-[#FF8500]'
                       : 'border-[#E2DDD5] text-[#5F666A] hover:text-[#173640]'
                   }`}
                 >
@@ -232,7 +232,7 @@ export const ActivitiesPage: React.FC = () => {
                       <span>Inscrição confirmada</span>
                     </div>
                     {a.my_checkin_code && (
-                      <div className="inline-flex items-center gap-2 rounded-lg bg-[#FFF2DE] border border-[#173640]/20 px-3.5 py-2 text-xs font-mono font-bold text-[#173640]">
+                      <div className="inline-flex items-center gap-2 rounded-lg bg-[#AFF0ED] border border-[#173640]/20 px-3.5 py-2 text-xs font-mono font-bold text-[#173640]">
                         <QrCode className="w-4 h-4" aria-hidden="true" />
                         <span>Check-in: {a.my_checkin_code}</span>
                       </div>
@@ -370,7 +370,7 @@ export const ActivitiesPage: React.FC = () => {
               return (
                 <Card key={a.id} className="overflow-hidden flex flex-col justify-between">
                   <div>
-                    <div className="relative h-40 bg-[#FFF2DE]">
+                    <div className="relative h-40 bg-[#AFF0ED]">
                       <img
                         src={a.image_url || '/src/assets/images/pqvt_bem_estar_1795080544676.jpg'}
                         alt={a.title}

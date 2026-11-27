@@ -110,7 +110,7 @@ export const Card: React.FC<{
 }> = ({children, className = '', warm = false}) => (
   <div
     className={`rounded-xl border border-[#E2DDD5] ${
-      warm ? 'bg-[#FFF2DE]/65' : 'bg-white'
+      warm ? 'bg-[#AFF0ED]/65' : 'bg-white'
     } ${className}`}
   >
     {children}

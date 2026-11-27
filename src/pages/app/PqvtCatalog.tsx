@@ -37,7 +37,7 @@ export function PqvtCatalog() {
                     <p className="flex items-start gap-2"><Clock3 className="mt-0.5 size-4 shrink-0 text-[#186F80]" aria-hidden="true" />{session.hours}</p>
                     <p className="flex items-start gap-2"><Users className="mt-0.5 size-4 shrink-0 text-[#186F80]" aria-hidden="true" />{session.capacity}</p>
                     {session.available !== null && (
-                      <p className="rounded-md bg-[#FFF2DE] px-2 py-1 text-xs font-semibold text-[#173640]">
+                      <p className="rounded-md bg-[#AFF0ED] px-2 py-1 text-xs font-semibold text-[#173640]">
                         Na planilha: {session.available} vagas disponíveis · {session.waitlist} na lista de espera
                       </p>
                     )}

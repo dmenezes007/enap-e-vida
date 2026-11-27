@@ -30,7 +30,7 @@ export const RgiGeometricStrip: React.FC<{className?: string}> = ({className = '
     <rect x="120" y="0" width="120" height="24" fill="#285D32" />
     <circle cx="180" cy="12" r="9" fill="#939C22" />
     <rect x="240" y="0" width="120" height="24" fill="#939C22" />
-    <path d="M240 0 A24 24 0 0 1 264 24 L240 24 Z" fill="#FFF2DE" />
+    <path d="M240 0 A24 24 0 0 1 264 24 L240 24 Z" fill="#AFF0ED" />
     <rect x="360" y="0" width="120" height="24" fill="#218FA3" />
     <circle cx="420" cy="12" r="8" fill="#173640" />
     <rect x="480" y="0" width="120" height="24" fill="#173640" />
@@ -46,7 +46,7 @@ export function NewsTicker() {
   return (
     <section
       aria-label="Comunicado"
-      className="flex items-center gap-2 border-b border-[#218FA3]/30 bg-[#173640] px-4 text-xs font-medium text-[#FFF2DE]"
+      className="flex items-center gap-2 border-b border-[#218FA3]/30 bg-[#173640] px-4 text-xs font-medium text-[#AFF0ED]"
     >
       <div className="min-w-0 flex-1 overflow-hidden py-2">
         <div className="news-ticker-track font-bold" data-paused={paused}>
@@ -58,7 +58,7 @@ export function NewsTicker() {
         type="button"
         onClick={() => setPaused(!paused)}
         aria-label={paused ? 'Retomar comunicado' : 'Pausar comunicado'}
-        className="shrink-0 rounded p-1.5 hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#FFF2DE] motion-reduce:hidden"
+        className="shrink-0 rounded p-1.5 hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#AFF0ED] motion-reduce:hidden"
       >
         {paused ? <Play className="size-3.5" aria-hidden="true" /> : <Pause className="size-3.5" aria-hidden="true" />}
       </button>
@@ -77,7 +77,7 @@ export const PWAInstallButton: React.FC<{compact?: boolean}> = ({compact = false
       <button
         type="button"
         onClick={install}
-        className="inline-flex items-center gap-1.5 rounded-lg border border-[#173640]/20 bg-[#FFF2DE] px-3 py-1.5 text-xs font-semibold text-[#173640] hover:bg-[#f6e3c2] transition-colors whitespace-nowrap shrink-0 cursor-pointer"
+        className="inline-flex items-center gap-1.5 rounded-lg border border-[#173640]/20 bg-[#AFF0ED] px-3 py-1.5 text-xs font-semibold text-[#173640] hover:bg-[#f6e3c2] transition-colors whitespace-nowrap shrink-0 cursor-pointer"
       >
         <Download className="w-3.5 h-3.5" aria-hidden="true" />
         <span>{compact ? 'Instalar' : 'Instalar aplicativo'}</span>
@@ -91,7 +91,7 @@ export const PWAInstallButton: React.FC<{compact?: boolean}> = ({compact = false
         <button
           type="button"
           onClick={() => setShowGuide(true)}
-          className="inline-flex items-center gap-1.5 rounded-lg border border-[#173640]/20 bg-[#FFF2DE] px-3 py-1.5 text-xs font-semibold text-[#173640] hover:bg-[#f6e3c2] transition-colors whitespace-nowrap shrink-0 cursor-pointer"
+          className="inline-flex items-center gap-1.5 rounded-lg border border-[#173640]/20 bg-[#AFF0ED] px-3 py-1.5 text-xs font-semibold text-[#173640] hover:bg-[#f6e3c2] transition-colors whitespace-nowrap shrink-0 cursor-pointer"
         >
           <Download className="w-3.5 h-3.5" aria-hidden="true" />
           <span>Instalar no iOS</span>

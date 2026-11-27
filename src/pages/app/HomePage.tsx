@@ -95,7 +95,7 @@ export const HomePage: React.FC = () => {
               {canAdmin && (
                 <Link
                   to="/admin"
-                  className="inline-flex items-center gap-2 rounded-lg border border-[#FFC400]/50 bg-[#FFC400]/15 px-4 py-2 text-sm font-semibold text-[#FFF2DE] hover:bg-[#FFC400]/25 transition-colors whitespace-nowrap shrink-0"
+                  className="inline-flex items-center gap-2 rounded-lg border border-[#FFC400]/50 bg-[#FFC400]/15 px-4 py-2 text-sm font-semibold text-[#AFF0ED] hover:bg-[#FFC400]/25 transition-colors whitespace-nowrap shrink-0"
                 >
                   <span>Ir para Gestão</span>
                   <ArrowRight className="w-4 h-4" aria-hidden="true" />
@@ -397,7 +397,7 @@ export const HomePage: React.FC = () => {
             <Link
               key={item.to}
               to={item.to}
-              className="rounded-xl border border-[#E2DDD5] bg-white p-4 hover:border-[#173640]/40 hover:bg-[#FFF2DE]/40 transition-colors space-y-1.5"
+              className="rounded-xl border border-[#E2DDD5] bg-white p-4 hover:border-[#173640]/40 hover:bg-[#AFF0ED]/40 transition-colors space-y-1.5"
             >
               <Icon className="w-5 h-5 text-[#173640]" aria-hidden="true" />
               <p className="text-sm font-extrabold text-[#173640]">{item.label}</p>

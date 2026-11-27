@@ -55,7 +55,7 @@ export function LegalDocumentPage({kind}: {kind: keyof typeof documents}) {
             <h1 className="text-3xl font-extrabold">{title}</h1>
             <p className="text-sm text-[#5F666A]">{subtitle}</p>
           </header>
-          <p className="rounded-lg bg-[#FFF2DE] px-4 py-3 text-sm">
+          <p className="rounded-lg bg-[#AFF0ED] px-4 py-3 text-sm">
             Versão para consulta no piloto. A vigência para uso institucional depende de aprovação da Enap.
           </p>
           {lines.map((rawLine, index) => {
