@@ -9,10 +9,10 @@ import {
   History,
   Lock,
   Search,
-  Users,
 } from 'lucide-react';
 import {Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis} from 'recharts';
 import {apiFetch} from '../../lib/api';
+import {DiversityPortfolio} from './DiversityPortfolio';
 import {
   AlertBox,
   Button,
@@ -254,7 +254,6 @@ export const ComiteDeiPage: React.FC = () => {
   if (loading) return <SkeletonBlock rows={4} />;
 
   const metrics = data?.rgi2025AggregatedMetrics;
-  const projects = data?.projects || [];
   const events = data?.events || [];
   const documents = data?.documents || [];
 
@@ -278,14 +277,7 @@ export const ComiteDeiPage: React.FC = () => {
             Identidade, atuação e transparência institucional
           </h2>
           <p className="text-sm text-[#4A4F52] leading-relaxed">
-            A Enap adota <strong>Diversidade</strong> como valor institucional expresso no Relatório de
-            Gestão Integrado 2025 (RGI 2025). Este espaço reúne projetos, campanhas, grupos de trabalho,
-            eventos formativos e materiais orientadores do Comitê DEI.
-          </p>
-          <p className="text-xs text-[#5F666A]">
-            Nota editorial: A denominação estatutária exata, composição nominal vigente e ato normativo de
-            instituição do Comitê são mantidos como metadados configuráveis sujeitos à confirmação formal
-            da governança da Enap.
+            A Enap adota a <strong>Diversidade</strong> como valor institucional. Este espaço reúne projetos, campanhas, eventos formativos e notícias sobre os temas de diversidade, equidade e inclusão.
           </p>
         </div>
       </div>
@@ -295,9 +287,9 @@ export const ComiteDeiPage: React.FC = () => {
         <section aria-labelledby="sec-rgi-dei" className="space-y-4">
           <div>
             <h2 id="sec-rgi-dei" className="text-lg font-extrabold text-[#173640]">
-              Retrato Agregado da Força de Trabalho e PGD (RGI 2025)
+              Retrato Agregado da Força de Trabalho (2025)
             </h2>
-            <p className="text-xs text-[#5F666A]">{metrics.sourceNote}</p>
+            <p className="text-xs text-[#5F666A]">Dados agregados institucionais extraídos do Relatório de Gestão Integrado 2025 (RGI 2025).</p>
           </div>
 
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
@@ -331,7 +323,7 @@ export const ComiteDeiPage: React.FC = () => {
 
           <Card className="p-5 space-y-3">
             <h3 className="text-sm font-extrabold text-[#173640]">
-              Distribuição do Programa de Gestão e Desempenho — PGD (293 participantes · RGI 2025)
+              Distribuição do Programa de Gestão e Desempenho — PGD
             </h3>
             <div className="h-52">
               <ResponsiveContainer width="100%" height="100%">
@@ -348,36 +340,7 @@ export const ComiteDeiPage: React.FC = () => {
         </section>
       )}
 
-      {/* Projetos, campanhas e grupos de trabalho */}
-      <section className="space-y-3">
-        <div className="flex items-center gap-2">
-          <Users className="w-5 h-5 text-[#173640]" aria-hidden="true" />
-          <h2 className="text-lg font-extrabold text-[#173640]">
-            Iniciativas, Campanhas e Grupos de Trabalho
-          </h2>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {projects.map((p: any) => {
-            const deliverables: string[] = p.deliverables_json ? JSON.parse(p.deliverables_json) : [];
-            return (
-              <Card key={p.id} className="p-5 space-y-2.5">
-                <p className="text-xs font-bold text-[#186F80] uppercase">
-                  {p.type.replace('_', ' ')} · {p.status}
-                </p>
-                <h3 className="text-base font-extrabold text-[#173640]">{p.title}</h3>
-                <p className="text-xs sm:text-sm text-[#4A4F52]">{p.summary}</p>
-                {deliverables.length > 0 && (
-                  <ul className="text-xs text-[#5F666A] list-disc list-inside space-y-1 pt-1">
-                    {deliverables.map((d, idx) => (
-                      <li key={idx}>{d}</li>
-                    ))}
-                  </ul>
-                )}
-              </Card>
-            );
-          })}
-        </div>
-      </section>
+      <DiversityPortfolio />
 
       {/* Eventos DEI + Materiais + Canais oficiais */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

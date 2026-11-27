@@ -2,6 +2,7 @@ import {useState} from 'react';
 import {Download} from 'lucide-react';
 import {apiFetch} from '../../lib/api';
 import catalog from '../../lib/pqvt-catalog.json';
+import {diversityInitiatives, isPastInitiative} from '../../lib/deiInitiatives';
 import {buildBrazilianCsv} from '../../lib/security';
 import {useToast} from '../ui/Primitives';
 
@@ -55,7 +56,9 @@ const modules: Record<string, ExportDefinition> = {
   'comite-dei': {
     endpoint: '/api/comite-dei',
     rows: (d) => [
-      ...project(d, 'projects', 'Iniciativa', 'title', 'created_at', 'axis', 'status'),
+      ...diversityInitiatives.map((item) => [
+        item.category, item.title, item.date, item.summary, isPastInitiative(item.date) ? 'Já realizada' : 'A realizar',
+      ]),
       ...project(d, 'events', 'Evento', 'title', 'start_iso', 'location', 'status'),
       ...project(d, 'documents', 'Documento', 'title', 'published_at', 'category', 'editorial_status'),
     ],

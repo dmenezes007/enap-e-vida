@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import {apiFetch} from '../../lib/api';
 import {PqvtCatalog} from './PqvtCatalog';
+import {ModuleTabs} from '../../components/ui/ModuleTabs';
 import {
   AlertBox,
   Button,
@@ -34,7 +35,8 @@ export const ActivitiesPage: React.FC = () => {
   const [activities, setActivities] = useState<any[]>([]);
   const [detail, setDetail] = useState<{activity: any; myFeedback: any} | null>(null);
   const [loading, setLoading] = useState(true);
-  const [viewFilter, setViewFilter] = useState<'todas' | 'minhas' | 'favoritas'>('todas');
+  const [viewFilter, setViewFilter] = useState<'todas' | 'minhas'>('todas');
+  const [onlyFavorites, setOnlyFavorites] = useState(false);
   const [categoryFilter, setCategoryFilter] = useState('Todas');
   const [busy, setBusy] = useState(false);
 
@@ -306,8 +308,8 @@ export const ActivitiesPage: React.FC = () => {
   // VISÃO DE CATÁLOGO PQVT
   const categories = ['Todas', ...Array.from(new Set(activities.map((a) => a.category)))];
   const filtered = activities.filter((a) => {
-    if (viewFilter === 'minhas' && !a.my_status) return false;
-    if (viewFilter === 'favoritas' && !a.is_favorite) return false;
+    if (viewFilter === 'minhas' && a.my_status !== 'confirmada' && a.my_status !== 'lista_espera') return false;
+    if (viewFilter === 'todas' && onlyFavorites && !a.is_favorite) return false;
     if (categoryFilter !== 'Todas' && a.category !== categoryFilter) return false;
     return true;
   });
@@ -324,33 +326,26 @@ export const ActivitiesPage: React.FC = () => {
         O PQVT incentiva a convivência saudável e acessível — sem rankings competitivos e sem pressão por performance.
       </AlertBox>
 
-      <PqvtCatalog />
-
-      <details className="space-y-4 rounded-xl border border-[#E2DDD5] bg-white p-4">
-        <summary className="cursor-pointer text-sm font-bold text-[#173640]">Inscrições e favoritos do piloto</summary>
-        {/* Filtros */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div className="flex flex-wrap gap-2">
-            {[
-              {id: 'todas', label: 'Todas as atividades'},
-              {id: 'minhas', label: 'Minhas inscrições'},
-              {id: 'favoritas', label: 'Favoritas'},
-            ].map((v) => (
-              <button
-                key={v.id}
-                type="button"
-                onClick={() => setViewFilter(v.id as any)}
-                className={`px-3.5 py-2 rounded-lg text-sm font-semibold cursor-pointer whitespace-nowrap shrink-0 ${
-                  viewFilter === v.id
-                    ? 'bg-[#173640] text-white'
-                    : 'bg-white border border-[#E2DDD5] text-[#4A4F52] hover:bg-[#F2EFE9]'
-                }`}
-              >
-                {v.label}
-              </button>
-            ))}
-          </div>
-
+      <ModuleTabs
+        label="Atividades do PQVT"
+        tabs={[{id: 'todas', label: 'Todas as atividades'}, {id: 'minhas', label: 'Minhas inscrições'}]}
+        value={viewFilter}
+        onChange={(value) => {
+          setViewFilter(value);
+          setCategoryFilter('Todas');
+        }}
+      >
+        {viewFilter === 'todas' && <PqvtCatalog />}
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          {viewFilter === 'todas' && (
+            <div>
+              <h2 className="text-base font-bold text-[#173640]">Atividades com inscrição no piloto</h2>
+              <label className="mt-2 inline-flex items-center gap-2 text-sm text-[#4A4F52]">
+                <input type="checkbox" checked={onlyFavorites} onChange={(e) => setOnlyFavorites(e.target.checked)} />
+                Somente favoritas
+              </label>
+            </div>
+          )}
           <select
             aria-label="Filtrar por categoria"
             value={categoryFilter}
@@ -365,8 +360,8 @@ export const ActivitiesPage: React.FC = () => {
 
         {filtered.length === 0 ? (
           <EmptyState
-            title="Nenhuma atividade encontrada"
-            description="Ajuste os filtros selecionados para visualizar todas as atividades disponíveis no PQVT."
+            title={viewFilter === 'minhas' ? 'Nenhuma inscrição encontrada' : 'Nenhuma atividade encontrada'}
+            description={viewFilter === 'minhas' ? 'As inscrições confirmadas e as listas de espera aparecem aqui.' : 'Ajuste os filtros para ver outras atividades.'}
           />
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -421,7 +416,7 @@ export const ActivitiesPage: React.FC = () => {
                       <span className={`font-bold ${isFull ? 'text-[#9E4F00]' : 'text-[#285D32]'}`}>
                         {a.enrolled_count}/{a.capacity} vagas
                       </span>
-                      {a.my_status && (
+                      {(a.my_status === 'confirmada' || a.my_status === 'lista_espera') && (
                         <span className="block text-[11px] font-semibold text-[#186F80]">
                           {a.my_status === 'confirmada' ? 'Você está inscrito(a)' : 'Na lista de espera'}
                         </span>
@@ -439,7 +434,7 @@ export const ActivitiesPage: React.FC = () => {
             })}
           </div>
         )}
-      </details>
+      </ModuleTabs>
     </div>
   );
 };
