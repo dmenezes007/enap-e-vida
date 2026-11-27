@@ -150,7 +150,9 @@ export const AppShell: React.FC<{
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#F8F7F4]">
+    <div className={`min-h-screen flex flex-col bg-[#F8F7F4] md:pl-[var(--sidebar-width)] motion-safe:transition-[padding-left] motion-safe:duration-200 ${
+      collapsed ? '[--sidebar-width:76px]' : '[--sidebar-width:264px]'
+    }`}>
       <a href="#conteudo-principal" className="skip-link">
         Pular para o conteúdo principal
       </a>
@@ -160,9 +162,7 @@ export const AppShell: React.FC<{
         {/* Barra lateral desktop recolhível (§12) */}
         <aside
           aria-label={mode === 'admin' ? 'Navegação administrativa' : 'Navegação principal'}
-          className={`sticky top-0 hidden h-dvh shrink-0 self-start flex-col bg-[#173640] text-white transition-[width] duration-200 md:flex ${
-            collapsed ? 'w-[76px]' : 'w-[264px]'
-          }`}
+          className="fixed inset-y-0 left-0 z-40 hidden w-[var(--sidebar-width)] flex-col bg-[#173640] text-white motion-safe:transition-[width] motion-safe:duration-200 md:flex"
         >
           <div className={`h-16 shrink-0 flex items-center justify-between gap-1 border-b border-white/10 ${collapsed ? 'px-2' : 'px-4'}`}>
             <Link
