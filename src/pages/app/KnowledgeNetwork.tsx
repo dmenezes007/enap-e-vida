@@ -1,20 +1,19 @@
 import {useLayoutEffect, useMemo, useRef, useState} from 'react';
 import * as am5 from '@amcharts/amcharts5';
-import * as hierarchy from '@amcharts/amcharts5/hierarchy';
 import {Network} from 'lucide-react';
 import {Card} from '../../components/ui/Primitives';
 import {createInstitutionalChart} from '../../lib/institutionalCharts';
 import training from '../../lib/cogem-training.json';
 
 const areas = [
-  {label: 'Pessoas e liderança', color: '#173640'},
-  {label: 'Dados e pesquisa', color: '#186F80'},
-  {label: 'IA e automação', color: '#285D32'},
-  {label: 'Projetos e inovação', color: '#9E4F00'},
-  {label: 'Comunicação e aprendizagem', color: '#710F10'},
-  {label: 'Diversidades e bem-estar', color: '#0B3D1E'},
-  {label: 'Governança e administração', color: '#4A4F52'},
-  {label: 'Ferramentas de trabalho', color: '#596318'},
+  {label: 'Pessoas e liderança', short: 'Pessoas e liderança', color: '#173640'},
+  {label: 'Dados e pesquisa', short: 'Dados e pesquisa', color: '#186F80'},
+  {label: 'IA e automação', short: 'IA e automação', color: '#285D32'},
+  {label: 'Projetos e inovação', short: 'Projetos e inovação', color: '#9E4F00'},
+  {label: 'Comunicação e aprendizagem', short: 'Comunicação', color: '#710F10'},
+  {label: 'Diversidades e bem-estar', short: 'Diversidades', color: '#0B3D1E'},
+  {label: 'Governança e administração', short: 'Governança', color: '#4A4F52'},
+  {label: 'Ferramentas de trabalho', short: 'Ferramentas', color: '#596318'},
 ];
 const years = Array.from(new Set(training.flatMap((item) => item.years))).sort();
 const areaId = (area: string) => 'area-' + area;
@@ -33,52 +32,124 @@ export function KnowledgeNetwork() {
   useLayoutEffect(() => {
     if (!chartElement.current || !courses.length) return;
     const root = createInstitutionalChart(chartElement.current);
-    const compact = chartElement.current.clientWidth < 580;
-    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const series = root.container.children.push(hierarchy.ForceDirected.new(root, {
-      categoryField: 'name', idField: 'id', childDataField: 'children', valueField: 'value',
-      fillField: 'color', linkWithField: 'links', topDepth: 1, initialDepth: 2,
-      singleBranchOnly: false, minRadius: compact ? 8 : 12, maxRadius: compact ? 33 : 46,
-      nodePadding: compact ? 6 : 10, manyBodyStrength: -14, centerStrength: 0.65,
-      linkWithStrength: 0.18, initialFrames: 110, showOnFrame: reducedMotion ? 110 : 12,
-    }));
-    series.nodes.template.setAll({toggleKey: 'none', cursorOverStyle: 'pointer', tooltipText: '{category}'});
-    series.labels.template.setAll({fontFamily: 'Georama, sans-serif', fill: am5.color('#FFFFFF'), fontWeight: '600',
-      fontSize: compact ? 9 : 10, oversizedBehavior: 'wrap', textAlign: 'center'});
-    series.labels.template.adapters.add('text', (text, target) =>
-      (target.dataItem?.dataContext as {shortName?: string} | undefined)?.shortName ?? text,
-    );
-    series.links.template.setAll({strokeOpacity: 0.35, strokeWidth: 1.35});
-    series.outerCircles.template.setAll({strokeWidth: 1.5, strokeOpacity: 0.55, fillOpacity: 0});
-    const displayedAreas = areas.filter(({label}) => courses.some((item) => item.area === label || item.related.includes(label)));
-    const visibleAreaIds = new Set(displayedAreas.map(({label}) => areaId(label)));
-    series.data.setAll([{
-      id: 'cogem', name: 'Trilha de Capacitações COGEM',
-      children: displayedAreas.map(({label, color}) => {
-        const matching = courses.filter((item) => item.area === label);
-        // Cross-area courses take precedence in the overview so the links are visible.
-        const examples = [...matching].sort((a, b) => b.related.length - a.related.length);
-        return {
-          id: areaId(label), name: label, shortName: label, value: 5, color: am5.color(color),
-          children: (area ? examples : examples.slice(0, compact ? 2 : 3)).map((item) => ({
-            id: item.id, name: item.title, shortName: '', value: 1, color: am5.color(color),
-            links: item.related.map(areaId).filter((id) => visibleAreaIds.has(id)),
-          })),
-        };
-      }),
-    }]);
-    series.set('selectedDataItem', series.dataItems[0]);
-    series.nodes.template.events.on('click', (event) => {
-      const node = event.target.dataItem?.dataContext as {id: string; name: string} | undefined;
-      if (!node) return;
-      if (node.id.startsWith('area-')) {
-        setSelected(undefined);
-        setArea(node.name);
+    type Node = {id: string; label: string; color: string; x: number; y: number; radius: number; hub: boolean};
+    type Edge = {from: Node; to: string; secondary?: boolean};
+    const palette = new Map(areas.map(({label, color}) => [label, color]));
+    const tooltip = am5.Tooltip.new(root, {});
+    const layer = root.container.children.push(am5.Container.new(root, {width: am5.p100, height: am5.p100}));
+
+    function renderNetwork() {
+      const width = chartElement.current?.clientWidth ?? 0;
+      const height = chartElement.current?.clientHeight ?? 0;
+      if (!width || !height) return;
+      layer.children.clear();
+      const compact = width < 620;
+      const nodes = new Map<string, Node>();
+      const edges: Edge[] = [];
+      const hub = (label: string, x: number, y: number, radius: number) => {
+        const node = {id: areaId(label), label, x, y, radius, hub: true, color: palette.get(label) ?? '#173640'};
+        nodes.set(node.id, node);
+        return node;
+      };
+      const leaf = (item: Course, parent: Node, x: number, y: number, related: string[]) => {
+        const node = {id: item.id, label: item.title, color: parent.color, x, y, radius: compact ? 8 : 12, hub: false};
+        nodes.set(node.id, node);
+        edges.push({from: node, to: parent.id});
+        for (const label of related) edges.push({from: node, to: areaId(label), secondary: true});
+      };
+
+      if (area) {
+        const center = hub(area, width / 2, height / 2, compact ? 28 : 45);
+        const otherAreas = areas.filter(({label}) =>
+          label !== area && courses.some((item) => item.area === label || item.related.includes(label)),
+        );
+        otherAreas.forEach(({label}, index) => {
+          const angle = index * 2 * Math.PI / otherAreas.length - Math.PI / 2;
+          hub(label, width / 2 + Math.cos(angle) * (width / 2 - 35), height / 2 + Math.sin(angle) * (height / 2 - 35), compact ? 20 : 30);
+        });
+        const ringSizes = compact ? [10, 16, 24] : [8, 14, 24];
+        let offset = 0;
+        for (const [ring, size] of ringSizes.entries()) {
+          const entries = courses.slice(offset, offset + size);
+          const distance = [0.21, 0.29, 0.37][ring];
+          entries.forEach((item, index) => {
+            const angle = index * 2 * Math.PI / entries.length + ring * 0.38;
+            leaf(item, center, width / 2 + Math.cos(angle) * width * distance, height / 2 + Math.sin(angle) * height * distance,
+              [item.area, ...item.related].filter((label) => label !== area));
+          });
+          offset += size;
+        }
       } else {
-        setSelected(courses.find((item) => item.id === node.id));
+        const displayed = areas.filter(({label}) => courses.some((item) => item.area === label || item.related.includes(label)));
+        const columns = Math.min(displayed.length, compact ? 2 : 4);
+        const rows = Math.ceil(displayed.length / columns);
+        const cellWidth = width / columns;
+        const cellHeight = height / rows;
+        displayed.forEach(({label}, index) => {
+          const row = Math.floor(index / columns);
+          const column = index % columns;
+          const rowCount = Math.min(columns, displayed.length - row * columns);
+          const x = (column + 0.5) * cellWidth + (width - rowCount * cellWidth) / 2;
+          const y = (row + 0.5) * cellHeight;
+          const cell = Math.min(cellWidth, cellHeight);
+          const center = hub(label, x, y, Math.min(compact ? 25 : 44, cell * 0.23));
+          const examples = courses.filter((item) => item.area === label)
+            .sort((a, b) => b.related.length - a.related.length).slice(0, compact ? 2 : 3);
+          examples.forEach((item, idx) => {
+            const angle = -Math.PI / 2 + (idx + (index % 2) * 0.45) * 2 * Math.PI / examples.length;
+            leaf(item, center, x + Math.cos(angle) * cell * 0.37, y + Math.sin(angle) * cell * 0.37, item.related);
+          });
+        });
       }
-    });
-    return () => root.dispose();
+
+      for (const {from, to, secondary} of edges) {
+        const target = nodes.get(to);
+        if (!target) continue;
+        layer.children.push(am5.Graphics.new(root, {
+          stroke: am5.color(from.color), strokeWidth: secondary ? 1 : 1.5,
+          strokeOpacity: secondary ? 0.26 : 0.58, strokeDasharray: secondary ? [4, 3] : undefined,
+          draw: (display) => {display.moveTo(from.x, from.y); display.lineTo(target.x, target.y);},
+        }));
+      }
+      for (const node of nodes.values()) {
+        if (node.hub) {
+          layer.children.push(am5.Circle.new(root, {
+            x: node.x, y: node.y, radius: node.radius + 3, fillOpacity: 0,
+            stroke: am5.color(node.color), strokeWidth: 1.5,
+          }));
+        }
+        const circle = layer.children.push(am5.Circle.new(root, {
+          x: node.x, y: node.y, radius: node.radius, fill: am5.color(node.color),
+          stroke: am5.color('#FFFFFF'), strokeWidth: 1.5, interactive: true, cursorOverStyle: 'pointer',
+          tooltipText: node.label,
+          tooltip,
+        }));
+        circle.events.on('click', () => {
+          if (node.hub) {
+            setSelected(undefined);
+            setArea(node.label);
+          } else {
+            setSelected(courses.find((item) => item.id === node.id));
+          }
+        });
+        if (node.hub) {
+          layer.children.push(am5.Label.new(root, {
+            x: node.x, y: node.y, centerX: am5.p50, centerY: am5.p50, text: compact ? areas.find(({label}) => label === node.label)?.short ?? node.label : node.label,
+            fill: am5.color('#FFFFFF'), fontSize: compact ? 8 : 10, fontWeight: '600',
+            textAlign: 'center', oversizedBehavior: 'wrap', maxWidth: 2 * node.radius - 6,
+            paddingTop: 0, paddingRight: 0, paddingBottom: 0, paddingLeft: 0,
+          }));
+        }
+      }
+    }
+
+    const resize = new ResizeObserver(renderNetwork);
+    resize.observe(chartElement.current);
+    renderNetwork();
+    return () => {
+      resize.disconnect();
+      root.dispose();
+    };
   }, [area, courses]);
 
   return (
