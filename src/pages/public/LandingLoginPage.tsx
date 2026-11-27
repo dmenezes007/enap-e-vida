@@ -10,7 +10,6 @@ import {
   HelpCircle,
   KeyRound,
   Lock,
-  ShieldCheck,
   UserPlus,
   Users,
 } from 'lucide-react';
@@ -149,15 +148,13 @@ export const LandingLoginPage: React.FC = () => {
             <section className="lg:col-span-7 space-y-5">
               <div className="space-y-2.5">
                 <p className="text-xs font-bold tracking-wider uppercase text-[#285D32]">
-                  Jornada · Qualidade de Vida · Pertencimento
+                  Ambientação · Qualidade de Vida · Pertencimento
                 </p>
                 <h1 className="text-3xl sm:text-4xl lg:text-[40px] font-extrabold text-[#173640] leading-[1.1] tracking-tight text-balance">
                   Conexões que acolhem. Experiências que transformam.
                 </h1>
                 <p className="text-sm sm:text-base text-[#4A4F52] max-w-2xl leading-relaxed">
-                  <strong>Sua jornada. Seu bem-estar. Nossa Enap.</strong> Um espaço integrado para apoiar
-                  pessoas em movimento para a Escola, acompanhar a Jornada de Ambientação, participar das
-                  atividades do PQVT, consultar o repositório institucional e fortalecer o diálogo contínuo.
+                  <strong>Sua jornada. Seu bem-estar. Nossa Enap.</strong> Um espaço integrado para apoiar pessoas em movimento para a Escola, acompanhar a sua ambientação, participar das atividades do Programa de Qualidade de Vida no Trabalho, consultar a biblioteca focada em pessoas e fortalecer o diálogo contínuo.
                 </p>
               </div>
 
@@ -170,9 +167,8 @@ export const LandingLoginPage: React.FC = () => {
                 />
                 <div className="px-5 py-3 bg-white/95 border-t border-[#E2DDD5] flex flex-wrap items-center justify-between gap-2 text-xs text-[#4A4F52]">
                   <span className="font-semibold text-[#173640]">
-                    Propósito Enap: “Conhecimento e prática para a transformação do Estado.”
+                    “Conhecimento e prática para a transformação do Estado.”
                   </span>
-                  <span>Referência visual: RGI 2025</span>
                 </div>
               </div>
 
@@ -185,8 +181,7 @@ export const LandingLoginPage: React.FC = () => {
                       <h2 className="text-base font-extrabold">A caminho da Enap?</h2>
                     </div>
                     <p className="text-sm text-[#4A4F52] leading-relaxed">
-                      Recebeu convite institucional de Pré-Embarque (GAEG Nível Superior ou Intermediário)?
-                      Inicie aqui o envio seguro dos seus dados preliminares ou acompanhe seu protocolo.
+                      Está em estágio avançado de processo seletivo ou recebeu convite institucional para ingressar na Escola? Inicie aqui o envio seguro dos seus dados preliminares ou acompanhe seu protocolo.
                     </p>
                   </div>
                   <div className="flex flex-wrap items-center gap-2">
@@ -214,7 +209,7 @@ export const LandingLoginPage: React.FC = () => {
                     </div>
                     <p className="text-sm text-[#4A4F52] leading-relaxed">
                       Já faz parte da comunidade Enap (servidores, colaboradores, bolsistas ou estagiários) e
-                      ainda não ativou sua conta? Crie seu acesso sem informar dados bancários.
+                      ainda não ativou sua conta? Crie seu acesso seguro.
                     </p>
                   </div>
                   <div>
@@ -229,14 +224,13 @@ export const LandingLoginPage: React.FC = () => {
                 </Card>
               </div>
 
-              {/* Valores institucionais (RGI 2025) em linha editorial limpa */}
+              {/* Valores institucionais */}
               <div className="pt-2 border-t border-[#E2DDD5]">
                 <p className="text-xs font-semibold text-[#5F666A] mb-1.5">
-                  Valores institucionais (RGI 2025)
+                  Vamores Institucionais
                 </p>
                 <p className="text-xs text-[#4A4F52] leading-relaxed">
-                  Democracia · Diversidade · Sustentabilidade · Participação social · Colaboração ·
-                  Responsabilidade fiscal e social · Excelência na gestão
+                  Democracia · Diversidade · Sustentabilidade · Participação Social · Colaboração · Foco nas Pessoas · Excelência na Gestão
                 </p>
               </div>
             </section>
@@ -246,9 +240,6 @@ export const LandingLoginPage: React.FC = () => {
               <Card className="p-6 sm:p-7 shadow-sm">
                 <div className="space-y-1.5 mb-5">
                   <h2 className="text-xl font-extrabold text-[#173640]">Entrar no Enap e-Vida</h2>
-                  <p className="text-sm text-[#5F666A]">
-                    Acesse com seu e-mail institucional ou cadastrado na plataforma.
-                  </p>
                 </div>
 
                 {error && (
@@ -334,14 +325,6 @@ export const LandingLoginPage: React.FC = () => {
                     <span>{submitting ? 'Validando acesso...' : 'Entrar na plataforma'}</span>
                   </Button>
                 </form>
-
-                <div className="mt-5 pt-4 border-t border-[#E2DDD5] flex items-start gap-2.5 text-xs text-[#5F666A]">
-                  <ShieldCheck className="w-4 h-4 text-[#285D32] shrink-0 mt-0.5" aria-hidden="true" />
-                  <p>
-                    Sessão protegida por cookie HTTP-only no servidor. Nenhum token, senha ou dado bancário é
-                    armazenado em cache local do navegador.
-                  </p>
-                </div>
               </Card>
 
               {/* Gaveta de Perfis de Demonstração (§33) */}
@@ -357,9 +340,6 @@ export const LandingLoginPage: React.FC = () => {
                     <div>
                       <p className="text-sm font-extrabold text-[#173640]">
                         Acessos de demonstração ({personas.length || 15} perfis fictícios)
-                      </p>
-                      <p className="text-xs text-[#4A4F52]">
-                        Explore todas as jornadas, papéis RBAC e segregação de funções em 1 clique
                       </p>
                     </div>
                   </div>
@@ -414,15 +394,9 @@ export const LandingLoginPage: React.FC = () => {
       {/* Rodapé institucional com dados oficiais do RGI 2025 */}
       <footer className="bg-white border-t border-[#E2DDD5] py-6">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 text-xs text-[#5F666A]">
-          <div className="space-y-1">
-            <p className="font-bold text-[#173640]">
-              Escola Nacional de Administração Pública – Enap
-            </p>
-            <p>
-              SAFS, Quadra 02, Lote 04, CEP 70070-600, Brasília – DF · Tel.: (61) 2020-3000 · Ouvidoria:{' '}
-              ouvidoria@enap.gov.br · Fala.BR: falabr.cgu.gov.br
-            </p>
-          </div>
+          <a href="https://enap.gov.br/" className="font-bold text-[#173640] hover:underline">
+            Escola Nacional de Administração Pública – Enap
+          </a>
           <div className="flex flex-wrap items-center gap-4 font-semibold text-[#173640]">
             <button
               type="button"
@@ -455,10 +429,10 @@ export const LandingLoginPage: React.FC = () => {
         onClose={() => setInfoModal(null)}
         title={
           infoModal === 'privacidade'
-            ? 'Privacidade e Proteção de Dados (LGPD)'
+            ? 'Privacidade e LGPD'
             : infoModal === 'acessibilidade'
-              ? 'Compromisso de Acessibilidade Digital'
-              : 'Suporte Institucional e Canais Oficiais'
+              ? 'Acessibilidade'
+              : 'Suporte'
         }
       >
         {infoModal === 'privacidade' && (
@@ -469,22 +443,19 @@ export const LandingLoginPage: React.FC = () => {
             </p>
             <ul className="list-disc list-inside space-y-1.5">
               <li>
-                Dados bancários e atributos sensíveis coletados no Pré-Embarque ficam em tabelas segregadas e
-                cifradas (AES-256-GCM), com acesso restrito e auditado exclusivamente ao responsável autorizado.
+                Dados sigilosos e sensíveis coletados no Pré-Embarque permanecem em bases segregadas e cifradas, com acesso restrito ao responsável autorizado.
               </li>
               <li>
                 Enquetes marcadas como <strong>Anônimas</strong> separam o controle de participação das respostas
                 e suprimem gráficos quando a amostra é inferior a 10 respondentes.
               </li>
-              <li>
-                Nenhuma credencial, sessão ou dado pessoal é salvo em <code>localStorage</code> ou cache offline do
-                PWA.
-              </li>
             </ul>
-            <AlertBox tone="warning" title="Nota de transparência (ambiente demonstrativo)">
-              Este protótipo utiliza exclusivamente dados fictícios. Antes da operação em produção, bases legais,
-              prazos de retenção e o Relatório de Impacto (RIPD) devem ser formalmente validados pela
-              Encarregada(o) pelo Tratamento de Dados Pessoais (DPO) e pela Procuradoria Federal junto à Enap.
+            <AlertBox tone="warning" title="Nota de Transparência">
+              Este aplicativo é regido pelos{' '}
+              <Link to="/termos-de-uso" className="font-semibold underline">Termos de Uso</Link>
+              {' '}e pela{' '}
+              <Link to="/politica-de-privacidade" className="font-semibold underline">Política de Privacidade</Link>
+              {' '}do enap e-Vida.
             </AlertBox>
           </div>
         )}
@@ -509,22 +480,7 @@ export const LandingLoginPage: React.FC = () => {
 
         {infoModal === 'suporte' && (
           <div className="space-y-3 text-sm text-[#4A4F52] leading-relaxed">
-            <p>
-              Para dúvidas sobre seu convite de Pré-Embarque, acesso ao Enap e-Vida ou Jornada de Ambientação:
-            </p>
-            <ul className="list-disc list-inside space-y-1.5">
-              <li>
-                <strong>Gestão de Pessoas / Ambientação:</strong> Coordenação-Geral de Gestão de Pessoas (CGP) ·
-                Telefone geral Enap: (61) 2020-3000.
-              </li>
-              <li>
-                <strong>Sede Enap:</strong> SAFS, Quadra 02, Lote 04, CEP 70070-600, Brasília – DF.
-              </li>
-              <li>
-                <strong>Manifestações formais, denúncias ou assédio:</strong> Utilize os canais oficiais da
-                Ouvidoria (<code>ouvidoria@enap.gov.br</code>) ou a plataforma <code>falabr.cgu.gov.br</code>.
-              </li>
-            </ul>
+            <p>Para esclarecer dúvidas, faça contato com a Coordenação de Gestão Estratégica e Modernização - COGEM/CGGP/DGC.</p>
           </div>
         )}
       </Modal>

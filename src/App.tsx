@@ -7,6 +7,7 @@ import {AlertBox, Button, SkeletonBlock, ToastProvider} from './components/ui/Pr
 
 // Public pages
 import {LandingLoginPage} from './pages/public/LandingLoginPage';
+import {LegalDocumentPage} from './pages/public/LegalDocumentPage';
 import {PreboardingFlowPage} from './pages/public/PreboardingFlowPage';
 import {RecoverPasswordPage, RegisterPage} from './pages/public/RegisterAndRecoveryPages';
 
@@ -112,6 +113,8 @@ export default function App() {
             {/* Rotas públicas e de acesso */}
             <Route path="/" element={<LandingLoginPage />} />
             <Route path="/acesso" element={<LandingLoginPage />} />
+            <Route path="/termos-de-uso" element={<LegalDocumentPage kind="terms" />} />
+            <Route path="/politica-de-privacidade" element={<LegalDocumentPage kind="privacy" />} />
             <Route path="/cadastro" element={<RegisterPage />} />
             <Route path="/recuperar-senha" element={<RecoverPasswordPage />} />
 

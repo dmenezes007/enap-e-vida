@@ -503,7 +503,7 @@ export const PreboardingFlowPage: React.FC = () => {
               </h1>
               <p className="text-sm text-[#4A4F52] max-w-2xl">
                 Consulte o andamento do seu processo preliminar com o número de protocolo e o e-mail
-                vinculado ao convite. Nenhuma informação bancária ou sensível é exibida nesta consulta.
+                vinculado ao convite.
               </p>
             </div>
 
