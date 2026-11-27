@@ -16,7 +16,7 @@ import {
 import {apiFetch} from '../../lib/api';
 import {formatCpf, isValidCpf, maskBankAccount, maskCpf} from '../../lib/validators';
 import type {GaegModality, GaegParameter, PreboardingStatus} from '../../lib/types';
-import {DemoBanner, EnapVidaLogo, RgiGeometricStrip} from '../../components/ui/BrandAssets';
+import {NewsTicker, EnapVidaLogo, RgiGeometricStrip} from '../../components/ui/BrandAssets';
 import {
   AlertBox,
   Button,
@@ -462,7 +462,7 @@ export const PreboardingFlowPage: React.FC = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-[#FAF8F4] text-[#231F20]">
-      <DemoBanner />
+      <NewsTicker />
       <RgiGeometricStrip className="h-2.5 w-full" />
 
       <header className="bg-white border-b border-[#E2DDD5]">

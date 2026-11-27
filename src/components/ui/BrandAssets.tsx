@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Download, WifiOff, X} from 'lucide-react';
+import {Download, Pause, Play, WifiOff, X} from 'lucide-react';
 import {useOnlineStatus, usePWAInstall} from '../../hooks/usePWAInstall';
 
 export function EnapVidaLogo({className = 'max-w-40'}: {className?: string}) {
@@ -38,20 +38,33 @@ export const RgiGeometricStrip: React.FC<{className?: string}> = ({className = '
   </svg>
 );
 
-export const DemoBanner: React.FC = () => (
-  <div
-    role="region"
-    aria-label="Aviso de ambiente demonstrativo"
-    className="bg-[#173640] text-[#FFF2DE] text-xs font-medium py-1.5 px-4 border-b border-[#218FA3]/30"
-  >
-    <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
-      <span>Ambiente de demonstração — dados fictícios.</span>
-      <span className="text-[#FFF2DE]/80 hidden sm:inline">
-        Protótipo funcional Enap e-Vida · Identidade inspirada no RGI 2025
-      </span>
-    </div>
-  </div>
-);
+const launchAnnouncement = 'O Enap e-Vida chegou! Um novo jeito de se conectar, participar e viver a Enap. Acolhimento, bem-estar, atividades, eventos e participação em um só lugar.';
+
+export function NewsTicker() {
+  const [paused, setPaused] = useState(false);
+
+  return (
+    <section
+      aria-label="Comunicado"
+      className="flex items-center gap-2 border-b border-[#218FA3]/30 bg-[#173640] px-4 text-xs font-medium text-[#FFF2DE]"
+    >
+      <div className="min-w-0 flex-1 overflow-hidden py-2">
+        <div className="news-ticker-track" data-paused={paused}>
+          <span>{launchAnnouncement}</span>
+          <span aria-hidden="true">{launchAnnouncement}</span>
+        </div>
+      </div>
+      <button
+        type="button"
+        onClick={() => setPaused(!paused)}
+        aria-label={paused ? 'Retomar comunicado' : 'Pausar comunicado'}
+        className="shrink-0 rounded p-1.5 hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#FFF2DE] motion-reduce:hidden"
+      >
+        {paused ? <Play className="size-3.5" aria-hidden="true" /> : <Pause className="size-3.5" aria-hidden="true" />}
+      </button>
+    </section>
+  );
+}
 
 export const PWAInstallButton: React.FC<{compact?: boolean}> = ({compact = false}) => {
   const {isInstallable, isInstalled, isIOS, install} = usePWAInstall();

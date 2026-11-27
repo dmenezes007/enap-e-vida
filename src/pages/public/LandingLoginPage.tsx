@@ -16,7 +16,7 @@ import {
 } from 'lucide-react';
 import {useAuth} from '../../contexts/AuthContext';
 import {apiFetch} from '../../lib/api';
-import {DemoBanner, EnapVidaLogo, PWAInstallButton, RgiGeometricStrip} from '../../components/ui/BrandAssets';
+import {NewsTicker, EnapVidaLogo, PWAInstallButton, RgiGeometricStrip} from '../../components/ui/BrandAssets';
 import {AlertBox, Button, Card, Field, inputBaseClass, Modal, useToast} from '../../components/ui/Primitives';
 
 interface DemoPersona {
@@ -105,7 +105,7 @@ export const LandingLoginPage: React.FC = () => {
       <a href="#main-login-content" className="skip-link">
         Pular para o conteúdo principal
       </a>
-      <DemoBanner />
+      <NewsTicker />
       <RgiGeometricStrip className="h-2.5 w-full" />
 
       {/* Cabeçalho institucional limpo */}

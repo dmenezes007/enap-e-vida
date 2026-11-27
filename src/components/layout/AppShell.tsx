@@ -27,7 +27,7 @@ import {
 } from 'lucide-react';
 import {useAuth} from '../../contexts/AuthContext';
 import {apiFetch} from '../../lib/api';
-import {DemoBanner, EnapVidaLogo, OfflineIndicator, PWAInstallButton} from '../ui/BrandAssets';
+import {NewsTicker, EnapVidaLogo, OfflineIndicator, PWAInstallButton} from '../ui/BrandAssets';
 
 interface NavItem {
   to: string;
@@ -153,7 +153,7 @@ export const AppShell: React.FC<{
       <a href="#conteudo-principal" className="skip-link">
         Pular para o conteúdo principal
       </a>
-      <DemoBanner />
+      <NewsTicker />
 
       <div className="flex flex-1 min-h-0">
         {/* Barra lateral desktop recolhível (§12) */}

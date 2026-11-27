@@ -3,7 +3,7 @@ import {Link, useNavigate} from 'react-router-dom';
 import {ArrowLeft, CheckCircle2, KeyRound, ShieldCheck, UserPlus} from 'lucide-react';
 import {apiFetch} from '../../lib/api';
 import {useAuth} from '../../contexts/AuthContext';
-import {DemoBanner, EnapVidaLogo, RgiGeometricStrip} from '../../components/ui/BrandAssets';
+import {NewsTicker, EnapVidaLogo, RgiGeometricStrip} from '../../components/ui/BrandAssets';
 import {AlertBox, Button, Card, Field, inputBaseClass, useToast} from '../../components/ui/Primitives';
 
 const EMPLOYMENT_OPTIONS = [
@@ -89,7 +89,7 @@ export const RegisterPage: React.FC = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-[#FAF8F4] text-[#231F20]">
-      <DemoBanner />
+      <NewsTicker />
       <RgiGeometricStrip className="h-2.5 w-full" />
 
       <header className="bg-white border-b border-[#E2DDD5]">
@@ -310,7 +310,7 @@ export const RecoverPasswordPage: React.FC = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-[#FAF8F4] text-[#231F20]">
-      <DemoBanner />
+      <NewsTicker />
       <RgiGeometricStrip className="h-2.5 w-full" />
 
       <header className="bg-white border-b border-[#E2DDD5]">
