@@ -40,7 +40,7 @@ export function KnowledgeNetwork() {
       fillField: 'color', linkWithField: 'links', topDepth: 1, initialDepth: 2,
       singleBranchOnly: false, minRadius: compact ? 8 : 12, maxRadius: compact ? 33 : 46,
       nodePadding: compact ? 6 : 10, manyBodyStrength: -14, centerStrength: 0.65,
-      linkWithStrength: 0.18, initialFrames: 160, showOnFrame: reducedMotion ? 160 : 145,
+      linkWithStrength: 0.18, initialFrames: 110, showOnFrame: reducedMotion ? 110 : 12,
     }));
     series.nodes.template.setAll({toggleKey: 'none', cursorOverStyle: 'pointer', tooltipText: '{category}'});
     series.labels.template.setAll({fontFamily: 'Georama, sans-serif', fill: am5.color('#FFFFFF'), fontWeight: '600',
@@ -91,13 +91,13 @@ export function KnowledgeNetwork() {
       </header>
       <div className="flex flex-wrap gap-3">
         <label className="flex flex-col gap-1 text-xs font-semibold text-[#173640]">Área de conhecimento
-          <select className="rounded-lg border border-[#C5BEB2] bg-white p-2 text-sm" value={area} onChange={(e) => {setArea(e.target.value); setSelected(undefined);}}>
+          <select className="rounded-lg border border-[#C5BEB2] bg-white p-2 text-sm" aria-label="Área de conhecimento" value={area} onChange={(e) => {setArea(e.target.value); setSelected(undefined);}}>
             <option value="">Todas as áreas</option>
             {areas.map(({label}) => <option key={label}>{label}</option>)}
           </select>
         </label>
         <label className="flex flex-col gap-1 text-xs font-semibold text-[#173640]">Ano na planilha
-          <select className="rounded-lg border border-[#C5BEB2] bg-white p-2 text-sm" value={year} onChange={(e) => {setYear(e.target.value); setSelected(undefined);}}>
+          <select className="rounded-lg border border-[#C5BEB2] bg-white p-2 text-sm" aria-label="Ano na planilha" value={year} onChange={(e) => {setYear(e.target.value); setSelected(undefined);}}>
             <option value="">Todos os anos</option>
             {years.map((option) => <option key={option}>{option}</option>)}
           </select>
