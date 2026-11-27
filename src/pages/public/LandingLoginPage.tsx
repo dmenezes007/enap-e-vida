@@ -174,7 +174,7 @@ export const LandingLoginPage: React.FC = () => {
 
               {/* Cartões de entrada rápida (Pré-Embarque e Novo cadastro) */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <Card warm className="p-5 flex flex-col justify-between gap-4 border-[#FF8500]/35">
+                <div className="rounded-xl border border-[#FF8500]/35 bg-[#FFF2DE] p-5 flex flex-col justify-between gap-4">
                   <div className="space-y-2">
                     <div className="flex items-center gap-2 text-[#173640]">
                       <Compass className="w-5 h-5 text-[#FF8500]" aria-hidden="true" />
@@ -199,7 +199,7 @@ export const LandingLoginPage: React.FC = () => {
                       Já enviei
                     </Link>
                   </div>
-                </Card>
+                </div>
 
                 <Card className="p-5 flex flex-col justify-between gap-4">
                   <div className="space-y-2">
