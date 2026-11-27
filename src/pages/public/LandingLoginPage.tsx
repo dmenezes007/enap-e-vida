@@ -227,7 +227,7 @@ export const LandingLoginPage: React.FC = () => {
               {/* Valores institucionais */}
               <div className="pt-2 border-t border-[#E2DDD5]">
                 <p className="text-xs font-semibold text-[#5F666A] mb-1.5">
-                  Vamores Institucionais
+                  Valores Institucionais
                 </p>
                 <p className="text-xs text-[#4A4F52] leading-relaxed">
                   Democracia · Diversidade · Sustentabilidade · Participação Social · Colaboração · Foco nas Pessoas · Excelência na Gestão
