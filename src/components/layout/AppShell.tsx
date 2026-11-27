@@ -263,8 +263,8 @@ export const AppShell: React.FC<{
         <div className="flex-1 flex flex-col min-w-0">
           <header className="sticky top-0 z-30 h-16 bg-white border-b border-[#E2DDD5] px-4 md:px-6 flex items-center justify-between gap-4">
             <div className="flex items-center gap-3 min-w-0 flex-1">
-              <Link to="/app/inicio" className="md:hidden flex items-center gap-2 shrink-0">
-                <EnapVidaLogo className="max-w-32" />
+              <Link to="/app/inicio" className="md:hidden flex min-w-0 items-center gap-2">
+                <EnapVidaLogo className="w-full max-w-32" />
               </Link>
 
               {/* Busca integrada (§11) */}
@@ -309,7 +309,7 @@ export const AppShell: React.FC<{
               </div>
             </div>
 
-            <div className="flex items-center gap-2.5 shrink-0">
+            <div className="flex shrink-0 items-center gap-1 sm:gap-2.5">
               <PWAInstallButton compact />
               {mode === 'community' && (
                 <ModuleExport key={location.pathname} module={location.pathname.split('/')[2]} />
