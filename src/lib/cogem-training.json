@@ -1,0 +1,964 @@
+[
+  {
+    "id": "curso-1",
+    "title": "1° Seminário de People Analytics do Setor Público",
+    "area": "Dados e pesquisa",
+    "related": [
+      "Pessoas e liderança"
+    ],
+    "years": [
+      2024
+    ]
+  },
+  {
+    "id": "curso-2",
+    "title": "2° Seminário Nacional de Gestão de Pessoas e Liderança no Setor Público",
+    "area": "Pessoas e liderança",
+    "related": [],
+    "years": [
+      2024
+    ]
+  },
+  {
+    "id": "curso-3",
+    "title": "80 em 20 People Analytics: estrategista de pessoas",
+    "area": "Dados e pesquisa",
+    "related": [
+      "Pessoas e liderança"
+    ],
+    "years": [
+      2023
+    ]
+  },
+  {
+    "id": "curso-4",
+    "title": "80|20 - Analytics",
+    "area": "Dados e pesquisa",
+    "related": [],
+    "years": [
+      2024
+    ]
+  },
+  {
+    "id": "curso-5",
+    "title": "Agentes de Inteligência Artificial no Trabalho: Produtividade, Gestão e Projetos no Setor Público",
+    "area": "IA e automação",
+    "related": [
+      "Projetos e inovação"
+    ],
+    "years": [
+      2026
+    ]
+  },
+  {
+    "id": "curso-6",
+    "title": "Alta Performance no Serviço Público: Lideranças que Geram Resultados",
+    "area": "Pessoas e liderança",
+    "related": [],
+    "years": [
+      2025
+    ]
+  },
+  {
+    "id": "curso-7",
+    "title": "Ambientação para Carreiras Transversais Administrativas",
+    "area": "Pessoas e liderança",
+    "related": [],
+    "years": [
+      2026
+    ]
+  },
+  {
+    "id": "curso-8",
+    "title": "Aplicação do Power BI para Aprimoramento da Gestão",
+    "area": "Dados e pesquisa",
+    "related": [],
+    "years": [
+      2024
+    ]
+  },
+  {
+    "id": "curso-9",
+    "title": "Aposentadoria e Pensão de servidores: Atualizações conforme Emenda 103/2019",
+    "area": "Pessoas e liderança",
+    "related": [],
+    "years": [
+      2026
+    ]
+  },
+  {
+    "id": "curso-10",
+    "title": "Apresentações que conquistam",
+    "area": "Comunicação e aprendizagem",
+    "related": [],
+    "years": [
+      2023
+    ]
+  },
+  {
+    "id": "curso-11",
+    "title": "Assédio Moral: O que saber e fazer",
+    "area": "Diversidades e bem-estar",
+    "related": [
+      "Pessoas e liderança"
+    ],
+    "years": [
+      2024
+    ]
+  },
+  {
+    "id": "curso-12",
+    "title": "Automação de Processos através da RPA para Transformação Digital",
+    "area": "IA e automação",
+    "related": [
+      "Projetos e inovação"
+    ],
+    "years": [
+      2026
+    ]
+  },
+  {
+    "id": "curso-13",
+    "title": "Café com PLS 2026 - O Estado como Catalisador de Futuros Sustentáveis e Inclusivos",
+    "area": "Diversidades e bem-estar",
+    "related": [],
+    "years": [
+      2026
+    ]
+  },
+  {
+    "id": "curso-15",
+    "title": "Capacitação em Governança de Dados",
+    "area": "Dados e pesquisa",
+    "related": [
+      "Governança e administração"
+    ],
+    "years": [
+      2026
+    ]
+  },
+  {
+    "id": "curso-16",
+    "title": "Certificação Avançada em Desenvolvbimento de Pessoas",
+    "area": "Pessoas e liderança",
+    "related": [],
+    "years": [
+      2026
+    ]
+  },
+  {
+    "id": "curso-17",
+    "title": "Certificação Avançada em Desenvolvimento de Gerentes de Pessoas",
+    "area": "Pessoas e liderança",
+    "related": [],
+    "years": [
+      2024
+    ]
+  },
+  {
+    "id": "curso-18",
+    "title": "CLAD",
+    "area": "Projetos e inovação",
+    "related": [
+      "Governança e administração"
+    ],
+    "years": [
+      2024
+    ]
+  },
+  {
+    "id": "curso-19",
+    "title": "Como Trabalhar e Colaborar Online",
+    "area": "Comunicação e aprendizagem",
+    "related": [
+      "Ferramentas de trabalho"
+    ],
+    "years": [
+      2026
+    ]
+  },
+  {
+    "id": "curso-20",
+    "title": "Como Utilizar as Ferramentas do Extrator de Dados e DW - Data Warehouse.",
+    "area": "Dados e pesquisa",
+    "related": [],
+    "years": [
+      2023
+    ]
+  },
+  {
+    "id": "curso-21",
+    "title": "Comunicação não violenta",
+    "area": "Comunicação e aprendizagem",
+    "related": [],
+    "years": [
+      2023,
+      2024,
+      2025
+    ]
+  },
+  {
+    "id": "curso-22",
+    "title": "Comunicação Organizacional Empática - La-Bora",
+    "area": "Comunicação e aprendizagem",
+    "related": [],
+    "years": [
+      2023
+    ]
+  },
+  {
+    "id": "curso-23",
+    "title": "Comunicação Pública e comunicação de governo",
+    "area": "Comunicação e aprendizagem",
+    "related": [],
+    "years": [
+      2025
+    ]
+  },
+  {
+    "id": "curso-24",
+    "title": "Construção, Adaptação & Validação de Instrumentos",
+    "area": "Dados e pesquisa",
+    "related": [
+      "Comunicação e aprendizagem"
+    ],
+    "years": [
+      2025
+    ]
+  },
+  {
+    "id": "curso-25",
+    "title": "Contratações Diretas na Nova Lei de Licitações",
+    "area": "Governança e administração",
+    "related": [],
+    "years": [
+      2024,
+      2026
+    ]
+  },
+  {
+    "id": "curso-26",
+    "title": "Curso Básico Sobre Cultura e Clima Organizacional",
+    "area": "Pessoas e liderança",
+    "related": [],
+    "years": [
+      2023
+    ]
+  },
+  {
+    "id": "curso-27",
+    "title": "Dataviz e Data Storytelling",
+    "area": "Dados e pesquisa",
+    "related": [
+      "Comunicação e aprendizagem"
+    ],
+    "years": [
+      2024
+    ]
+  },
+  {
+    "id": "curso-28",
+    "title": "Desenvolvendo Times de Alta Performance",
+    "area": "Pessoas e liderança",
+    "related": [],
+    "years": [
+      2024,
+      2025
+    ]
+  },
+  {
+    "id": "curso-29",
+    "title": "Diversidade e inclusão no ambiente de trabalho",
+    "area": "Diversidades e bem-estar",
+    "related": [],
+    "years": [
+      2025
+    ]
+  },
+  {
+    "id": "curso-30",
+    "title": "E20",
+    "area": "Pessoas e liderança",
+    "related": [],
+    "years": [
+      2025
+    ]
+  },
+  {
+    "id": "curso-31",
+    "title": "Eixo 1 - Desenvolvendo e expressando conceitos e ideias",
+    "area": "Comunicação e aprendizagem",
+    "related": [],
+    "years": [
+      2025
+    ]
+  },
+  {
+    "id": "curso-32",
+    "title": "Elaboração de Indicadores de Desempenho Institucional",
+    "area": "Dados e pesquisa",
+    "related": [
+      "Projetos e inovação"
+    ],
+    "years": [
+      2025
+    ]
+  },
+  {
+    "id": "curso-33",
+    "title": "Elaboração de Survey: Aprenda como montar questionário para coletar dados",
+    "area": "Dados e pesquisa",
+    "related": [],
+    "years": [
+      2023
+    ]
+  },
+  {
+    "id": "curso-34",
+    "title": "Elaboração de termos de referência para contratação de bens e serviços na Nova Lei de Licitações",
+    "area": "Governança e administração",
+    "related": [],
+    "years": [
+      2026
+    ]
+  },
+  {
+    "id": "curso-35",
+    "title": "Employee Experience (EX): Engajamento e Produtividade no Setor Público",
+    "area": "Pessoas e liderança",
+    "related": [],
+    "years": [
+      2023,
+      2025
+    ]
+  },
+  {
+    "id": "curso-36",
+    "title": "Encontro Nacional de Gestão de Pessoas SIPEC 2026",
+    "area": "Pessoas e liderança",
+    "related": [],
+    "years": [
+      2026
+    ]
+  },
+  {
+    "id": "curso-37",
+    "title": "Equidade, Diversidade, Inclusão e Pertencimento",
+    "area": "Diversidades e bem-estar",
+    "related": [],
+    "years": [
+      2025
+    ]
+  },
+  {
+    "id": "curso-38",
+    "title": "Escrita científica de alto impacto",
+    "area": "Comunicação e aprendizagem",
+    "related": [
+      "Dados e pesquisa"
+    ],
+    "years": [
+      2025
+    ]
+  },
+  {
+    "id": "curso-39",
+    "title": "Estatística para Análise de Dados na Administração Pública",
+    "area": "Dados e pesquisa",
+    "related": [],
+    "years": [
+      2023
+    ]
+  },
+  {
+    "id": "curso-40",
+    "title": "Formação de facilitadores de aprendizagem",
+    "area": "Comunicação e aprendizagem",
+    "related": [],
+    "years": [
+      2024
+    ]
+  },
+  {
+    "id": "curso-41",
+    "title": "Fundamentos da IA no contexto do serviço Público",
+    "area": "IA e automação",
+    "related": [],
+    "years": [
+      2026
+    ]
+  },
+  {
+    "id": "curso-42",
+    "title": "Gerenciamento de Projetos na Prática",
+    "area": "Projetos e inovação",
+    "related": [],
+    "years": [
+      2025
+    ]
+  },
+  {
+    "id": "curso-43",
+    "title": "Gerenciar Projetos com o Microsoft 365",
+    "area": "Projetos e inovação",
+    "related": [
+      "IA e automação",
+      "Ferramentas de trabalho"
+    ],
+    "years": [
+      2025
+    ]
+  },
+  {
+    "id": "curso-44",
+    "title": "Gestão da Inovação no Setor Público",
+    "area": "Projetos e inovação",
+    "related": [],
+    "years": [
+      2026
+    ]
+  },
+  {
+    "id": "curso-45",
+    "title": "Gestão de Equipes em Trabalho Remoto",
+    "area": "Pessoas e liderança",
+    "related": [],
+    "years": [
+      2024
+    ]
+  },
+  {
+    "id": "curso-46",
+    "title": "HR SUMMIT 2026",
+    "area": "Pessoas e liderança",
+    "related": [],
+    "years": [
+      2026
+    ]
+  },
+  {
+    "id": "curso-47",
+    "title": "HRBP 2024 - HR Business Partner Summit",
+    "area": "Pessoas e liderança",
+    "related": [],
+    "years": [
+      2024
+    ]
+  },
+  {
+    "id": "curso-49",
+    "title": "I Congresso Nacional sobre Relações Laborais na Administração Pública - I CoNaRLAP",
+    "area": "Pessoas e liderança",
+    "related": [
+      "Governança e administração"
+    ],
+    "years": [
+      2024
+    ]
+  },
+  {
+    "id": "curso-50",
+    "title": "IA - Aplicações no Governo Federal",
+    "area": "IA e automação",
+    "related": [],
+    "years": [
+      2026
+    ]
+  },
+  {
+    "id": "curso-51",
+    "title": "IA Generativo da Microsoft - Copilot",
+    "area": "IA e automação",
+    "related": [
+      "Ferramentas de trabalho"
+    ],
+    "years": [
+      2026
+    ]
+  },
+  {
+    "id": "curso-52",
+    "title": "Inclusão de gênero na ponta da língua",
+    "area": "Diversidades e bem-estar",
+    "related": [
+      "Comunicação e aprendizagem"
+    ],
+    "years": [
+      2025
+    ]
+  },
+  {
+    "id": "curso-53",
+    "title": "Inovando na Gestão de Projetos",
+    "area": "Projetos e inovação",
+    "related": [],
+    "years": [
+      2025
+    ]
+  },
+  {
+    "id": "curso-54",
+    "title": "Inteligência Artificial no Contexto do Serviço Público",
+    "area": "IA e automação",
+    "related": [],
+    "years": [
+      2026
+    ]
+  },
+  {
+    "id": "curso-55",
+    "title": "Inteligência Artificial para Simplificar o Dia a Dia",
+    "area": "IA e automação",
+    "related": [],
+    "years": [
+      2026
+    ]
+  },
+  {
+    "id": "curso-56",
+    "title": "Inteligência Artificial: eleve sua produtividade e acelere sua carreira",
+    "area": "IA e automação",
+    "related": [],
+    "years": [
+      2024
+    ]
+  },
+  {
+    "id": "curso-57",
+    "title": "Inteligência emocional",
+    "area": "Pessoas e liderança",
+    "related": [
+      "Diversidades e bem-estar"
+    ],
+    "years": [
+      2024,
+      2026
+    ]
+  },
+  {
+    "id": "curso-58",
+    "title": "Introdução à Ciência de Dados - Redes Complexas",
+    "area": "Dados e pesquisa",
+    "related": [],
+    "years": [
+      2026
+    ]
+  },
+  {
+    "id": "curso-60",
+    "title": "Introdução à Gestão de Projetos",
+    "area": "Projetos e inovação",
+    "related": [],
+    "years": [
+      2025
+    ]
+  },
+  {
+    "id": "curso-61",
+    "title": "Introdução à IA Gerativa e aos Agentes",
+    "area": "IA e automação",
+    "related": [],
+    "years": [
+      2026
+    ]
+  },
+  {
+    "id": "curso-62",
+    "title": "Iramuteq",
+    "area": "Dados e pesquisa",
+    "related": [],
+    "years": [
+      2024
+    ]
+  },
+  {
+    "id": "curso-63",
+    "title": "Lançamento da Rede Nacional de Observatórios das Mulheres",
+    "area": "Diversidades e bem-estar",
+    "related": [],
+    "years": [
+      2026
+    ]
+  },
+  {
+    "id": "curso-64",
+    "title": "Lógica de Programação em Python - Nível 1",
+    "area": "Dados e pesquisa",
+    "related": [],
+    "years": [
+      2024
+    ]
+  },
+  {
+    "id": "curso-65",
+    "title": "MBA Pessoas, liderança e inovação (junho 2026 a maio 27)",
+    "area": "Pessoas e liderança",
+    "related": [
+      "Projetos e inovação"
+    ],
+    "years": [
+      2026
+    ]
+  },
+  {
+    "id": "curso-66",
+    "title": "Microsoft Excel 2016 - básico",
+    "area": "Ferramentas de trabalho",
+    "related": [
+      "Dados e pesquisa"
+    ],
+    "years": [
+      2024
+    ]
+  },
+  {
+    "id": "curso-67",
+    "title": "Microsoft Power BI Para Business Intelligence e Data Science",
+    "area": "Dados e pesquisa",
+    "related": [],
+    "years": [
+      2025,
+      2026
+    ]
+  },
+  {
+    "id": "curso-69",
+    "title": "Microsoft Word 2016 - básico",
+    "area": "Ferramentas de trabalho",
+    "related": [
+      "Comunicação e aprendizagem"
+    ],
+    "years": [
+      2024
+    ]
+  },
+  {
+    "id": "curso-70",
+    "title": "Minimiza | Apresentações Corporativas Sem Firulas",
+    "area": "Comunicação e aprendizagem",
+    "related": [],
+    "years": [
+      2023
+    ]
+  },
+  {
+    "id": "curso-71",
+    "title": "Motivação no setor público: o que faz diferença para o engajamento dos servidores",
+    "area": "Pessoas e liderança",
+    "related": [],
+    "years": [
+      2024,
+      2025
+    ]
+  },
+  {
+    "id": "curso-72",
+    "title": "Nova Lei de Licitações e Contratos: aspectos gerais e pontos de atenção",
+    "area": "Governança e administração",
+    "related": [],
+    "years": [
+      2024,
+      2026
+    ]
+  },
+  {
+    "id": "curso-73",
+    "title": "Nova Lei de Licitações: modalidade e seleção de fornecedores",
+    "area": "Governança e administração",
+    "related": [],
+    "years": [
+      2026
+    ]
+  },
+  {
+    "id": "curso-74",
+    "title": "Nova Lei de Licitações: planejamento e governança",
+    "area": "Governança e administração",
+    "related": [],
+    "years": [
+      2024
+    ]
+  },
+  {
+    "id": "curso-75",
+    "title": "Noções básicas de alimentação saudável e consumo de hortaliças",
+    "area": "Diversidades e bem-estar",
+    "related": [],
+    "years": [
+      2026
+    ]
+  },
+  {
+    "id": "curso-76",
+    "title": "Oficina Jornada OKR Rede InovaGov",
+    "area": "Projetos e inovação",
+    "related": [],
+    "years": [
+      2023
+    ]
+  },
+  {
+    "id": "curso-77",
+    "title": "Palestra Saúde mental e gênero",
+    "area": "Diversidades e bem-estar",
+    "related": [],
+    "years": [
+      2026
+    ]
+  },
+  {
+    "id": "curso-78",
+    "title": "Participação em Comissões de Heteroidentificação",
+    "area": "Diversidades e bem-estar",
+    "related": [],
+    "years": [
+      2025
+    ]
+  },
+  {
+    "id": "curso-79",
+    "title": "People Analytics - Competências do futuro para a gestão do hoje",
+    "area": "Dados e pesquisa",
+    "related": [
+      "Pessoas e liderança"
+    ],
+    "years": [
+      2023
+    ]
+  },
+  {
+    "id": "curso-80",
+    "title": "People Analytics Summit",
+    "area": "Dados e pesquisa",
+    "related": [
+      "Pessoas e liderança"
+    ],
+    "years": [
+      2025
+    ]
+  },
+  {
+    "id": "curso-81",
+    "title": "People Analytics Summit 2023",
+    "area": "Dados e pesquisa",
+    "related": [
+      "Pessoas e liderança"
+    ],
+    "years": [
+      2023
+    ]
+  },
+  {
+    "id": "curso-82",
+    "title": "People Analytics- A Estratégia de Dados no RH",
+    "area": "Dados e pesquisa",
+    "related": [
+      "Pessoas e liderança"
+    ],
+    "years": [
+      2025
+    ]
+  },
+  {
+    "id": "curso-83",
+    "title": "Preparação para Aposentadoria - Caminhos",
+    "area": "Pessoas e liderança",
+    "related": [
+      "Diversidades e bem-estar"
+    ],
+    "years": [
+      2026
+    ]
+  },
+  {
+    "id": "curso-84",
+    "title": "Primeiros passos para uso de Linguagem Simples",
+    "area": "Comunicação e aprendizagem",
+    "related": [],
+    "years": [
+      2023,
+      2024,
+      2025
+    ]
+  },
+  {
+    "id": "curso-85",
+    "title": "Programa de Desenvolvimento Inicial para Cargos de Nível Superior",
+    "area": "Pessoas e liderança",
+    "related": [],
+    "years": [
+      2026
+    ]
+  },
+  {
+    "id": "curso-86",
+    "title": "Programação em Python para Análise de Dados - Nível 2 - Construindo Dashboards",
+    "area": "Dados e pesquisa",
+    "related": [],
+    "years": [
+      2024
+    ]
+  },
+  {
+    "id": "curso-87",
+    "title": "Programação em Python para Análise de Dados - Nível 3 - Manipulando Base de Dados",
+    "area": "Dados e pesquisa",
+    "related": [],
+    "years": [
+      2024
+    ]
+  },
+  {
+    "id": "curso-88",
+    "title": "Proteção de Dados Pessoais no Setor Público",
+    "area": "Governança e administração",
+    "related": [
+      "Dados e pesquisa"
+    ],
+    "years": [
+      2026
+    ]
+  },
+  {
+    "id": "curso-89",
+    "title": "PSICOMETRIA ONLINE - Análises Bi e Multivariadas - JASP",
+    "area": "Dados e pesquisa",
+    "related": [],
+    "years": [
+      2026
+    ]
+  },
+  {
+    "id": "curso-90",
+    "title": "PSICOMETRIA ONLINE - Construção, Adaptação & Validação de Instrumentos",
+    "area": "Dados e pesquisa",
+    "related": [],
+    "years": [
+      2026
+    ]
+  },
+  {
+    "id": "curso-92",
+    "title": "Sei! Usar 4.0",
+    "area": "Governança e administração",
+    "related": [
+      "Ferramentas de trabalho"
+    ],
+    "years": [
+      2026
+    ]
+  },
+  {
+    "id": "curso-93",
+    "title": "Seleção de lideranças: como escolher as melhores pessoas",
+    "area": "Pessoas e liderança",
+    "related": [],
+    "years": [
+      2024
+    ]
+  },
+  {
+    "id": "curso-94",
+    "title": "Sem armário, sem silencio: Conversas Sincera sobre existir e resistir - 8/7",
+    "area": "Diversidades e bem-estar",
+    "related": [],
+    "years": [
+      2026
+    ]
+  },
+  {
+    "id": "curso-95",
+    "title": "Semana de Inovação",
+    "area": "Projetos e inovação",
+    "related": [],
+    "years": [
+      2024
+    ]
+  },
+  {
+    "id": "curso-97",
+    "title": "Seminário Internacional: Educação para as Relações Étnico-Raciais em Prespectiva Negra, Indígena e Quilombola",
+    "area": "Diversidades e bem-estar",
+    "related": [],
+    "years": [
+      2026
+    ]
+  },
+  {
+    "id": "curso-98",
+    "title": "Seminário Nacional de Governança em Gestão de Pessoas",
+    "area": "Pessoas e liderança",
+    "related": [],
+    "years": [
+      2023
+    ]
+  },
+  {
+    "id": "curso-99",
+    "title": "Servidores do Futuro: Desenvolvimento Gerencial",
+    "area": "Pessoas e liderança",
+    "related": [],
+    "years": [
+      2026
+    ]
+  },
+  {
+    "id": "curso-100",
+    "title": "Servidores do Futuro: Gestão de Pessoas",
+    "area": "Pessoas e liderança",
+    "related": [],
+    "years": [
+      2025
+    ]
+  },
+  {
+    "id": "curso-101",
+    "title": "Storytelling com Dados para Comunicação Profissional de Sucesso",
+    "area": "Comunicação e aprendizagem",
+    "related": [
+      "Dados e pesquisa"
+    ],
+    "years": [
+      2023,
+      2025
+    ]
+  },
+  {
+    "id": "curso-102",
+    "title": "TEMOS QUE DAR AULAS REMOTAS... E AGORA?",
+    "area": "Comunicação e aprendizagem",
+    "related": [],
+    "years": [
+      2023
+    ]
+  },
+  {
+    "id": "curso-103",
+    "title": "Treinamento interno de Power BI",
+    "area": "Dados e pesquisa",
+    "related": [],
+    "years": [
+      2024
+    ]
+  },
+  {
+    "id": "curso-104",
+    "title": "Usar IA para Tarefas Diárias",
+    "area": "IA e automação",
+    "related": [],
+    "years": [
+      2026
+    ]
+  },
+  {
+    "id": "curso-105",
+    "title": "Ética em IA",
+    "area": "IA e automação",
+    "related": [
+      "Governança e administração"
+    ],
+    "years": [
+      2026
+    ]
+  }
+]

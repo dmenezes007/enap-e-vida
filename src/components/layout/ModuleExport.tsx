@@ -2,6 +2,7 @@ import {useState} from 'react';
 import {Download} from 'lucide-react';
 import {apiFetch} from '../../lib/api';
 import catalog from '../../lib/pqvt-catalog.json';
+import training from '../../lib/cogem-training.json';
 import {diversityInitiatives, isPastInitiative} from '../../lib/deiInitiatives';
 import {buildBrazilianCsv} from '../../lib/security';
 import {useToast} from '../ui/Primitives';
@@ -76,7 +77,12 @@ const modules: Record<string, ExportDefinition> = {
   },
   repositorio: {
     endpoint: '/api/repository',
-    rows: (d) => project(d, 'documents', 'Documento', 'title', 'published_at', 'category', 'version'),
+    rows: (d) => [
+      ...project(d, 'documents', 'Documento', 'title', 'published_at', 'category', 'version'),
+      ...training.map((course) => [
+        'Capacitação', course.title, course.years.join(', '), [course.area, ...course.related].join(' · '),
+      ]),
+    ],
   },
   'fala-enap': {
     endpoint: '/api/fala-enap',

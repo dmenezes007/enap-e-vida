@@ -10,7 +10,8 @@ import {
   Lock,
   Search,
 } from 'lucide-react';
-import {Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis} from 'recharts';
+import {HorizontalBarChart} from '../../components/ui/InstitutionalCharts';
+import {KnowledgeNetwork} from './KnowledgeNetwork';
 import {apiFetch} from '../../lib/api';
 import {DiversityPortfolio} from './DiversityPortfolio';
 import {
@@ -92,9 +93,11 @@ export const RepositoryPage: React.FC = () => {
     <div className="space-y-6">
       <PageHeader
         kicker="Conhecimento Institucional · Normas · Manuais"
-        title="Biblioteca"
+        title="Conhecimento"
         description="Acesse guias de ambientação, resoluções vigentes (como o PGD Resolução Enap nº 76/2025), cartilhas de diversidade, manuais de ética e documentos de apoio com histórico de versões."
       />
+
+      <KnowledgeNetwork />
 
       <Card className="p-4 flex flex-col md:flex-row items-stretch md:items-center gap-3">
         <div className="relative flex-1">
@@ -325,17 +328,13 @@ export const ComiteDeiPage: React.FC = () => {
             <h3 className="text-sm font-extrabold text-[#173640]">
               Distribuição do Programa de Gestão e Desempenho — PGD
             </h3>
-            <div className="h-52">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={metrics.pgdDistribution} layout="vertical" margin={{left: 20, right: 24}}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#E8E4DC" />
-                  <XAxis type="number" tick={{fontSize: 12}} />
-                  <YAxis type="category" dataKey="label" width={175} tick={{fontSize: 12, fill: '#231F20'}} />
-                  <Tooltip />
-                  <Bar dataKey="count" name="Participantes" fill="#285D32" radius={[0, 6, 6, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
+            <HorizontalBarChart data={metrics.pgdDistribution} category="label" value="count"
+              label="Distribuição de participantes do PGD" />
+            <ul className="grid gap-2 text-xs text-[#4A4F52] sm:grid-cols-2">
+              {metrics.pgdDistribution.map(({label, count}: {label: string; count: number}) => (
+                <li key={label}>{label}: <strong>{count}</strong></li>
+              ))}
+            </ul>
           </Card>
         </section>
       )}

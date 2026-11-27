@@ -1,7 +1,7 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {Link, useParams} from 'react-router-dom';
 import {ArrowLeft, BarChart3, CheckCircle2, Lock, ShieldCheck} from 'lucide-react';
-import {Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis} from 'recharts';
+import {HorizontalBarChart} from '../../components/ui/InstitutionalCharts';
 import {apiFetch} from '../../lib/api';
 import {
   AlertBox,
@@ -276,21 +276,9 @@ export const SurveysPage: React.FC = () => {
                     <h3 className="text-sm font-bold text-[#173640]">{qs.label}</h3>
                     {qs.data ? (
                       <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-center">
-                        <div className="lg:col-span-7 h-56">
-                          <ResponsiveContainer width="100%" height="100%">
-                            <BarChart data={qs.data} layout="vertical" margin={{left: 16, right: 24}}>
-                              <CartesianGrid strokeDasharray="3 3" stroke="#E8E4DC" />
-                              <XAxis type="number" allowDecimals={false} tick={{fontSize: 12}} />
-                              <YAxis
-                                type="category"
-                                dataKey="name"
-                                width={160}
-                                tick={{fontSize: 11, fill: '#231F20'}}
-                              />
-                              <Tooltip />
-                              <Bar dataKey="value" name="Respostas" fill="#173640" radius={[0, 6, 6, 0]} />
-                            </BarChart>
-                          </ResponsiveContainer>
+                        <div className="lg:col-span-7 min-w-0">
+                          <HorizontalBarChart data={qs.data} category="name" value="value"
+                            label={'Respostas — ' + qs.label} color="#173640" />
                         </div>
                         <div className="lg:col-span-5">
                           <table className="w-full text-xs border-collapse">

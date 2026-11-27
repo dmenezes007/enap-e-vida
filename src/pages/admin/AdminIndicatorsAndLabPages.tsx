@@ -9,16 +9,7 @@ import {
   Plus,
   Table2,
 } from 'lucide-react';
-import {
-  CartesianGrid,
-  Legend,
-  Line,
-  LineChart,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from 'recharts';
+import {TimelineChart} from '../../components/ui/InstitutionalCharts';
 import {apiFetch} from '../../lib/api';
 import type {ComputedIndicator} from '../../lib/indicators';
 import {
@@ -32,6 +23,11 @@ import {
   SkeletonBlock,
   useToast,
 } from '../../components/ui/Primitives';
+
+const longitudinalMeasures = [
+  {field: 'clarezaPapel', name: 'Clareza de papel (1–5)', color: '#173640'},
+  {field: 'apoioVinculos', name: 'Apoio e vínculos (1–5)', color: '#285D32'},
+] as const;
 
 export const AdminIndicatorsPage: React.FC = () => {
   const [data, setData] = useState<{
@@ -148,31 +144,7 @@ export const AdminIndicatorsPage: React.FC = () => {
             </p>
           </div>
         </div>
-        <div className="h-64">
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={data.longitudinalSeries} margin={{top: 8, right: 20, left: 0, bottom: 8}}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#E8E4DC" />
-              <XAxis dataKey="periodo" tick={{fontSize: 12}} />
-              <YAxis domain={[1, 5]} tick={{fontSize: 12}} />
-              <Tooltip />
-              <Legend />
-              <Line
-                type="monotone"
-                dataKey="clarezaPapel"
-                name="Clareza de papel (1–5)"
-                stroke="#173640"
-                strokeWidth={3}
-              />
-              <Line
-                type="monotone"
-                dataKey="apoioVinculos"
-                name="Apoio e vínculos (1–5)"
-                stroke="#285D32"
-                strokeWidth={3}
-              />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
+        <TimelineChart data={data.longitudinalSeries} measures={longitudinalMeasures} />
       </Card>
 
       {/* Modal Ficha Metodológica Completa */}

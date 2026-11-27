@@ -44,7 +44,7 @@ const COMMUNITY_NAV: NavItem[] = [
   {to: '/app/comite-dei', label: 'Diversidades', icon: HeartHandshake},
   {to: '/app/eventos', label: 'Calendário', icon: Calendar},
   {to: '/app/enquetes', label: 'Enquetes', icon: ClipboardCheck},
-  {to: '/app/repositorio', label: 'Biblioteca', icon: BookOpen},
+  {to: '/app/repositorio', label: 'Conhecimento', icon: BookOpen},
   {to: '/app/fala-enap', label: 'Fala, Enap!', icon: MessageSquareHeart},
   {to: '/app/perfil', label: 'Meu Perfil', icon: UserCircle2},
 ];
@@ -123,7 +123,7 @@ export const AppShell: React.FC<{
       ? [{to: '/admin/fala-enap', label: 'Fala, Enap!', icon: MessageSquareHeart}]
       : []),
     ...(hasPerm('repository:manage')
-      ? [{to: '/admin/repositorio', label: 'Repositório', icon: BookOpen}]
+      ? [{to: '/admin/repositorio', label: 'Conhecimento', icon: BookOpen}]
       : []),
     ...(hasPerm('dei:manage')
       ? [{to: '/admin/comite-dei', label: 'Comitê DEI', icon: HeartHandshake}]
